@@ -12,6 +12,7 @@
 		DB106C4A22C53D4C00502D7C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4922C53D4C00502D7C /* Assets.xcassets */; };
 		DB106C4D22C53D4C00502D7C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4B22C53D4C00502D7C /* Main.storyboard */; };
 		DB106C5922C53D4C00502D7C /* Song_RatingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C5822C53D4C00502D7C /* Song_RatingTests.swift */; };
+		DB106C6422C53DAE00502D7C /* iTunes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6322C53DAE00502D7C /* iTunes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,10 +32,11 @@
 		DB106C4922C53D4C00502D7C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DB106C4C22C53D4C00502D7C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DB106C4E22C53D4C00502D7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DB106C4F22C53D4C00502D7C /* Song_Rating.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Song_Rating.entitlements; sourceTree = "<group>"; };
 		DB106C5422C53D4C00502D7C /* Song RatingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Song RatingTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB106C5822C53D4C00502D7C /* Song_RatingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song_RatingTests.swift; sourceTree = "<group>"; };
 		DB106C5A22C53D4C00502D7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DB106C6322C53DAE00502D7C /* iTunes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunes.swift; sourceTree = "<group>"; };
+		DB106C6722C5433900502D7C /* Song Rating.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Song Rating.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,12 +78,13 @@
 		DB106C4422C53D4B00502D7C /* Song Rating */ = {
 			isa = PBXGroup;
 			children = (
+				DB106C6722C5433900502D7C /* Song Rating.entitlements */,
 				DB106C4522C53D4B00502D7C /* AppDelegate.swift */,
 				DB106C4722C53D4B00502D7C /* ViewController.swift */,
 				DB106C4922C53D4C00502D7C /* Assets.xcassets */,
 				DB106C4B22C53D4C00502D7C /* Main.storyboard */,
 				DB106C4E22C53D4C00502D7C /* Info.plist */,
-				DB106C4F22C53D4C00502D7C /* Song_Rating.entitlements */,
+				DB106C6322C53DAE00502D7C /* iTunes.swift */,
 			);
 			path = "Song Rating";
 			sourceTree = "<group>";
@@ -145,6 +148,11 @@
 				TargetAttributes = {
 					DB106C4122C53D4B00502D7C = {
 						CreatedOnToolsVersion = 10.2.1;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
 					};
 					DB106C5322C53D4C00502D7C = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -196,6 +204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB106C4822C53D4B00502D7C /* ViewController.swift in Sources */,
+				DB106C6422C53DAE00502D7C /* iTunes.swift in Sources */,
 				DB106C4622C53D4B00502D7C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -349,7 +358,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "Song Rating/Song_Rating.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Song Rating/Song Rating.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;
@@ -368,7 +377,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "Song Rating/Song_Rating.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Song Rating/Song Rating.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;
