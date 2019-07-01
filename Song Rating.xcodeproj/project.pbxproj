@@ -12,7 +12,12 @@
 		DB106C4A22C53D4C00502D7C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4922C53D4C00502D7C /* Assets.xcassets */; };
 		DB106C4D22C53D4C00502D7C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4B22C53D4C00502D7C /* Main.storyboard */; };
 		DB106C5922C53D4C00502D7C /* Song_RatingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C5822C53D4C00502D7C /* Song_RatingTests.swift */; };
-		DB106C6422C53DAE00502D7C /* iTunes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6322C53DAE00502D7C /* iTunes.swift */; };
+		DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */; };
+		DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6A22C661F900502D7C /* PlayInfo.swift */; };
+		DB106CA422CA3C7300502D7C /* Star.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA322CA3C7300502D7C /* Star.swift */; };
+		DB106CA622CA3EE700502D7C /* Stars.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA522CA3EE700502D7C /* Stars.swift */; };
+		DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA722CA45BB00502D7C /* RatingControl.swift */; };
+		DB106CC422CA86A500502D7C /* iTunes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6322C53DAE00502D7C /* iTunes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,6 +29,19 @@
 			remoteInfo = "Song Rating";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DB106CBA22CA84CA00502D7C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DB106C4222C53D4B00502D7C /* Song Rating.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Song Rating.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -37,6 +55,11 @@
 		DB106C5A22C53D4C00502D7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB106C6322C53DAE00502D7C /* iTunes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunes.swift; sourceTree = "<group>"; };
 		DB106C6722C5433900502D7C /* Song Rating.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Song Rating.entitlements"; sourceTree = "<group>"; };
+		DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesRadioStation.swift; sourceTree = "<group>"; };
+		DB106C6A22C661F900502D7C /* PlayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayInfo.swift; sourceTree = "<group>"; };
+		DB106CA322CA3C7300502D7C /* Star.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Star.swift; sourceTree = "<group>"; };
+		DB106CA522CA3EE700502D7C /* Stars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stars.swift; sourceTree = "<group>"; };
+		DB106CA722CA45BB00502D7C /* RatingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,10 +104,10 @@
 				DB106C6722C5433900502D7C /* Song Rating.entitlements */,
 				DB106C4522C53D4B00502D7C /* AppDelegate.swift */,
 				DB106C4722C53D4B00502D7C /* ViewController.swift */,
-				DB106C4922C53D4C00502D7C /* Assets.xcassets */,
-				DB106C4B22C53D4C00502D7C /* Main.storyboard */,
+				DB106CC622CA9EB600502D7C /* Control */,
+				DB106CC822CA9F2D00502D7C /* iTunes */,
+				DB106CC722CA9ECE00502D7C /* Supporting Files */,
 				DB106C4E22C53D4C00502D7C /* Info.plist */,
-				DB106C6322C53DAE00502D7C /* iTunes.swift */,
 			);
 			path = "Song Rating";
 			sourceTree = "<group>";
@@ -98,6 +121,43 @@
 			path = "Song RatingTests";
 			sourceTree = "<group>";
 		};
+		DB106CC522CA9E9000502D7C /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				DB106C6322C53DAE00502D7C /* iTunes.swift */,
+			);
+			path = Vendor;
+			sourceTree = "<group>";
+		};
+		DB106CC622CA9EB600502D7C /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				DB106CA722CA45BB00502D7C /* RatingControl.swift */,
+				DB106CA322CA3C7300502D7C /* Star.swift */,
+				DB106CA522CA3EE700502D7C /* Stars.swift */,
+			);
+			path = Control;
+			sourceTree = "<group>";
+		};
+		DB106CC722CA9ECE00502D7C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DB106C4922C53D4C00502D7C /* Assets.xcassets */,
+				DB106C4B22C53D4C00502D7C /* Main.storyboard */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DB106CC822CA9F2D00502D7C /* iTunes */ = {
+			isa = PBXGroup;
+			children = (
+				DB106CC522CA9E9000502D7C /* Vendor */,
+				DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */,
+				DB106C6A22C661F900502D7C /* PlayInfo.swift */,
+			);
+			path = iTunes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -108,6 +168,7 @@
 				DB106C3E22C53D4B00502D7C /* Sources */,
 				DB106C3F22C53D4B00502D7C /* Frameworks */,
 				DB106C4022C53D4B00502D7C /* Resources */,
+				DB106CBA22CA84CA00502D7C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -203,8 +264,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */,
+				DB106CC422CA86A500502D7C /* iTunes.swift in Sources */,
+				DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */,
 				DB106C4822C53D4B00502D7C /* ViewController.swift in Sources */,
-				DB106C6422C53DAE00502D7C /* iTunes.swift in Sources */,
+				DB106CA622CA3EE700502D7C /* Stars.swift in Sources */,
+				DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */,
+				DB106CA422CA3C7300502D7C /* Star.swift in Sources */,
 				DB106C4622C53D4B00502D7C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

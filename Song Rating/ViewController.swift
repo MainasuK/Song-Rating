@@ -9,32 +9,41 @@
 import Cocoa
 import ScriptingBridge
 
+// Debug only
 class ViewController: NSViewController {
     
     let iTunes: iTunesApplication? = SBApplication(bundleIdentifier: "com.apple.iTunes")!
 
+    let radioStation = iTunesRadioStation.shared
+    
+    let starsView = NSView()
+    let ratingControl = RatingControl(rating: 0, size: NSSize(width: 100, height: 100), spacing: 10)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let starImage = ratingControl.image
+        starImage.isTemplate = true
+        let imageView = NSImageView(frame: NSRect(origin: .zero, size: starImage.size))
+        imageView.image = starImage
         
+        starsView.frame.size = imageView.bounds.size
+        starsView.addSubview(imageView)
+        ratingControl.hostView = imageView
 
-        // Do any additional setup after loading the view.
-        //print(iTunes?.isRunning)
-        //print(iTunes!.version)
+        view.addSubview(starsView)
+        NSLayoutConstraint.activate([
+            starsView.topAnchor.constraint(equalTo: view.topAnchor),
+            starsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            starsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            starsView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+
     }
     
     override func viewDidAppear() {
         super.viewDidAppear()
-        
-        DispatchQueue.global().async {
-            let target =  NSAppleEventDescriptor(bundleIdentifier: "com.apple.iTunes")
-            let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
-            
-            DispatchQueue.main.async {
-                print(status)
-            }
-        }
-        
+    
     }
 
     override var representedObject: Any? {
