@@ -9,6 +9,7 @@
 import Foundation
 import ScriptingBridge
 import os
+import MASShortcut
 
 extension Notification.Name {
     static let iTunesCurrentPlayInfoChanged = Notification.Name("iTunesCurrentPlayInfoChanged")
@@ -37,8 +38,16 @@ final class iTunesRadioStation {
     private init() {
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.playInfoChanged(_:)), name: NSNotification.Name("com.apple.iTunes.playerInfo"), object: nil)
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.sourceSaved(_:)), name: NSNotification.Name("com.apple.iTunes.sourceSaved"), object: nil)  // only set rating in iTunes edit song info panel can trigger that
-        
+
         updateRadioStation()
+
+        // Post notification to rating control to keep UI behavior consist
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.trackRatingUp.rawValue, toAction: {
+
+        })
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.trackRatingDown.rawValue, toAction: {
+
+        })
     }
     
     func updateRadioStation() {
@@ -114,14 +123,29 @@ extension iTunesRadioStation {
 }
 
 extension iTunesRadioStation {
-    
+
+
+    /// setRating for current track
+    ///
+    /// - Parameter rating: integer in 0 ~ 100
+    /// - Note: call track.setRating with debounce. Prevent apple event trigger jumping bug
     func setRating(_ rating: Int) {
         debounceSetRatingTimer?.invalidate()
-        
-        os_log("%{public}s[%{public}ld], %{public}s: set timer for 2.0s and set rating for iTunes %ld…", ((#file as NSString).lastPathComponent), #line, #function, rating)
+
+        guard currentPlayInfo != nil || !(iTunes?.currentTrack?.name ?? "").isEmpty else {
+            os_log("%{public}s[%{public}ld], %{public}s: try to set rating but no current track info", ((#file as NSString).lastPathComponent), #line, #function)
+            return
+        }
+
+        // Note: currentPlayInfo could not set when App just launch without recieved playInfoChanged notification
+        let name = currentPlayInfo?.name ?? iTunes?.currentTrack?.name ?? "nil"
+        os_log("%{public}s[%{public}ld], %{public}s: set timer for 2.0s and set rating for %{public}s %{public}ld…", ((#file as NSString).lastPathComponent), #line, #function, name, rating)
+
+        // FIXME: delay may cause set rating to *next* song just playing
         debounceSetRatingTimer = Timer(timeInterval: 2.0, repeats: false, block: { [weak self] timer in
-            self?.iTunes?.currentTrack?.setRating?(rating)
-            os_log("%{public}s[%{public}ld], %{public}s: … set iTunes rating %ld", ((#file as NSString).lastPathComponent), #line, #function, rating)
+            let track = self?.iTunes?.currentTrack
+            track?.setRating?(rating)
+            os_log("%{public}s[%{public}ld], %{public}s: … set %{public}s rating %{public}ld", ((#file as NSString).lastPathComponent), #line, #function, track?.name ?? "nil", rating)
         })
         debounceSetRatingTimer.flatMap {
             RunLoop.current.add($0, forMode: .default)
@@ -136,9 +160,8 @@ extension iTunesRadioStation: SBApplicationDelegate {
     func eventDidFail(_ event: UnsafePointer<AppleEvent>, withError error: Error) -> Any? {
         var appleEvent = event.pointee
         let chars = [UInt8](Data(bytes: &appleEvent.descriptorType, count: 4))
-        let id = chars.map { String(format: "%c", $0) }.joined()
-        print(id)
-        print(error)
+        let id = chars.map { String(format: "%c", $0) }.joined()    // appleEvent 4 char id (descType)
+        os_log("%{public}s[%{public}ld], %{public}s: AppleEvent (%{public}s) call fail with error %{public}s", ((#file as NSString).lastPathComponent), #line, #function, id, error.localizedDescription)
         return nil
     }
     

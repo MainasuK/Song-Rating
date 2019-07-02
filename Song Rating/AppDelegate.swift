@@ -16,6 +16,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let ratingControl = RatingControl(rating: 0)
     let radioStation = iTunesRadioStation.shared
 
+    lazy var menuBarMenu: NSMenu = {
+        let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: "Preferences…", action: #selector(AppDelegate.preferencesMenuItemPressed(_:)), keyEquivalent: ","))
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "Quit Song Rating", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        return menu
+    }()
+
+    @IBAction func openAboutWindow(_ sender: NSMenuItem) {
+        WindowManager.shared.open(.about)
+    }
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         setupAppleEvent()
         
@@ -26,10 +38,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.setButtonType(.momentaryChange)
             ratingControl.hostView = button
         }
+
+        WindowManager.shared.open(.preferences)
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
+        os_log("%{public}s[%{public}ld], %{public}s: Application will terminate", ((#file as NSString).lastPathComponent), #line, #function)
     }
 
 }
@@ -39,12 +54,23 @@ extension AppDelegate {
     @objc func action(_ sender: NSButton) {
         guard let event = NSApp.currentEvent else { return }
         if event.type == .rightMouseUp {
-            
+            let position = sender.convert(event.locationInWindow, to: nil)
+            menuBarMenu.popUp(positioning: nil, at: position, in: sender)
+
         } else {
             ratingControl.action(from: sender, with: event)
         }
     }
-    
+
+    @objc func preferencesMenuItemPressed(_ sender: NSMenuItem) {
+        WindowManager.shared.open(.preferences)
+    }
+
+}
+
+extension AppDelegate {
+
+    // Request AppleEvent permission
     func setupAppleEvent() {
         DispatchQueue.global().async {
             let target =  NSAppleEventDescriptor(bundleIdentifier: "com.apple.iTunes")
