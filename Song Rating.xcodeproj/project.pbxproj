@@ -3,13 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		96C540E9972EAA2E182EB6DF /* Pods_Song_RatingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */; };
 		DB106C4622C53D4B00502D7C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C4522C53D4B00502D7C /* AppDelegate.swift */; };
-		DB106C4822C53D4B00502D7C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C4722C53D4B00502D7C /* ViewController.swift */; };
 		DB106C4A22C53D4C00502D7C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4922C53D4C00502D7C /* Assets.xcassets */; };
 		DB106C4D22C53D4C00502D7C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4B22C53D4C00502D7C /* Main.storyboard */; };
 		DB106C5922C53D4C00502D7C /* Song_RatingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C5822C53D4C00502D7C /* Song_RatingTests.swift */; };
@@ -57,7 +56,6 @@
 		BB3C7008577650EFDD93EC17 /* Pods-Song RatingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song RatingTests.release.xcconfig"; path = "Target Support Files/Pods-Song RatingTests/Pods-Song RatingTests.release.xcconfig"; sourceTree = "<group>"; };
 		DB106C4222C53D4B00502D7C /* Song Rating.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Song Rating.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB106C4522C53D4B00502D7C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		DB106C4722C53D4B00502D7C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DB106C4922C53D4C00502D7C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DB106C4C22C53D4C00502D7C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DB106C4E22C53D4C00502D7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -104,7 +102,6 @@
 				6B0E3B3CE6260A0C7B82DB6C /* Pods-Song RatingTests.debug.xcconfig */,
 				BB3C7008577650EFDD93EC17 /* Pods-Song RatingTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -142,7 +139,6 @@
 			children = (
 				DB106C6722C5433900502D7C /* Song Rating.entitlements */,
 				DB106C4522C53D4B00502D7C /* AppDelegate.swift */,
-				DB106C4722C53D4B00502D7C /* ViewController.swift */,
 				DB95216922CB186F007FCF40 /* WindowManager.swift */,
 				DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */,
 				DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */,
@@ -376,7 +372,6 @@
 				DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */,
 				DB106CC422CA86A500502D7C /* iTunes.swift in Sources */,
 				DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */,
-				DB106C4822C53D4B00502D7C /* ViewController.swift in Sources */,
 				DB106CA622CA3EE700502D7C /* Stars.swift in Sources */,
 				DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */,
 				DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */,

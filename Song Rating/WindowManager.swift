@@ -21,8 +21,24 @@ final class WindowManager: NSObject {
     // MARK: - Singleton
     public static let shared = WindowManager()
     private override init() {
+        super.init()
+        
         NSWindow.allowsAutomaticWindowTabbing = false
+        UserDefaults.standard.addObserver(self, forKeyPath: PreferencesUserDefaultsKey.hideMenuBarWhenNotPlaying.rawValue, options: [.initial, .new], context: nil)
+
     }
+}
+
+extension WindowManager {
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == PreferencesUserDefaultsKey.hideMenuBarWhenNotPlaying.rawValue {
+            guard let appDelegate = NSApplication.shared.delegate as? AppDelegate else { return }
+            let value = change?[.newKey] as? NSControl.StateValue.RawValue ?? NSControl.StateValue.off.rawValue
+            appDelegate.ratingControl.shouldHiddenIfNotPlaying = value == NSControl.StateValue.on.rawValue
+        }
+    }
+    
 }
 
 extension WindowManager {
@@ -46,7 +62,10 @@ extension WindowManager {
 
         windowController?.window?.delegate = self
         windowController?.showWindow(self)
-        windowController?.window?.makeKeyAndOrderFront(self)
+        
+        // brint to front
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        windowController?.window?.makeKeyAndOrderFront(nil)
 
         updateActivationPolicy()
     }

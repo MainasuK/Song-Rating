@@ -13,7 +13,9 @@ import MASShortcut
 
 extension Notification.Name {
     static let iTunesCurrentPlayInfoChanged = Notification.Name("iTunesCurrentPlayInfoChanged")
-    static let iTunesRadioSetupRating = Notification.Name("iTunesRadioSetupRating")
+    static let iTunesRadioDidSetupRating = Notification.Name("iTunesRadioDidSetupRating")
+    static let iTunesRadioRequestTrackRatingUp = Notification.Name("iTunesRadioRequestTrackRatingUp")
+    static let iTunesRadioRequestTrackRatingDown = Notification.Name("iTunesRadioRequestTrackRatingDown")
 }
 
 final class iTunesRadioStation {
@@ -36,37 +38,51 @@ final class iTunesRadioStation {
     private var debounceSetRatingTimer: Timer?
     
     private init() {
+        // Listen iTunes play state change notification
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.playInfoChanged(_:)), name: NSNotification.Name("com.apple.iTunes.playerInfo"), object: nil)
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.sourceSaved(_:)), name: NSNotification.Name("com.apple.iTunes.sourceSaved"), object: nil)  // only set rating in iTunes edit song info panel can trigger that
 
+        // Due to iTunes may already in playing before app launch, use updateRadioStation method check when app start
         updateRadioStation()
 
-        // Post notification to rating control to keep UI behavior consist
-        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.trackRatingUp.rawValue, toAction: {
-
+        // Recieve shortcut to change track rating
+        // But post notification to rating control to keep UI and rating behavior consist (current rating set is debounce procession)
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingUp.rawValue, toAction: {
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil, userInfo: self.currentTrackUserInfo)
         })
-        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.trackRatingDown.rawValue, toAction: {
-
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingDown.rawValue, toAction: {
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil, userInfo: self.currentTrackUserInfo)
         })
     }
     
+    
+    /// Use ScriptingBridge manually setup iTunes radio station
     func updateRadioStation() {
-        if let track = iTunes?.currentTrack,
-            let name = track.name, !name.isEmpty,
-            let rating = track.rating {
-            let userInfo: [String : Any] = [
-                "rating": rating,
-                "playerState": iTunes?.playerState ?? iTunesEPlS.stopped
-            ]
-            NotificationCenter.default.post(name: .iTunesRadioSetupRating, object: rating, userInfo: userInfo)
-        }
+        NotificationCenter.default.post(name: .iTunesRadioDidSetupRating, object: nil, userInfo: currentTrackUserInfo)
     }
 
 }
 
 extension iTunesRadioStation {
     
+    var currentTrackUserInfo: [String : Any]? {
+        guard let track = iTunes?.currentTrack,
+        let rating = track.rating else {
+            return nil
+        }
+        
+        return [
+            // just check not computed flag. @objc flag can not guard always have value
+            "rating" : track.ratingKind != .computed ? rating : 0,
+            "playerState" : iTunes?.playerState ?? iTunesEPlS.stopped
+        ]
+    }
+}
+
+extension iTunesRadioStation {
+    
     @objc func sourceSaved(_ notification: Notification) {
+        os_log("%{public}s[%{public}ld], %{public}s: sourceSaved", ((#file as NSString).lastPathComponent), #line, #function)
         playInfoChanged(notification)
     }
     
@@ -143,7 +159,13 @@ extension iTunesRadioStation {
 
         // FIXME: delay may cause set rating to *next* song just playing
         debounceSetRatingTimer = Timer(timeInterval: 2.0, repeats: false, block: { [weak self] timer in
-            let track = self?.iTunes?.currentTrack
+            guard let `self` = self else { return }
+            let track = self.iTunes?.currentTrack
+// Note: This check *should* works only when in iTunes (12.9.5.5) to fix its BUG. But it's not works. (TODO: remove it)
+//            if track?.ratingKind == .computed && rating == 0 {
+//                os_log("%{public}s[%{public}ld], %{public}s: discard set rating due to it's alreay computed rating", ((#file as NSString).lastPathComponent), #line, #function)
+//                return
+//            }
             track?.setRating?(rating)
             os_log("%{public}s[%{public}ld], %{public}s: … set %{public}s rating %{public}ld", ((#file as NSString).lastPathComponent), #line, #function, track?.name ?? "nil", rating)
         })

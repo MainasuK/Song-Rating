@@ -25,7 +25,7 @@ struct PlayInfo: Codable {
     let discNumber: Int?
     let discCount: Int?
     // ?
-    var rating: Int?
+    var rating: Int?            // be careful it's maybe computed rating
     let likeStatus: String?     // always "None"
     let playCount: Int?
 
@@ -64,6 +64,15 @@ struct PlayInfo: Codable {
 
 extension PlayInfo {
     
+    var notComputedRating: Int? {
+        guard rating != nil else { return nil }
+        return ratingComputed != 1 ? rating : 0
+    }
+    
+}
+
+extension PlayInfo {
+    
     enum PlayerState: String, Codable {
         case paused = "Paused"
         case playing = "Playing"
@@ -97,7 +106,8 @@ extension PlayInfo: CustomStringConvertible {
         return playerState + [
             ([trackNumber.flatMap { "[\(String($0))]" }, name].compactMap { $0 }.joined(separator: " ")),
             artist,
-            [album, year.flatMap { "(\(String($0)))" }].compactMap { $0 }.joined(separator: " ")
+            [album, year.flatMap { "(\(String($0)))" }].compactMap { $0 }.joined(separator: " "),
+            "\(notComputedRating ?? -1)"
         ].compactMap { $0 }.joined(separator: " | ")
     }
     
