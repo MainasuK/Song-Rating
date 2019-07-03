@@ -3,16 +3,25 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		96C540E9972EAA2E182EB6DF /* Pods_Song_RatingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */; };
 		DB106C4622C53D4B00502D7C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C4522C53D4B00502D7C /* AppDelegate.swift */; };
-		DB106C4822C53D4B00502D7C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C4722C53D4B00502D7C /* ViewController.swift */; };
 		DB106C4A22C53D4C00502D7C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4922C53D4C00502D7C /* Assets.xcassets */; };
 		DB106C4D22C53D4C00502D7C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4B22C53D4C00502D7C /* Main.storyboard */; };
 		DB106C5922C53D4C00502D7C /* Song_RatingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C5822C53D4C00502D7C /* Song_RatingTests.swift */; };
-		DB106C6422C53DAE00502D7C /* iTunes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6322C53DAE00502D7C /* iTunes.swift */; };
+		DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */; };
+		DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6A22C661F900502D7C /* PlayInfo.swift */; };
+		DB106CA422CA3C7300502D7C /* Star.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA322CA3C7300502D7C /* Star.swift */; };
+		DB106CA622CA3EE700502D7C /* Stars.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA522CA3EE700502D7C /* Stars.swift */; };
+		DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA722CA45BB00502D7C /* RatingControl.swift */; };
+		DB106CC422CA86A500502D7C /* iTunes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6322C53DAE00502D7C /* iTunes.swift */; };
+		DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95216922CB186F007FCF40 /* WindowManager.swift */; };
+		DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */; };
+		DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */; };
+		FE421476F34E641428B030E9 /* Pods_Song_Rating.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,10 +34,28 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		DB106CBA22CA84CA00502D7C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		3B451B28FF2FB910317B4EF7 /* Pods-Song Rating.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song Rating.release.xcconfig"; path = "Target Support Files/Pods-Song Rating/Pods-Song Rating.release.xcconfig"; sourceTree = "<group>"; };
+		607F74272AF7FF7D00E2879E /* Pods-Song Rating.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song Rating.debug.xcconfig"; path = "Target Support Files/Pods-Song Rating/Pods-Song Rating.debug.xcconfig"; sourceTree = "<group>"; };
+		6B0E3B3CE6260A0C7B82DB6C /* Pods-Song RatingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song RatingTests.debug.xcconfig"; path = "Target Support Files/Pods-Song RatingTests/Pods-Song RatingTests.debug.xcconfig"; sourceTree = "<group>"; };
+		9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Song_Rating.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Song_RatingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB3C7008577650EFDD93EC17 /* Pods-Song RatingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song RatingTests.release.xcconfig"; path = "Target Support Files/Pods-Song RatingTests/Pods-Song RatingTests.release.xcconfig"; sourceTree = "<group>"; };
 		DB106C4222C53D4B00502D7C /* Song Rating.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Song Rating.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB106C4522C53D4B00502D7C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		DB106C4722C53D4B00502D7C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DB106C4922C53D4C00502D7C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DB106C4C22C53D4C00502D7C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DB106C4E22C53D4C00502D7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -37,6 +64,14 @@
 		DB106C5A22C53D4C00502D7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB106C6322C53DAE00502D7C /* iTunes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunes.swift; sourceTree = "<group>"; };
 		DB106C6722C5433900502D7C /* Song Rating.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Song Rating.entitlements"; sourceTree = "<group>"; };
+		DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesRadioStation.swift; sourceTree = "<group>"; };
+		DB106C6A22C661F900502D7C /* PlayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayInfo.swift; sourceTree = "<group>"; };
+		DB106CA322CA3C7300502D7C /* Star.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Star.swift; sourceTree = "<group>"; };
+		DB106CA522CA3EE700502D7C /* Stars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stars.swift; sourceTree = "<group>"; };
+		DB106CA722CA45BB00502D7C /* RatingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingControl.swift; sourceTree = "<group>"; };
+		DB95216922CB186F007FCF40 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
+		DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE421476F34E641428B030E9 /* Pods_Song_Rating.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,18 +87,41 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96C540E9972EAA2E182EB6DF /* Pods_Song_RatingTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		46D6891CD4F2EAD4E5A9A137 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				607F74272AF7FF7D00E2879E /* Pods-Song Rating.debug.xcconfig */,
+				3B451B28FF2FB910317B4EF7 /* Pods-Song Rating.release.xcconfig */,
+				6B0E3B3CE6260A0C7B82DB6C /* Pods-Song RatingTests.debug.xcconfig */,
+				BB3C7008577650EFDD93EC17 /* Pods-Song RatingTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		7E6699F3E558528B857B7A62 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */,
+				B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DB106C3922C53D4B00502D7C = {
 			isa = PBXGroup;
 			children = (
 				DB106C4422C53D4B00502D7C /* Song Rating */,
 				DB106C5722C53D4C00502D7C /* Song RatingTests */,
 				DB106C4322C53D4B00502D7C /* Products */,
+				46D6891CD4F2EAD4E5A9A137 /* Pods */,
+				7E6699F3E558528B857B7A62 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -80,11 +139,13 @@
 			children = (
 				DB106C6722C5433900502D7C /* Song Rating.entitlements */,
 				DB106C4522C53D4B00502D7C /* AppDelegate.swift */,
-				DB106C4722C53D4B00502D7C /* ViewController.swift */,
-				DB106C4922C53D4C00502D7C /* Assets.xcassets */,
-				DB106C4B22C53D4C00502D7C /* Main.storyboard */,
+				DB95216922CB186F007FCF40 /* WindowManager.swift */,
+				DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */,
+				DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */,
+				DB106CC622CA9EB600502D7C /* Control */,
+				DB106CC822CA9F2D00502D7C /* iTunes */,
+				DB106CC722CA9ECE00502D7C /* Supporting Files */,
 				DB106C4E22C53D4C00502D7C /* Info.plist */,
-				DB106C6322C53DAE00502D7C /* iTunes.swift */,
 			);
 			path = "Song Rating";
 			sourceTree = "<group>";
@@ -98,6 +159,43 @@
 			path = "Song RatingTests";
 			sourceTree = "<group>";
 		};
+		DB106CC522CA9E9000502D7C /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				DB106C6322C53DAE00502D7C /* iTunes.swift */,
+			);
+			path = Vendor;
+			sourceTree = "<group>";
+		};
+		DB106CC622CA9EB600502D7C /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				DB106CA722CA45BB00502D7C /* RatingControl.swift */,
+				DB106CA322CA3C7300502D7C /* Star.swift */,
+				DB106CA522CA3EE700502D7C /* Stars.swift */,
+			);
+			path = Control;
+			sourceTree = "<group>";
+		};
+		DB106CC722CA9ECE00502D7C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DB106C4922C53D4C00502D7C /* Assets.xcassets */,
+				DB106C4B22C53D4C00502D7C /* Main.storyboard */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DB106CC822CA9F2D00502D7C /* iTunes */ = {
+			isa = PBXGroup;
+			children = (
+				DB106CC522CA9E9000502D7C /* Vendor */,
+				DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */,
+				DB106C6A22C661F900502D7C /* PlayInfo.swift */,
+			);
+			path = iTunes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -105,9 +203,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DB106C5D22C53D4C00502D7C /* Build configuration list for PBXNativeTarget "Song Rating" */;
 			buildPhases = (
+				4CEB50D4B9B141209A09339D /* [CP] Check Pods Manifest.lock */,
 				DB106C3E22C53D4B00502D7C /* Sources */,
 				DB106C3F22C53D4B00502D7C /* Frameworks */,
 				DB106C4022C53D4B00502D7C /* Resources */,
+				DB106CBA22CA84CA00502D7C /* Embed Frameworks */,
+				B9D1366C1C48BE28820D5B87 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -122,6 +223,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DB106C6022C53D4C00502D7C /* Build configuration list for PBXNativeTarget "Song RatingTests" */;
 			buildPhases = (
+				5DC60D5BE7738E690309EAAF /* [CP] Check Pods Manifest.lock */,
 				DB106C5022C53D4C00502D7C /* Sources */,
 				DB106C5122C53D4C00502D7C /* Frameworks */,
 				DB106C5222C53D4C00502D7C /* Resources */,
@@ -198,13 +300,84 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4CEB50D4B9B141209A09339D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Song Rating-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5DC60D5BE7738E690309EAAF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Song RatingTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B9D1366C1C48BE28820D5B87 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Song Rating/Pods-Song Rating-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Song Rating/Pods-Song Rating-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Song Rating/Pods-Song Rating-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DB106C3E22C53D4B00502D7C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB106C4822C53D4B00502D7C /* ViewController.swift in Sources */,
-				DB106C6422C53DAE00502D7C /* iTunes.swift in Sources */,
+				DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */,
+				DB106CC422CA86A500502D7C /* iTunes.swift in Sources */,
+				DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */,
+				DB106CA622CA3EE700502D7C /* Stars.swift in Sources */,
+				DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */,
+				DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */,
+				DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */,
+				DB106CA422CA3C7300502D7C /* Star.swift in Sources */,
+				DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */,
 				DB106C4622C53D4B00502D7C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,6 +529,7 @@
 		};
 		DB106C5E22C53D4C00502D7C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 607F74272AF7FF7D00E2879E /* Pods-Song Rating.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Song Rating/Song Rating.entitlements";
@@ -375,6 +549,7 @@
 		};
 		DB106C5F22C53D4C00502D7C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3B451B28FF2FB910317B4EF7 /* Pods-Song Rating.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Song Rating/Song Rating.entitlements";
@@ -394,6 +569,7 @@
 		};
 		DB106C6122C53D4C00502D7C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6B0E3B3CE6260A0C7B82DB6C /* Pods-Song RatingTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -415,6 +591,7 @@
 		};
 		DB106C6222C53D4C00502D7C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB3C7008577650EFDD93EC17 /* Pods-Song RatingTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";

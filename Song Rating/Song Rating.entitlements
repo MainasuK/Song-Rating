@@ -6,13 +6,17 @@
 	<true/>
 	<key>com.apple.security.files.user-selected.read-only</key>
 	<true/>
-    <key>com.apple.security.scripting-targets</key>
-    <dict>
-        <key>com.apple.iTunes</key>
-        <array>
-            <string>com.apple.iTunes.library.read-write</string>
-            <string>com.apple.iTunes.playback.read</string>
-        </array>
-    </dict>
+	<key>com.apple.security.scripting-targets</key>
+	<dict>
+		<key>com.apple.iTunes</key>
+		<array>
+			<string>com.apple.iTunes.library</string>
+			<string>com.apple.iTunes.playback</string>
+		</array>
+	</dict>
+    <key>com.apple.security.temporary-exception.apple-events</key>
+    <array>
+        <string>com.apple.iTunes</string>
+    </array>
 </dict>
 </plist>
