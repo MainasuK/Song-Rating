@@ -6,5 +6,12 @@ macOS app for rating music in iTunes/Music.app
 ## Requirements
 - macOS 10.14 +
 
+## Downloads
+##### Mac App Store:  
+Coming soon
+
+##### Build Release:  
+[https://github.com/MainasuK/Song-Rating/releases](https://github.com/MainasuK/Song-Rating/releases)
+
 ## FAQ
 Coming soon
