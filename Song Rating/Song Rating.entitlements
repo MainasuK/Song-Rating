@@ -4,6 +4,8 @@
 <dict>
 	<key>com.apple.security.app-sandbox</key>
 	<true/>
+	<key>com.apple.security.automation.apple-events</key>
+	<true/>
 	<key>com.apple.security.files.user-selected.read-only</key>
 	<true/>
 	<key>com.apple.security.scripting-targets</key>
@@ -14,9 +16,9 @@
 			<string>com.apple.iTunes.playback</string>
 		</array>
 	</dict>
-    <key>com.apple.security.temporary-exception.apple-events</key>
-    <array>
-        <string>com.apple.iTunes</string>
-    </array>
+	<key>com.apple.security.temporary-exception.apple-events</key>
+	<array>
+		<string>com.apple.iTunes</string>
+	</array>
 </dict>
 </plist>
