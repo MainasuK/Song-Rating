@@ -7,10 +7,10 @@ macOS app for rating music in iTunes/Music.app
 - macOS 10.14 +
 
 ## Downloads
-##### Mac App Store:  
-Coming soon
+**Mac App Store:**  
+[![Download on the Mac App Store](./Press/Download_on_the_Mac_App_Store_Badge_US-UK_RGB_blk_092917.svg)](https://apps.apple.com/app/song-rating/id1471420267)
 
-##### Build Release:  
+**Build Release:**  
 [https://github.com/MainasuK/Song-Rating/releases](https://github.com/MainasuK/Song-Rating/releases)
 
 ## FAQ
