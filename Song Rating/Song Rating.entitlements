@@ -14,13 +14,14 @@
 	<dict>
 		<key>com.apple.iTunes</key>
 		<array>
-			<string>com.apple.iTunes.library</string>
+			<string>com.apple.iTunes.library.read-write</string>
 			<string>com.apple.iTunes.playback</string>
 		</array>
 	</dict>
 	<key>com.apple.security.temporary-exception.apple-events</key>
 	<array>
 		<string>com.apple.iTunes</string>
+		<string>com.apple.Music</string>
 	</array>
 </dict>
 </plist>
