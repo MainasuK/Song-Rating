@@ -9,17 +9,7 @@
 import Cocoa
 import MASShortcut
 
-enum PreferencesUserDefaultsKey: String {
-    case hideMenuBarWhenNotPlaying
-}
-
 final class PreferencesViewController: NSViewController {
-    
-    lazy var hideMenuBarWhenNotPlayingCheckButton: NSButton = {
-       let button = NSButton(checkboxWithTitle: "Hide menu bar icon when not playing", target: self, action: #selector(PreferencesViewController.hideMenubarWhenNotPlayingCheckButtonPressed(_:)))
-        button.state = NSControl.StateValue(UserDefaults.standard.integer(forKey: PreferencesUserDefaultsKey.hideMenuBarWhenNotPlaying.rawValue))
-        return button
-    }()
 
     lazy var SongRatingDownTextField: NSTextField = {
         return NSTextField(labelWithString: "Song rating down: ")
@@ -48,8 +38,6 @@ final class PreferencesViewController: NSViewController {
         line.boxType = .separator
         
         let gridView = NSGridView(views: [
-            [empty, hideMenuBarWhenNotPlayingCheckButton],
-            [line],
             [SongRatingDownTextField, songRatingDownShortcutView],
             [songRatingUpTextField, songRatingUpShortcutView],
             [leadingPaddingView, trailingPaddingView]
@@ -78,10 +66,7 @@ extension PreferencesViewController {
     func setupWindow() {
         view.window?.styleMask.remove(.resizable)
     }
-    
-    @objc func hideMenubarWhenNotPlayingCheckButtonPressed(_ sender: NSButton) {
-        UserDefaults.standard.set(sender.state.rawValue, forKey: PreferencesUserDefaultsKey.hideMenuBarWhenNotPlaying.rawValue)
-    }
+
 }
 
 extension PreferencesViewController {
@@ -111,8 +96,6 @@ extension PreferencesViewController {
     }
 
 }
-
-
 
 extension PreferencesViewController {
 

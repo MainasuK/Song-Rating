@@ -18,6 +18,9 @@
 		DB106CA622CA3EE700502D7C /* Stars.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA522CA3EE700502D7C /* Stars.swift */; };
 		DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA722CA45BB00502D7C /* RatingControl.swift */; };
 		DB106CC422CA86A500502D7C /* iTunes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6322C53DAE00502D7C /* iTunes.swift */; };
+		DB89C9EB22E2B7DF003981F5 /* MenuBarRatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */; };
+		DB89C9F122E2C949003981F5 /* iTunesRadioStationTrackRatingChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F022E2C949003981F5 /* iTunesRadioStationTrackRatingChange.swift */; };
+		DB89C9F322E2D766003981F5 /* MenuBarIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */; };
 		DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95216922CB186F007FCF40 /* WindowManager.swift */; };
 		DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */; };
 		DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */; };
@@ -69,6 +72,9 @@
 		DB106CA322CA3C7300502D7C /* Star.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Star.swift; sourceTree = "<group>"; };
 		DB106CA522CA3EE700502D7C /* Stars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stars.swift; sourceTree = "<group>"; };
 		DB106CA722CA45BB00502D7C /* RatingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingControl.swift; sourceTree = "<group>"; };
+		DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarRatingControl.swift; sourceTree = "<group>"; };
+		DB89C9F022E2C949003981F5 /* iTunesRadioStationTrackRatingChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesRadioStationTrackRatingChange.swift; sourceTree = "<group>"; };
+		DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIcon.swift; sourceTree = "<group>"; };
 		DB95216922CB186F007FCF40 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
@@ -170,9 +176,11 @@
 		DB106CC622CA9EB600502D7C /* Control */ = {
 			isa = PBXGroup;
 			children = (
+				DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */,
 				DB106CA722CA45BB00502D7C /* RatingControl.swift */,
 				DB106CA322CA3C7300502D7C /* Star.swift */,
 				DB106CA522CA3EE700502D7C /* Stars.swift */,
+				DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */,
 			);
 			path = Control;
 			sourceTree = "<group>";
@@ -191,6 +199,7 @@
 			children = (
 				DB106CC522CA9E9000502D7C /* Vendor */,
 				DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */,
+				DB89C9F022E2C949003981F5 /* iTunesRadioStationTrackRatingChange.swift */,
 				DB106C6A22C661F900502D7C /* PlayInfo.swift */,
 			);
 			path = iTunes;
@@ -375,11 +384,14 @@
 				DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */,
 				DB106CC422CA86A500502D7C /* iTunes.swift in Sources */,
 				DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */,
+				DB89C9EB22E2B7DF003981F5 /* MenuBarRatingControl.swift in Sources */,
 				DB106CA622CA3EE700502D7C /* Stars.swift in Sources */,
 				DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */,
 				DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */,
 				DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */,
+				DB89C9F322E2D766003981F5 /* MenuBarIcon.swift in Sources */,
 				DB106CA422CA3C7300502D7C /* Star.swift in Sources */,
+				DB89C9F122E2C949003981F5 /* iTunesRadioStationTrackRatingChange.swift in Sources */,
 				DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */,
 				DB106C4622C53D4B00502D7C /* AppDelegate.swift in Sources */,
 			);
