@@ -56,7 +56,7 @@ extension MenuBarRatingControl {
     private func updateMenuBar() {
         let margin: CGFloat = 4 + 4
         let playingWidth = margin + ratingControl.starsImage.size.width
-        let pauseWidth = margin + (statusItem.button?.bounds.height ?? CGFloat(22))
+        let pauseWidth = margin + CGFloat(2) * ratingControl.spacing + ratingControl.starSize.width
         statusItem.length = isPlaying ?  playingWidth : pauseWidth
         statusItem.button?.image = isPlaying ? ratingControl.starsImage : MenuBarIcon(size: ratingControl.starSize).image
         statusItem.button?.setButtonType(isPlaying ? .momentaryChange : .onOff)
