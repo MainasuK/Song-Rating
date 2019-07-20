@@ -32,6 +32,16 @@ class iTunesLibraryTests: XCTestCase {
             return
         }
         print("\(library.applicationVersion): v\(library.apiMajorVersion).\(library.apiMinorVersion)")
+        
+        let expectation = self.expectation(description: "allMediaItems")
+        DispatchQueue.global().async {
+            let all = library.allMediaItems
+            DispatchQueue.main.async {
+                print(all)
+                expectation.fulfill()
+            }
+        }
+        wait(for: [expectation], timeout: 300.0)
     }
     
 
