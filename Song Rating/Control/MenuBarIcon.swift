@@ -29,8 +29,8 @@ struct MenuBarIcon {
                 path.appendOval(in: NSRect(origin: origin, size: size))
                 return path
             }()
-            NSColor.white.withAlphaComponent(0.5).setFill()
-            NSColor.white.withAlphaComponent(0.5).setStroke()
+            NSColor.black.setFill()
+            NSColor.black.setStroke()
             centerDotPath.stroke()
             centerDotPath.fill()
             
