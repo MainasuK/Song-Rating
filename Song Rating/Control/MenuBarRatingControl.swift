@@ -16,7 +16,9 @@ final class MenuBarRatingControl {
     
     lazy private(set) var menuBarMenu: NSMenu = {
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Preferences…", action: #selector(MenuBarRatingControl.preferencesMenuItemPressed(_:)), keyEquivalent: ","))
+        let preferences = NSMenuItem(title: "Preferences…", action: #selector(MenuBarRatingControl.preferencesMenuItemPressed(_:)), keyEquivalent: ",")
+        preferences.target = self
+        menu.addItem(preferences)
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit Song Rating", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         return menu
@@ -78,7 +80,6 @@ extension MenuBarRatingControl: RatingControlDelegate {
         iTunesRadioStation.shared.setRating(rating)
         statusItem.button?.needsDisplay = true
     }
-    
     
 }
 
