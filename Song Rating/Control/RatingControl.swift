@@ -11,7 +11,7 @@ import os
 
 protocol RatingControlDelegate: class {
     func ratingControl(_ ratingControl: RatingControl, shouldUpdateRating rating: Int) -> Bool
-    func ratingControl(_ ratingControl: RatingControl, didUpdateRating rating: Int)
+    func ratingControl(_ ratingControl: RatingControl, userDidUpdateRating rating: Int)
 }
 
 class RatingControl {
@@ -20,8 +20,8 @@ class RatingControl {
     
     let starsImage: NSImage
     
-    private let starSize: NSSize
-    private let spacing: CGFloat
+    let starSize: NSSize
+    let spacing: CGFloat
     /// 0 ~ 100
     private(set) var rating: Int
     
@@ -69,10 +69,7 @@ extension RatingControl {
         let newRating = min(100, max(0, rating))
         self.rating = newRating
         
-//        statusItem?.length = (isPlaying ? fiveStarsSize : oneStarSize).width
         drawStars()
-
-        delegate?.ratingControl(self, didUpdateRating: newRating)
         os_log("%{public}s[%{public}ld], %{public}s: draw rating control %{public}ld", ((#file as NSString).lastPathComponent), #line, #function, newRating)
     }
     
@@ -129,6 +126,7 @@ extension RatingControl {
         case .leftMouseUp, .leftMouseDragged:
             let newRating = starRating * 20
             update(rating: newRating)
+            delegate?.ratingControl(self, userDidUpdateRating: newRating)
 
         default:
             break

@@ -23,7 +23,11 @@ final class MenuBarRatingControl {
         menu.addItem(NSMenuItem(title: "Quit Song Rating", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         return menu
     }()
-    private(set) var isPlaying = false
+    private(set) var isPlaying = false {
+        didSet {
+            updateMenuBar()
+        }
+    }
     
     init() {
         guard let button = statusItem.button else {
@@ -47,6 +51,17 @@ final class MenuBarRatingControl {
     
 }
 
+extension MenuBarRatingControl {
+    
+    private func updateMenuBar() {
+        let margin: CGFloat = 4 + 4
+        let playingWidth = margin + ratingControl.starsImage.size.width
+        let pauseWidth = margin + (statusItem.button?.bounds.height ?? CGFloat(22))
+        statusItem.length = isPlaying ?  playingWidth : pauseWidth
+        statusItem.button?.image = isPlaying ? ratingControl.starsImage : MenuBarIcon(size: ratingControl.starSize).image
+        statusItem.button?.setButtonType(isPlaying ? .momentaryChange : .onOff)
+    }
+}
 
 extension MenuBarRatingControl {
     
@@ -75,7 +90,7 @@ extension MenuBarRatingControl: RatingControlDelegate {
         return isPlaying
     }
     
-    func ratingControl(_ ratingControl: RatingControl, didUpdateRating rating: Int) {
+    func ratingControl(_ ratingControl: RatingControl, userDidUpdateRating rating: Int) {
         // Update iTunes current track rating
         iTunesRadioStation.shared.setRating(rating)
         statusItem.button?.needsDisplay = true
