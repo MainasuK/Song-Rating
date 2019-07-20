@@ -21,6 +21,10 @@
 		DB89C9EB22E2B7DF003981F5 /* MenuBarRatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */; };
 		DB89C9F122E2C949003981F5 /* iTunesRadioStationTrackRatingChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F022E2C949003981F5 /* iTunesRadioStationTrackRatingChange.swift */; };
 		DB89C9F322E2D766003981F5 /* MenuBarIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */; };
+		DB89C9F522E3176C003981F5 /* iTunesLibraryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F422E3176C003981F5 /* iTunesLibraryTests.swift */; };
+		DB89C9FE22E31B67003981F5 /* iTunesLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB89C9FD22E31B67003981F5 /* iTunesLibrary.framework */; };
+		DB89CA0022E37826003981F5 /* OSVersionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9FF22E37826003981F5 /* OSVersionHelper.swift */; };
+		DB89CA0222E37947003981F5 /* ScriptBridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89CA0122E37947003981F5 /* ScriptBridgeTests.swift */; };
 		DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95216922CB186F007FCF40 /* WindowManager.swift */; };
 		DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */; };
 		DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */; };
@@ -36,19 +40,6 @@
 			remoteInfo = "Song Rating";
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		DB106CBA22CA84CA00502D7C /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3B451B28FF2FB910317B4EF7 /* Pods-Song Rating.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song Rating.release.xcconfig"; path = "Target Support Files/Pods-Song Rating/Pods-Song Rating.release.xcconfig"; sourceTree = "<group>"; };
@@ -75,6 +66,10 @@
 		DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarRatingControl.swift; sourceTree = "<group>"; };
 		DB89C9F022E2C949003981F5 /* iTunesRadioStationTrackRatingChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesRadioStationTrackRatingChange.swift; sourceTree = "<group>"; };
 		DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIcon.swift; sourceTree = "<group>"; };
+		DB89C9F422E3176C003981F5 /* iTunesLibraryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesLibraryTests.swift; sourceTree = "<group>"; };
+		DB89C9FD22E31B67003981F5 /* iTunesLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iTunesLibrary.framework; path = System/Library/Frameworks/iTunesLibrary.framework; sourceTree = SDKROOT; };
+		DB89C9FF22E37826003981F5 /* OSVersionHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSVersionHelper.swift; sourceTree = "<group>"; };
+		DB89CA0122E37947003981F5 /* ScriptBridgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptBridgeTests.swift; sourceTree = "<group>"; };
 		DB95216922CB186F007FCF40 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
@@ -85,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB89C9FE22E31B67003981F5 /* iTunesLibrary.framework in Frameworks */,
 				FE421476F34E641428B030E9 /* Pods_Song_Rating.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -114,6 +110,7 @@
 		7E6699F3E558528B857B7A62 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DB89C9FD22E31B67003981F5 /* iTunesLibrary.framework */,
 				9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */,
 				B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */,
 			);
@@ -160,6 +157,8 @@
 			isa = PBXGroup;
 			children = (
 				DB106C5822C53D4C00502D7C /* Song_RatingTests.swift */,
+				DB89CA0122E37947003981F5 /* ScriptBridgeTests.swift */,
+				DB89C9F422E3176C003981F5 /* iTunesLibraryTests.swift */,
 				DB106C5A22C53D4C00502D7C /* Info.plist */,
 			);
 			path = "Song RatingTests";
@@ -201,6 +200,7 @@
 				DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */,
 				DB89C9F022E2C949003981F5 /* iTunesRadioStationTrackRatingChange.swift */,
 				DB106C6A22C661F900502D7C /* PlayInfo.swift */,
+				DB89C9FF22E37826003981F5 /* OSVersionHelper.swift */,
 			);
 			path = iTunes;
 			sourceTree = "<group>";
@@ -216,7 +216,6 @@
 				DB106C3E22C53D4B00502D7C /* Sources */,
 				DB106C3F22C53D4B00502D7C /* Frameworks */,
 				DB106C4022C53D4B00502D7C /* Resources */,
-				DB106CBA22CA84CA00502D7C /* Embed Frameworks */,
 				B9D1366C1C48BE28820D5B87 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
@@ -385,6 +384,7 @@
 				DB106CC422CA86A500502D7C /* iTunes.swift in Sources */,
 				DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */,
 				DB89C9EB22E2B7DF003981F5 /* MenuBarRatingControl.swift in Sources */,
+				DB89CA0022E37826003981F5 /* OSVersionHelper.swift in Sources */,
 				DB106CA622CA3EE700502D7C /* Stars.swift in Sources */,
 				DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */,
 				DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */,
@@ -402,6 +402,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB106C5922C53D4C00502D7C /* Song_RatingTests.swift in Sources */,
+				DB89C9F522E3176C003981F5 /* iTunesLibraryTests.swift in Sources */,
+				DB89CA0222E37947003981F5 /* ScriptBridgeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -464,6 +466,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -525,6 +528,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

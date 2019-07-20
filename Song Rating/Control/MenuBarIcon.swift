@@ -10,14 +10,13 @@ import Cocoa
 
 struct MenuBarIcon {
     
+    let image: NSImage
+    
     let size: NSSize
     
     init(size: NSSize) {
         self.size = size
-    }
-    
-    var image: NSImage {
-        return NSImage(size: size, flipped: false, drawingHandler: { rect -> Bool in
+        self.image = NSImage(size: size, flipped: false, drawingHandler: { rect -> Bool in
             let radius = min(rect.height, rect.width) * 0.5
             let center = CGPoint(x: rect.midX, y: rect.midY - 0.5 * 0.191 * radius)
             
@@ -29,13 +28,15 @@ struct MenuBarIcon {
                 path.appendOval(in: NSRect(origin: origin, size: size))
                 return path
             }()
-            NSColor.white.withAlphaComponent(0.5).setFill()
-            NSColor.white.withAlphaComponent(0.5).setStroke()
+            NSColor.black.setFill()
+            NSColor.black.setStroke()
             centerDotPath.stroke()
             centerDotPath.fill()
             
             return true
         })
+        
+        self.image.isTemplate = true
     }
     
 }

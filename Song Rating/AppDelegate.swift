@@ -43,7 +43,7 @@ extension AppDelegate {
     // Request AppleEvent permission
     func setupAppleEvent() {
         DispatchQueue.global().async {
-            let target =  NSAppleEventDescriptor(bundleIdentifier: "com.apple.iTunes")
+            let target =  NSAppleEventDescriptor(bundleIdentifier: OSVersionHelper.bundleIdentifier)
             let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
             
             DispatchQueue.main.async {
