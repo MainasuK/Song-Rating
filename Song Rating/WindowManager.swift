@@ -24,19 +24,13 @@ final class WindowManager: NSObject {
         super.init()
         
         NSWindow.allowsAutomaticWindowTabbing = false
-        UserDefaults.standard.addObserver(self, forKeyPath: PreferencesUserDefaultsKey.hideMenuBarWhenNotPlaying.rawValue, options: [.initial, .new], context: nil)
-
     }
 }
 
 extension WindowManager {
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == PreferencesUserDefaultsKey.hideMenuBarWhenNotPlaying.rawValue {
-            guard let appDelegate = NSApplication.shared.delegate as? AppDelegate else { return }
-            let value = change?[.newKey] as? NSControl.StateValue.RawValue ?? NSControl.StateValue.off.rawValue
-            appDelegate.ratingControl.shouldHiddenIfNotPlaying = value == NSControl.StateValue.on.rawValue
-        }
+
     }
     
 }

@@ -13,18 +13,9 @@ import MASShortcut
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-    let ratingControl = RatingControl(rating: 0)
     let radioStation = iTunesRadioStation.shared
+    var menuBarRatingControl: MenuBarRatingControl?
     
-    lazy var menuBarMenu: NSMenu = {
-        let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Preferences…", action: #selector(AppDelegate.preferencesMenuItemPressed(_:)), keyEquivalent: ","))
-        menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Quit Song Rating", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
-        return menu
-    }()
-
     @IBAction func openAboutWindow(_ sender: NSMenuItem) {
         WindowManager.shared.open(.about)
     }
@@ -32,43 +23,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         setupAppleEvent()
         setupUserDefaults()
+    
+        menuBarRatingControl = MenuBarRatingControl()
         
-        if let button = statusItem.button {
-            ratingControl.hostView = button
-            button.image = ratingControl.image
-            button.sendAction(on: [.leftMouseUp, .rightMouseUp, .leftMouseDragged])
-            button.action = #selector(AppDelegate.action(_:))
-            button.setButtonType(.momentaryChange)
-        }
-
-        if UserDefaults.standard.bool(forKey: ApplicationKey.isFirstLaunch.rawValue) {
-            UserDefaults.standard.set(false, forKey: ApplicationKey.isFirstLaunch.rawValue)
-            WindowManager.shared.open(.preferences)
-        }
+//        if UserDefaults.standard.bool(forKey: ApplicationKey.isFirstLaunch.rawValue) {
+//            UserDefaults.standard.set(false, forKey: ApplicationKey.isFirstLaunch.rawValue)
+//            WindowManager.shared.open(.preferences)
+//        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
         os_log("%{public}s[%{public}ld], %{public}s: Application will terminate", ((#file as NSString).lastPathComponent), #line, #function)
-    }
-
-}
-
-extension AppDelegate {
-    
-    @objc func action(_ sender: NSButton) {
-        guard let event = NSApp.currentEvent else { return }
-        if event.type == .rightMouseUp {
-            let position = sender.convert(event.locationInWindow, to: nil)
-            menuBarMenu.popUp(positioning: nil, at: position, in: sender)
-
-        } else {
-            ratingControl.action(from: sender, with: event)
-        }
-    }
-
-    @objc func preferencesMenuItemPressed(_ sender: NSMenuItem) {
-        WindowManager.shared.open(.preferences)
     }
 
 }
@@ -78,7 +43,7 @@ extension AppDelegate {
     // Request AppleEvent permission
     func setupAppleEvent() {
         DispatchQueue.global().async {
-            let target =  NSAppleEventDescriptor(bundleIdentifier: "com.apple.iTunes")
+            let target =  NSAppleEventDescriptor(bundleIdentifier: OSVersionHelper.bundleIdentifier)
             let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
             
             DispatchQueue.main.async {
@@ -112,10 +77,6 @@ extension AppDelegate {
         } catch {
             os_log("%{public}s[%{public}ld], %{public}s: Default shortcut set fail", ((#file as NSString).lastPathComponent), #line, #function)
         }
-        
-        UserDefaults.standard.register(defaults: [
-            PreferencesUserDefaultsKey.hideMenuBarWhenNotPlaying.rawValue : NSControl.StateValue.on.rawValue
-        ])
         
         UserDefaults.standard.register(defaults: [
             ApplicationKey.isFirstLaunch.rawValue : true

@@ -24,7 +24,7 @@ final class iTunesRadioStation {
     static let shared = iTunesRadioStation()
     
     var iTunes: iTunesApplication? {
-        let application = SBApplication(bundleIdentifier: "com.apple.iTunes")
+        let application = SBApplication(bundleIdentifier: OSVersionHelper.bundleIdentifier)
         application?.delegate = self
         return application
     }
@@ -39,6 +39,7 @@ final class iTunesRadioStation {
     
     private init() {
         // Listen iTunes play state change notification
+        // Note: The notification name on Catalina is same as Mojave
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.playInfoChanged(_:)), name: NSNotification.Name("com.apple.iTunes.playerInfo"), object: nil)
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.sourceSaved(_:)), name: NSNotification.Name("com.apple.iTunes.sourceSaved"), object: nil)  // only set rating in iTunes edit song info panel can trigger that
 
@@ -48,35 +49,34 @@ final class iTunesRadioStation {
         // Recieve shortcut to change track rating
         // But post notification to rating control to keep UI and rating behavior consist (current rating set is debounce procession)
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingUp.rawValue, toAction: {
-            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil, userInfo: self.currentTrackUserInfo)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil, userInfo: self.currentTrackRatingChange?.userInfo)
         })
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingDown.rawValue, toAction: {
-            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil, userInfo: self.currentTrackUserInfo)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil, userInfo: self.currentTrackRatingChange?.userInfo)
         })
     }
     
     
     /// Use ScriptingBridge manually setup iTunes radio station
     func updateRadioStation() {
-        NotificationCenter.default.post(name: .iTunesRadioDidSetupRating, object: nil, userInfo: currentTrackUserInfo)
+        NotificationCenter.default.post(name: .iTunesRadioDidSetupRating, object: nil, userInfo: currentTrackRatingChange?.userInfo)
     }
 
 }
 
 extension iTunesRadioStation {
     
-    var currentTrackUserInfo: [String : Any]? {
+    var currentTrackRatingChange: iTunesRadioStationTrackRatingChange? {
         guard let track = iTunes?.currentTrack,
         let rating = track.rating else {
             return nil
         }
         
-        return [
-            // just check not computed flag. @objc flag can not guard always have value
-            "rating" : track.ratingKind != .computed ? rating : 0,
-            "playerState" : iTunes?.playerState ?? iTunesEPlS.stopped
-        ]
+        let isPlaying = iTunes?.playerState == .playing
+        return iTunesRadioStationTrackRatingChange(rating: rating,
+                                                   isPlaying: isPlaying)
     }
+    
 }
 
 extension iTunesRadioStation {
