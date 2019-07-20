@@ -11,8 +11,9 @@ import os
 
 final class MenuBarRatingControl {
     
-    let ratingControl = RatingControl(rating: 0)
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    let ratingControl = RatingControl(rating: 0)
+    let menuBarIcon: MenuBarIcon
     
     lazy private(set) var menuBarMenu: NSMenu = {
         let menu = NSMenu()
@@ -30,6 +31,7 @@ final class MenuBarRatingControl {
     }
     
     init() {
+        menuBarIcon = MenuBarIcon(size: ratingControl.starSize)
         guard let button = statusItem.button else {
             assertionFailure()
             return
@@ -58,7 +60,7 @@ extension MenuBarRatingControl {
         let playingWidth = margin + ratingControl.starsImage.size.width
         let pauseWidth = margin + CGFloat(2) * ratingControl.spacing + ratingControl.starSize.width
         statusItem.length = isPlaying ?  playingWidth : pauseWidth
-        statusItem.button?.image = isPlaying ? ratingControl.starsImage : MenuBarIcon(size: ratingControl.starSize).image
+        statusItem.button?.image = isPlaying ? ratingControl.starsImage : menuBarIcon.image
         statusItem.button?.setButtonType(isPlaying ? .momentaryChange : .onOff)
     }
 }

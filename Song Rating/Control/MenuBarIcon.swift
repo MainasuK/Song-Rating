@@ -10,14 +10,13 @@ import Cocoa
 
 struct MenuBarIcon {
     
+    let image: NSImage
+    
     let size: NSSize
     
     init(size: NSSize) {
         self.size = size
-    }
-    
-    var image: NSImage {
-        return NSImage(size: size, flipped: false, drawingHandler: { rect -> Bool in
+        self.image = NSImage(size: size, flipped: false, drawingHandler: { rect -> Bool in
             let radius = min(rect.height, rect.width) * 0.5
             let center = CGPoint(x: rect.midX, y: rect.midY - 0.5 * 0.191 * radius)
             
@@ -36,6 +35,8 @@ struct MenuBarIcon {
             
             return true
         })
+        
+        self.image.isTemplate = true
     }
     
 }
