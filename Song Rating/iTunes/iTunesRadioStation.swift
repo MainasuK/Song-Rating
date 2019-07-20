@@ -24,7 +24,7 @@ final class iTunesRadioStation {
     static let shared = iTunesRadioStation()
     
     var iTunes: iTunesApplication? {
-        let application = SBApplication(bundleIdentifier: "com.apple.iTunes")
+        let application = SBApplication(bundleIdentifier: OSVersionHelper.bundleIdentifier)
         application?.delegate = self
         return application
     }
@@ -39,6 +39,7 @@ final class iTunesRadioStation {
     
     private init() {
         // Listen iTunes play state change notification
+        // Note: The notification name on Catalina is same as Mojave
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.playInfoChanged(_:)), name: NSNotification.Name("com.apple.iTunes.playerInfo"), object: nil)
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.sourceSaved(_:)), name: NSNotification.Name("com.apple.iTunes.sourceSaved"), object: nil)  // only set rating in iTunes edit song info panel can trigger that
 
