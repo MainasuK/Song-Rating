@@ -9,24 +9,21 @@
 import Cocoa
 import os
 
+protocol RatingControlDelegate: class {
+    func ratingControl(_ ratingControl: RatingControl, shouldUpdateRating rating: Int) -> Bool
+    func ratingControl(_ ratingControl: RatingControl, didUpdateRating rating: Int)
+}
+
 class RatingControl {
     
-    let image: NSImage
+    weak var delegate: RatingControlDelegate?
     
+    let starsImage: NSImage
+    
+    private let starSize: NSSize
+    private let spacing: CGFloat
     /// 0 ~ 100
     private(set) var rating: Int
-    private(set) var isPlaying: Bool
-
-    let size: NSSize
-    let spacing: CGFloat
-    
-    /// Set host view for display latest rating when rating change
-    weak var hostView: NSView?
-    var shouldHiddenIfNotPlaying = false {
-        didSet {
-            if !isPlaying { drawStars() }
-        }
-    }
     
     var stars: Stars {
         let fillCount = rating / 20
@@ -34,143 +31,83 @@ class RatingControl {
         
         var stars: [Star] = []
         if fillCount > 0 {
-            stars.append(contentsOf: Array(repeating: Star(size: size, fill: true), count: fillCount))
+            stars.append(contentsOf: Array(repeating: Star(size: starSize, fill: true), count: fillCount))
         }
         if notFillCount > 0 {
-            stars.append(contentsOf: Array(repeating: Star(size: size, fill: false), count: notFillCount))
+            stars.append(contentsOf: Array(repeating: Star(size: starSize, fill: false), count: notFillCount))
         }
         
         return Stars(stars: stars, spacing: spacing)
     }
     
-    init(rating: Int, size: NSSize = NSSize(width: 16, height: 16), spacing: CGFloat = 4) {
+    /// Stars rating control constructor
+    ///
+    /// - Parameters:
+    ///   - rating: 0~100
+    ///   - size: size for one star
+    ///   - spacing: spacing between two stars
+    init(rating: Int, starSize: NSSize = NSSize(width: 16, height: 16), spacing: CGFloat = 4) {
         self.rating = rating
-        self.isPlaying = false
-        self.size = size
+        self.starSize = starSize
         self.spacing = spacing
-        self.image = NSImage(size: NSSize(width: CGFloat(5) * size.width + CGFloat(6) * spacing, height: size.height))
         
-        image.isTemplate = true
-        image.cacheMode = .never
+        self.starsImage = NSImage(size: NSSize(width: CGFloat(5) * starSize.width + CGFloat(6) * spacing, height: starSize.height))
+        
+        starsImage.isTemplate = true
+        starsImage.cacheMode = .never
         drawStars()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(RatingControl.iTunesCurrentPlayInfoChanged(_:)), name: .iTunesCurrentPlayInfoChanged, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(RatingControl.iTunesRadioSetupRating(_:)), name: .iTunesRadioDidSetupRating, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(RatingControl.iTunesRadioRequestTrackRatingUp(_:)), name: .iTunesRadioRequestTrackRatingUp, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(RatingControl.iTunesRadioRequestTrackRatingDown(_:)), name: .iTunesRadioRequestTrackRatingDown, object: nil)
     }
     
 }
 
 extension RatingControl {
-
-    @objc func iTunesCurrentPlayInfoChanged(_ notification: Notification) {
-        guard let playInfo = notification.object as? PlayInfo,
-        let playerState = playInfo.playerState else {
-            return
-        }
-        
-        // just update control state and delegate UI draw
-        update(rating: playInfo.notComputedRating ?? 0, isPlaying: playerState == .playing)
-    }
-    
-    @objc func iTunesRadioSetupRating(_ notification: Notification) {
-        guard let (rating, isPlaying) = extractMetaFromNotification(notification) else {
-            return
-        }
-    
-        // just update control state and delegate UI draw
-        update(rating: rating, isPlaying: isPlaying)
-    }
-    
-    @objc func iTunesRadioRequestTrackRatingUp(_ notification: Notification) {
-        guard let (_, isPlaying) = extractMetaFromNotification(notification), isPlaying else {
-            return
-        }
-        
-        // Do not response rating request when not playing
-        // Use self rating to update
-        update(rating: self.rating + 20, isPlaying: isPlaying)
-        // Use self rating to set rating (already +20)
-        iTunesRadioStation.shared.setRating(self.rating)
-    }
-    
-    @objc func iTunesRadioRequestTrackRatingDown(_ notification: Notification) {
-        guard let (_, isPlaying) = extractMetaFromNotification(notification), isPlaying else {
-            return
-        }
-        
-        // do not response rating request when not playing
-        update(rating: self.rating - 20, isPlaying: isPlaying)
-        // Use self rating to set rating (already -20)
-        iTunesRadioStation.shared.setRating(self.rating)
-    }
-    
-    // Note: Should construct model if needs more info
-    private func extractMetaFromNotification(_ notification: Notification) -> (rating: Int, isPlaying: Bool)? {
-        guard let userInfo = notification.userInfo,
-        let rating = userInfo["rating"] as? Int,
-        let playerState = userInfo["playerState"] as? iTunesEPlS else {
-            return nil
-        }
-        
-        return (rating, playerState == .playing)
-    }
-
     
     /// Update control rating
     ///
     /// - Parameter rating: 0 ~ 100
-    private func update(rating: Int, isPlaying: Bool) {
+    func update(rating: Int) {
         let newRating = min(100, max(0, rating))
-        self.isPlaying = isPlaying
         self.rating = newRating
         
-        // Not check duplicate drawing. Just always redraw to make sure UI update
+//        statusItem?.length = (isPlaying ? fiveStarsSize : oneStarSize).width
         drawStars()
-        if let button = hostView {
-            button.setNeedsDisplay(button.bounds)
-        }
-        os_log("%{public}s[%{public}ld], %{public}s: update rating control %{public}ld - state (%{public}s)", ((#file as NSString).lastPathComponent), #line, #function, newRating, isPlaying ? "Playing" : "Stop")
+
+        delegate?.ratingControl(self, didUpdateRating: newRating)
+        os_log("%{public}s[%{public}ld], %{public}s: draw rating control %{public}ld", ((#file as NSString).lastPathComponent), #line, #function, newRating)
     }
     
-    /// Star draw only method
-    fileprivate func drawStars() {
-        let rect = NSRect(origin: .zero, size: image.size)
-        image.lockFocus()
+    /// Stars draw only method
+    private func drawStars() {
+        let rect = NSRect(origin: .zero, size: starsImage.size)
+        starsImage.lockFocus()
         if let context = NSGraphicsContext.current?.cgContext {
             context.clear(rect)
         }
         stars.image.draw(in: rect)
-        image.unlockFocus()
-        
-        // Hidden host view when not playing state
-        hostView?.isHidden = !shouldHiddenIfNotPlaying ? false : !isPlaying
+        starsImage.unlockFocus()
     }
     
 }
 
-// handle click & drag mouse event on menu bar
 extension RatingControl {
     
+    // handle .leftMouseUp, .leftMouseDragged event on host button
     func action(from sender: NSButton, with event: NSEvent) {
-        // only do action when isPlaying
-        guard isPlaying else { return }
-        
         let width = sender.bounds.size.width
-        let imageWidth = image.size.width
+        let imageWidth = starsImage.size.width
         guard width > 0, imageWidth > 0 else { return }
         
-        let position = sender.convert(event.locationInWindow, to: nil)  // 4 | image | 4
-        let systemLeftMargin = 0.5 * (width - imageWidth)               // 4
-        let positionX = position.x - systemLeftMargin                   // -4 ~ image.size.with
+        // assert image center aligment without resize and leading & tariling margin added
+        let position = sender.convert(event.locationInWindow, to: nil)  //  leading margin | image | trailing margin
+        let systemLeftMargin = 0.5 * (width - imageWidth)               //  leading margin (default 4 on menu bar)
+        let positionX = position.x - systemLeftMargin                   // -leading margin ~ image.size.with
         
         var rating: Int?
         let array = Array(0..<5)
         let starsMinX = array.map { i -> CGFloat in
-            return spacing * CGFloat(1 + i) + size.width * CGFloat(i)
+            return spacing * CGFloat(1 + i) + starSize.width * CGFloat(i)
         }
-        let starsMaxX = starsMinX.map { $0 + size.width }
+        let starsMaxX = starsMinX.map { $0 + starSize.width }
         
         if positionX < starsMinX[0] {
             rating = 0
@@ -182,14 +119,16 @@ extension RatingControl {
             }
         }
         
-        guard let starRating = rating else { return }
+        // starRating: 0 ~ 5
+        guard let starRating = rating,
+        delegate?.ratingControl(self, shouldUpdateRating: starRating * 20) ?? false else {
+            return
+        }
         
         switch event.type {
         case .leftMouseUp, .leftMouseDragged:
             let newRating = starRating * 20
-            update(rating: newRating, isPlaying: self.isPlaying)
-            // Update iTunes current track rating
-            iTunesRadioStation.shared.setRating(newRating)
+            update(rating: newRating)
 
         default:
             break
