@@ -32,6 +32,7 @@ final class MenuBarRatingControl {
     
     init() {
         menuBarIcon = MenuBarIcon(size: ratingControl.starSize)
+
         guard let button = statusItem.button else {
             assertionFailure()
             return
@@ -68,17 +69,22 @@ extension MenuBarRatingControl {
 extension MenuBarRatingControl {
     
     @objc func action(_ sender: NSButton) {
-        guard let event = NSApp.currentEvent else { return }
-        if event.type == .rightMouseUp {
+        guard let event = NSApp.currentEvent else {
+            return
+        }
+
+        switch event.type {
+        case .leftMouseUp where !isPlaying:
+            fallthrough
+        case .rightMouseUp:
             let position = sender.convert(event.locationInWindow, to: nil)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
-            
-        } else {
+
+        default:
             ratingControl.action(from: sender, with: event)
         }
     }
-    
-    
+
     @objc func preferencesMenuItemPressed(_ sender: NSMenuItem) {
         WindowManager.shared.open(.preferences)
     }
