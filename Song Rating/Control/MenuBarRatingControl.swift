@@ -14,7 +14,7 @@ final class MenuBarRatingControl {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     let ratingControl = RatingControl(rating: 0)
     let menuBarIcon: MenuBarIcon
-    
+
     lazy private(set) var menuBarMenu: NSMenu = {
         let menu = NSMenu()
         let preferences = NSMenuItem(title: "Preferences…", action: #selector(MenuBarRatingControl.preferencesMenuItemPressed(_:)), keyEquivalent: ",")
@@ -72,16 +72,22 @@ extension MenuBarRatingControl {
         guard let event = NSApp.currentEvent else {
             return
         }
+        os_log("%{public}s[%{public}ld], %{public}s: menu bar button receive event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
 
         switch event.type {
         case .leftMouseUp where !isPlaying:
-            fallthrough
+            let position = NSPoint(x: 0, y: sender.bounds.height + 5)
+            menuBarMenu.popUp(positioning: nil, at: position, in: sender)
+
         case .rightMouseUp:
             let position = sender.convert(event.locationInWindow, to: nil)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
 
-        default:
+        case .leftMouseUp, .leftMouseDragged:
             ratingControl.action(from: sender, with: event)
+
+        default:
+            os_log("%{public}s[%{public}ld], %{public}s: no handler for event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
         }
     }
 
