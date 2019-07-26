@@ -9,11 +9,31 @@
 import Cocoa
 import os
 
+protocol TrackingAreaResponderDelegate: class {
+    func mouseEntered(with event: NSEvent)
+    func mouseExited(with event: NSEvent)
+}
+
+final class TrackingAreaResponder: NSView {
+
+    weak var delegate: TrackingAreaResponderDelegate?
+
+    override func mouseEntered(with event: NSEvent) {
+        delegate?.mouseEntered(with: event)
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        delegate?.mouseExited(with: event)
+    }
+
+}
+
 final class MenuBarRatingControl {
     
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     let ratingControl = RatingControl(rating: 0)
     let menuBarIcon: MenuBarIcon
+    let trackingAreaResponser = TrackingAreaResponder()
 
     lazy private(set) var menuBarMenu: NSMenu = {
         let menu = NSMenu()
@@ -37,19 +57,25 @@ final class MenuBarRatingControl {
             assertionFailure()
             return
         }
-        
+
         button.image = ratingControl.starsImage
         button.sendAction(on: [.leftMouseUp, .rightMouseUp, .leftMouseDragged])
         button.action = #selector(MenuBarRatingControl.action(_:))
         button.target = self
         button.setButtonType(.momentaryChange)
-        
+
+        trackingAreaResponser.delegate = self
+        let trackingArea = NSTrackingArea(rect: button.bounds, options: [.activeAlways, .mouseEnteredAndExited, .mouseMoved], owner: trackingAreaResponser, userInfo: nil)
+        button.addTrackingArea(trackingArea)
+
         ratingControl.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesCurrentPlayInfoChanged(_:)), name: .iTunesCurrentPlayInfoChanged, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioSetupRating(_:)), name: .iTunesRadioDidSetupRating, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingUp(_:)), name: .iTunesRadioRequestTrackRatingUp, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingDown(_:)), name: .iTunesRadioRequestTrackRatingDown, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.windowDidResize(_:)), name: NSWindow.didResizeNotification, object: nil)
     }
     
 }
@@ -152,6 +178,28 @@ extension MenuBarRatingControl {
         ratingControl.update(rating: ratingControl.rating - 20)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
+
+    @objc func windowDidResize(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow else {
+            return
+        }
+
+        print(window.frame)
+    }
     
 }
 
+// MARK: - TrackingAreaResponderDelegate
+extension MenuBarRatingControl: TrackingAreaResponderDelegate {
+
+    func mouseEntered(with event: NSEvent) {
+        os_log("%{public}s[%{public}ld], %{public}s: mouse entered", ((#file as NSString).lastPathComponent), #line, #function)
+
+    }
+
+    func mouseExited(with event: NSEvent) {
+        os_log("%{public}s[%{public}ld], %{public}s: mouse exited", ((#file as NSString).lastPathComponent), #line, #function)
+
+    }
+
+}
