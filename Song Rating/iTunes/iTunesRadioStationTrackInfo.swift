@@ -1,5 +1,5 @@
 //
-//  iTunesRadioStationTrackRatingChange.swift
+//  iTunesRadioStationTrackInfo.swift
 //  Song Rating
 //
 //  Created by Cirno MainasuK on 2019-7-20.
@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct iTunesRadioStationTrackRatingChange {
+struct iTunesRadioStationTrackInfo {
     
     let rating: Int
     let isPlaying: Bool
@@ -35,7 +35,7 @@ struct iTunesRadioStationTrackRatingChange {
     
 }
 
-extension iTunesRadioStationTrackRatingChange {
+extension iTunesRadioStationTrackInfo {
     
     var userInfo: [String : Any] {
         return [

@@ -28,9 +28,14 @@ final class iTunesRadioStation {
         application?.delegate = self
         return application
     }
-    
+
+    // Keep the reference to specific track.
+    // And all property { get set } is still dynamic like object
+    var tracks: [iTunesTrack] = []
+
     private(set) var currentPlayInfo: PlayInfo? {
         didSet {
+            saveCurrentTrack()
             NotificationCenter.default.post(name: .iTunesCurrentPlayInfoChanged, object: currentPlayInfo)
         }
     }
@@ -49,32 +54,31 @@ final class iTunesRadioStation {
         // Recieve shortcut to change track rating
         // But post notification to rating control to keep UI and rating behavior consist (current rating set is debounce procession)
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingUp.rawValue, toAction: {
-            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil, userInfo: self.currentTrackRatingChange?.userInfo)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil, userInfo: self.currentTrackInfo?.userInfo)
         })
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingDown.rawValue, toAction: {
-            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil, userInfo: self.currentTrackRatingChange?.userInfo)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil, userInfo: self.currentTrackInfo?.userInfo)
         })
     }
-    
-    
+
     /// Use ScriptingBridge manually setup iTunes radio station
     func updateRadioStation() {
-        NotificationCenter.default.post(name: .iTunesRadioDidSetupRating, object: nil, userInfo: currentTrackRatingChange?.userInfo)
+
+        NotificationCenter.default.post(name: .iTunesRadioDidSetupRating, object: nil, userInfo: currentTrackInfo?.userInfo)
     }
 
 }
 
 extension iTunesRadioStation {
     
-    var currentTrackRatingChange: iTunesRadioStationTrackRatingChange? {
+    var currentTrackInfo: iTunesRadioStationTrackInfo? {
         guard let track = iTunes?.currentTrack,
         let rating = track.rating else {
             return nil
         }
-        
+
         let isPlaying = iTunes?.playerState == .playing
-        return iTunesRadioStationTrackRatingChange(rating: rating,
-                                                   isPlaying: isPlaying)
+        return iTunesRadioStationTrackInfo(rating: rating, isPlaying: isPlaying)
     }
     
 }
@@ -140,7 +144,6 @@ extension iTunesRadioStation {
 
 extension iTunesRadioStation {
 
-
     /// setRating for current track
     ///
     /// - Parameter rating: integer in 0 ~ 100
@@ -187,6 +190,26 @@ extension iTunesRadioStation: SBApplicationDelegate {
         return nil
     }
     
+}
+
+extension iTunesRadioStation {
+
+    private func saveCurrentTrack() {
+        guard let trackObject = iTunes?.currentTrack as? SBObject,
+        let copyTrack = trackObject.get() as? iTunesTrack else {
+            return
+        }
+
+        tracks.append(copyTrack)
+
+        for track in tracks {
+            let name = track.name ?? ""
+            let rating = String(track.rating ?? 0)
+            print("\(name) \(rating)")
+        }
+
+    }
+
 }
 
 extension String {
