@@ -97,7 +97,7 @@ final class MenuBarRatingControl {
         popoverProxy.delegate = self
         ratingControl.delegate = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesCurrentPlayInfoChanged(_:)), name: .iTunesCurrentPlayInfoChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesPlayInfoChanged(_:)), name: .iTunesPlayInfoChanged, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioSetupRating(_:)), name: .iTunesRadioDidSetupRating, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingUp(_:)), name: .iTunesRadioRequestTrackRatingUp, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingDown(_:)), name: .iTunesRadioRequestTrackRatingDown, object: nil)
@@ -174,7 +174,7 @@ extension MenuBarRatingControl: RatingControlDelegate {
 
 extension MenuBarRatingControl {
     
-    @objc func iTunesCurrentPlayInfoChanged(_ notification: Notification) {
+    @objc func iTunesPlayInfoChanged(_ notification: Notification) {
         guard let playInfo = notification.object as? PlayInfo else {
             return
         }

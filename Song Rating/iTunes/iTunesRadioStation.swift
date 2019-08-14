@@ -12,7 +12,7 @@ import os
 import MASShortcut
 
 extension Notification.Name {
-    static let iTunesCurrentPlayInfoChanged = Notification.Name("iTunesCurrentPlayInfoChanged")
+    static let iTunesPlayInfoChanged = Notification.Name("iTunesPlayInfoChanged")
     static let iTunesRadioDidSetupRating = Notification.Name("iTunesRadioDidSetupRating")
     static let iTunesRadioRequestTrackRatingUp = Notification.Name("iTunesRadioRequestTrackRatingUp")
     static let iTunesRadioRequestTrackRatingDown = Notification.Name("iTunesRadioRequestTrackRatingDown")
@@ -29,17 +29,13 @@ final class iTunesRadioStation {
         return application
     }
 
-    // Keep the reference to specific track.
-    // And all property { get set } is still dynamic like object
-    var tracks: [iTunesTrack] = []
-
-    private(set) var currentPlayInfo: PlayInfo? {
+    private(set) var latestPlayInfo: PlayInfo? {
         didSet {
-            saveCurrentTrack()
-            NotificationCenter.default.post(name: .iTunesCurrentPlayInfoChanged, object: currentPlayInfo)
+            NotificationCenter.default.post(name: .iTunesPlayInfoChanged, object: latestPlayInfo)
         }
     }
     
+    private var trackPlaybackRecorder = TrackPlaybackRecorder()
     private var debounceSetRatingTimer: Timer?
     
     private init() {
@@ -51,8 +47,7 @@ final class iTunesRadioStation {
         // Due to iTunes may already in playing before app launch, use updateRadioStation method check when app start
         updateRadioStation()
 
-        // Recieve shortcut to change track rating
-        // But post notification to rating control to keep UI and rating behavior consist (current rating set is debounce procession)
+        // Bind and broadcast keyboard shortcut
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingUp.rawValue, toAction: {
             NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil, userInfo: self.currentTrackInfo?.userInfo)
         })
@@ -61,10 +56,9 @@ final class iTunesRadioStation {
         })
     }
 
-    /// Use ScriptingBridge manually setup iTunes radio station
     func updateRadioStation() {
-
-        NotificationCenter.default.post(name: .iTunesRadioDidSetupRating, object: nil, userInfo: currentTrackInfo?.userInfo)
+        let userInfo = currentTrackInfo?.userInfo
+        NotificationCenter.default.post(name: .iTunesRadioDidSetupRating, object: nil, userInfo: userInfo)
     }
 
 }
@@ -131,7 +125,7 @@ extension iTunesRadioStation {
             }
             #endif
             
-            self.currentPlayInfo = playInfo
+            self.latestPlayInfo = playInfo
             
         } catch {
             os_log(.error, "%s: fail to parse playInfo with error %{public}s", #function, error.localizedDescription)
@@ -151,13 +145,13 @@ extension iTunesRadioStation {
     func setRating(_ rating: Int) {
         debounceSetRatingTimer?.invalidate()
 
-        guard currentPlayInfo != nil || !(iTunes?.currentTrack?.name ?? "").isEmpty else {
+        guard latestPlayInfo != nil || !(iTunes?.currentTrack?.name ?? "").isEmpty else {
             os_log("%{public}s[%{public}ld], %{public}s: try to set rating but no current track info", ((#file as NSString).lastPathComponent), #line, #function)
             return
         }
 
-        // Note: currentPlayInfo could not set when App just launch without recieved playInfoChanged notification
-        let name = currentPlayInfo?.name ?? iTunes?.currentTrack?.name ?? "nil"
+        // Note: latestPlayInfo could not set when App just launch without recieved playInfoChanged notification
+        let name = latestPlayInfo?.name ?? iTunes?.currentTrack?.name ?? "nil"
         os_log("%{public}s[%{public}ld], %{public}s: set timer for 2.0s and set rating for %{public}s %{public}ld…", ((#file as NSString).lastPathComponent), #line, #function, name, rating)
 
         // FIXME: delay may cause set rating to *next* song just playing
@@ -190,26 +184,6 @@ extension iTunesRadioStation: SBApplicationDelegate {
         return nil
     }
     
-}
-
-extension iTunesRadioStation {
-
-    private func saveCurrentTrack() {
-        guard let trackObject = iTunes?.currentTrack as? SBObject,
-        let copyTrack = trackObject.get() as? iTunesTrack else {
-            return
-        }
-
-        tracks.append(copyTrack)
-
-        for track in tracks {
-            let name = track.name ?? ""
-            let rating = String(track.rating ?? 0)
-            print("\(name) \(rating)")
-        }
-
-    }
-
 }
 
 extension String {

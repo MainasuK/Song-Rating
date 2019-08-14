@@ -19,23 +19,22 @@ struct iTunesRadioStationTrackInfo {
         self.isPlaying = isPlaying
     }
     
+}
+
+extension iTunesRadioStationTrackInfo {
+    
     init?(_ notification: Notification) {
         guard let userInfo = notification.userInfo else {
             return nil
         }
         
         guard let rating = userInfo["rating"] as? Int,
-        let isPlaying = userInfo["isPlaying"] as? Bool else {
-            return nil
+            let isPlaying = userInfo["isPlaying"] as? Bool else {
+                return nil
         }
         
-        self.rating = rating
-        self.isPlaying = isPlaying
+        self.init(rating: rating, isPlaying: isPlaying)
     }
-    
-}
-
-extension iTunesRadioStationTrackInfo {
     
     var userInfo: [String : Any] {
         return [
@@ -43,4 +42,5 @@ extension iTunesRadioStationTrackInfo {
             "isPlaying": isPlaying,
         ]
     }
+    
 }
