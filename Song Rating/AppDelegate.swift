@@ -50,7 +50,7 @@ extension AppDelegate {
                 switch status {
                 case noErr:
                     os_log("%{public}s[%{public}ld], %{public}s: AppleEvent permission status: noErr", ((#file as NSString).lastPathComponent), #line, #function)
-                    iTunesRadioStation.shared.updateRadioStation()
+                    iTunesPlayer.shared.update()
                     
                 case OSStatus(procNotFound):
                     os_log("%{public}s[%{public}ld], %{public}s: AppleEvent permission status: iTunes not running", ((#file as NSString).lastPathComponent), #line, #function)
@@ -73,7 +73,7 @@ extension AppDelegate {
             UserDefaults.standard.register(defaults: [
                 PreferencesViewController.ShortcutKey.songRatingDown.rawValue : ratingDownShortcutData,
                 PreferencesViewController.ShortcutKey.songRatingUp.rawValue : ratingUpShortcutData,
-                ])
+            ])
         } catch {
             os_log("%{public}s[%{public}ld], %{public}s: Default shortcut set fail", ((#file as NSString).lastPathComponent), #line, #function)
         }

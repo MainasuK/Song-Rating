@@ -10,7 +10,7 @@ import Cocoa
 
 final class AboutViewController: NSViewController {
 
-    lazy var imageView = NSImageView()
+    // lazy var imageView = NSImageView()
     lazy var titleTextField: NSTextField = {
         let textField = NSTextField(labelWithString: String.infoValue(for: "CFBundleName") ?? "Song Rating")
         textField.font = NSFont.systemFont(ofSize: 18, weight: .semibold)
@@ -139,3 +139,4 @@ extension String {
     }
 
 }
+

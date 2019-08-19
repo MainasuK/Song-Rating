@@ -27,8 +27,8 @@ struct Star {
             let radius = min(rect.height, rect.width) * 0.5
             let center = CGPoint(x: rect.midX, y: rect.midY - 0.5 * 0.191 * radius)
             
-            NSColor.black.setFill()
-            NSColor.black.setStroke()
+//            NSColor.black.setFill()
+//            NSColor.black.setStroke()
             
             if !fill {
                 let path = NSBezierPath()

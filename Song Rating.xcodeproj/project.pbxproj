@@ -18,9 +18,16 @@
 		DB106CA622CA3EE700502D7C /* Stars.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA522CA3EE700502D7C /* Stars.swift */; };
 		DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA722CA45BB00502D7C /* RatingControl.swift */; };
 		DB106CC422CA86A500502D7C /* iTunes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6322C53DAE00502D7C /* iTunes.swift */; };
-		DB11065323047E7F001DA02A /* TrackPlaybackRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB11065223047E7F001DA02A /* TrackPlaybackRecorder.swift */; };
+		DB11065323047E7F001DA02A /* iTunesPlayerHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB11065223047E7F001DA02A /* iTunesPlayerHistory.swift */; };
+		DB27976F2306EA6800DDE3EB /* iTunesPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB27976E2306EA6800DDE3EB /* iTunesPlayer.swift */; };
+		DB2797732306F0EC00DDE3EB /* iTunesApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2797722306F0EC00DDE3EB /* iTunesApplication.swift */; };
+		DB424A352307259800230C7E /* iTunesTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A342307259800230C7E /* iTunesTrack.swift */; };
+		DB424A3823073CB000230C7E /* PopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3723073CB000230C7E /* PopoverViewController.swift */; };
+		DB424A3A23086C1200230C7E /* MovableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3923086C1200230C7E /* MovableImageView.swift */; };
+		DB424A3C230877F400230C7E /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3B230877F400230C7E /* PlayerViewController.swift */; };
+		DB424A3E2308936F00230C7E /* AutoScrollTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3D2308936F00230C7E /* AutoScrollTextField.swift */; };
+		DB424A41230AF5C200230C7E /* PopoverWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A40230AF5C200230C7E /* PopoverWindow.swift */; };
 		DB89C9EB22E2B7DF003981F5 /* MenuBarRatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */; };
-		DB89C9F122E2C949003981F5 /* iTunesRadioStationTrackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F022E2C949003981F5 /* iTunesRadioStationTrackInfo.swift */; };
 		DB89C9F322E2D766003981F5 /* MenuBarIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */; };
 		DB89C9F522E3176C003981F5 /* iTunesLibraryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F422E3176C003981F5 /* iTunesLibraryTests.swift */; };
 		DB89C9FE22E31B67003981F5 /* iTunesLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB89C9FD22E31B67003981F5 /* iTunesLibrary.framework */; };
@@ -64,9 +71,16 @@
 		DB106CA322CA3C7300502D7C /* Star.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Star.swift; sourceTree = "<group>"; };
 		DB106CA522CA3EE700502D7C /* Stars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stars.swift; sourceTree = "<group>"; };
 		DB106CA722CA45BB00502D7C /* RatingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingControl.swift; sourceTree = "<group>"; };
-		DB11065223047E7F001DA02A /* TrackPlaybackRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPlaybackRecorder.swift; sourceTree = "<group>"; };
+		DB11065223047E7F001DA02A /* iTunesPlayerHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesPlayerHistory.swift; sourceTree = "<group>"; };
+		DB27976E2306EA6800DDE3EB /* iTunesPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesPlayer.swift; sourceTree = "<group>"; };
+		DB2797722306F0EC00DDE3EB /* iTunesApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesApplication.swift; sourceTree = "<group>"; };
+		DB424A342307259800230C7E /* iTunesTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesTrack.swift; sourceTree = "<group>"; };
+		DB424A3723073CB000230C7E /* PopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverViewController.swift; sourceTree = "<group>"; };
+		DB424A3923086C1200230C7E /* MovableImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovableImageView.swift; sourceTree = "<group>"; };
+		DB424A3B230877F400230C7E /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		DB424A3D2308936F00230C7E /* AutoScrollTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoScrollTextField.swift; sourceTree = "<group>"; };
+		DB424A40230AF5C200230C7E /* PopoverWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverWindow.swift; sourceTree = "<group>"; };
 		DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarRatingControl.swift; sourceTree = "<group>"; };
-		DB89C9F022E2C949003981F5 /* iTunesRadioStationTrackInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesRadioStationTrackInfo.swift; sourceTree = "<group>"; };
 		DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIcon.swift; sourceTree = "<group>"; };
 		DB89C9F422E3176C003981F5 /* iTunesLibraryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesLibraryTests.swift; sourceTree = "<group>"; };
 		DB89C9FD22E31B67003981F5 /* iTunesLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iTunesLibrary.framework; path = System/Library/Frameworks/iTunesLibrary.framework; sourceTree = SDKROOT; };
@@ -145,9 +159,10 @@
 				DB106C6722C5433900502D7C /* Song Rating.entitlements */,
 				DB106C4522C53D4B00502D7C /* AppDelegate.swift */,
 				DB95216922CB186F007FCF40 /* WindowManager.swift */,
-				DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */,
-				DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */,
-				DB106CC622CA9EB600502D7C /* Control */,
+				DB27976D2306E97500DDE3EB /* Controllers */,
+				DB424A3F2308937D00230C7E /* Views */,
+				DB106CC622CA9EB600502D7C /* Controls */,
+				DB27976C2306E95A00DDE3EB /* Helper */,
 				DB106CC822CA9F2D00502D7C /* iTunes */,
 				DB106CC722CA9ECE00502D7C /* Supporting Files */,
 				DB106C4E22C53D4C00502D7C /* Info.plist */,
@@ -174,16 +189,14 @@
 			path = Vendor;
 			sourceTree = "<group>";
 		};
-		DB106CC622CA9EB600502D7C /* Control */ = {
+		DB106CC622CA9EB600502D7C /* Controls */ = {
 			isa = PBXGroup;
 			children = (
 				DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */,
 				DB106CA722CA45BB00502D7C /* RatingControl.swift */,
-				DB106CA322CA3C7300502D7C /* Star.swift */,
-				DB106CA522CA3EE700502D7C /* Stars.swift */,
 				DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */,
 			);
-			path = Control;
+			path = Controls;
 			sourceTree = "<group>";
 		};
 		DB106CC722CA9ECE00502D7C /* Supporting Files */ = {
@@ -199,13 +212,53 @@
 			isa = PBXGroup;
 			children = (
 				DB106CC522CA9E9000502D7C /* Vendor */,
+				DB424A36230725A800230C7E /* Extension */,
 				DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */,
-				DB89C9F022E2C949003981F5 /* iTunesRadioStationTrackInfo.swift */,
-				DB11065223047E7F001DA02A /* TrackPlaybackRecorder.swift */,
+				DB27976E2306EA6800DDE3EB /* iTunesPlayer.swift */,
+				DB11065223047E7F001DA02A /* iTunesPlayerHistory.swift */,
 				DB106C6A22C661F900502D7C /* PlayInfo.swift */,
-				DB89C9FF22E37826003981F5 /* OSVersionHelper.swift */,
 			);
 			path = iTunes;
+			sourceTree = "<group>";
+		};
+		DB27976C2306E95A00DDE3EB /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				DB106CA322CA3C7300502D7C /* Star.swift */,
+				DB424A40230AF5C200230C7E /* PopoverWindow.swift */,
+				DB106CA522CA3EE700502D7C /* Stars.swift */,
+				DB89C9FF22E37826003981F5 /* OSVersionHelper.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		DB27976D2306E97500DDE3EB /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */,
+				DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */,
+				DB424A3723073CB000230C7E /* PopoverViewController.swift */,
+				DB424A3B230877F400230C7E /* PlayerViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		DB424A36230725A800230C7E /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				DB2797722306F0EC00DDE3EB /* iTunesApplication.swift */,
+				DB424A342307259800230C7E /* iTunesTrack.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		DB424A3F2308937D00230C7E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				DB424A3D2308936F00230C7E /* AutoScrollTextField.swift */,
+				DB424A3923086C1200230C7E /* MovableImageView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -385,19 +438,26 @@
 			files = (
 				DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */,
 				DB106CC422CA86A500502D7C /* iTunes.swift in Sources */,
+				DB27976F2306EA6800DDE3EB /* iTunesPlayer.swift in Sources */,
 				DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */,
+				DB424A3A23086C1200230C7E /* MovableImageView.swift in Sources */,
 				DB89C9EB22E2B7DF003981F5 /* MenuBarRatingControl.swift in Sources */,
 				DB89CA0022E37826003981F5 /* OSVersionHelper.swift in Sources */,
 				DB106CA622CA3EE700502D7C /* Stars.swift in Sources */,
+				DB2797732306F0EC00DDE3EB /* iTunesApplication.swift in Sources */,
+				DB424A3C230877F400230C7E /* PlayerViewController.swift in Sources */,
 				DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */,
 				DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */,
 				DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */,
 				DB89C9F322E2D766003981F5 /* MenuBarIcon.swift in Sources */,
 				DB106CA422CA3C7300502D7C /* Star.swift in Sources */,
-				DB89C9F122E2C949003981F5 /* iTunesRadioStationTrackInfo.swift in Sources */,
 				DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */,
+				DB424A352307259800230C7E /* iTunesTrack.swift in Sources */,
 				DB106C4622C53D4B00502D7C /* AppDelegate.swift in Sources */,
-				DB11065323047E7F001DA02A /* TrackPlaybackRecorder.swift in Sources */,
+				DB424A3E2308936F00230C7E /* AutoScrollTextField.swift in Sources */,
+				DB424A41230AF5C200230C7E /* PopoverWindow.swift in Sources */,
+				DB424A3823073CB000230C7E /* PopoverViewController.swift in Sources */,
+				DB11065323047E7F001DA02A /* iTunesPlayerHistory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

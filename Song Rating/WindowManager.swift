@@ -13,6 +13,7 @@ final class WindowManager: NSObject {
 
     private(set) var aboutWindowController: NSWindowController?
     private(set) var preferencesWindowController: NSWindowController?
+    private(set) var popoverWindowController: NSWindowController?
 
     var hasWindowDisplay: Bool {
         return ![aboutWindowController, preferencesWindowController].compactMap { $0 }.isEmpty
@@ -51,6 +52,11 @@ extension WindowManager {
                     preferencesWindowController = NSWindowController(window: NSWindow(contentViewController: windowType.viewController))
                 }
                 return preferencesWindowController
+            case .popover:
+                if popoverWindowController == nil {
+                    popoverWindowController = NSWindowController(window: NSWindow(contentViewController: windowType.viewController))
+                }
+                return popoverWindowController
             }
         }()
 
@@ -79,11 +85,13 @@ extension WindowManager {
     enum WindowType {
         case about
         case preferences
+        case popover
 
         var viewController: NSViewController {
             switch self {
             case .about:        return AboutViewController()
             case .preferences:  return PreferencesViewController()
+            case .popover:      return PopoverViewController()
             }
         }
     }

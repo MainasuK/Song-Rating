@@ -12,8 +12,8 @@ import os
 import MASShortcut
 
 extension Notification.Name {
-    static let iTunesPlayInfoChanged = Notification.Name("iTunesPlayInfoChanged")
-    static let iTunesRadioDidSetupRating = Notification.Name("iTunesRadioDidSetupRating")
+//    static let iTunesPlayInfoChanged = Notification.Name("iTunesPlayInfoChanged")
+//    static let iTunesRadioDidSetupRating = Notification.Name("iTunesRadioDidSetupRating")
     static let iTunesRadioRequestTrackRatingUp = Notification.Name("iTunesRadioRequestTrackRatingUp")
     static let iTunesRadioRequestTrackRatingDown = Notification.Name("iTunesRadioRequestTrackRatingDown")
 }
@@ -29,13 +29,13 @@ final class iTunesRadioStation {
         return application
     }
 
-    private(set) var latestPlayInfo: PlayInfo? {
+    private var latestPlayInfo: PlayInfo? {
         didSet {
-            NotificationCenter.default.post(name: .iTunesPlayInfoChanged, object: latestPlayInfo)
+            iTunesPlayer.shared.update()
+            // os_log("%{public}s[%{public}ld], %{public}s: latestPlayInfo %s", ((#file as NSString).lastPathComponent), #line, #function, latestPlayInfo?.description ?? "nil")
         }
     }
     
-    private var trackPlaybackRecorder = TrackPlaybackRecorder()
     private var debounceSetRatingTimer: Timer?
     
     private init() {
@@ -44,37 +44,21 @@ final class iTunesRadioStation {
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.playInfoChanged(_:)), name: NSNotification.Name("com.apple.iTunes.playerInfo"), object: nil)
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.sourceSaved(_:)), name: NSNotification.Name("com.apple.iTunes.sourceSaved"), object: nil)  // only set rating in iTunes edit song info panel can trigger that
 
-        // Due to iTunes may already in playing before app launch, use updateRadioStation method check when app start
-        updateRadioStation()
+        // Due to iTunes may already playing before app launch,update player when app start
+        iTunesPlayer.shared.update(iTunes?.currentTrackCopy)
 
-        // Bind and broadcast keyboard shortcut
+        // Bind and broadcast keyboard
+        // Notify control directly without trigger player update notification
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingUp.rawValue, toAction: {
-            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil, userInfo: self.currentTrackInfo?.userInfo)
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil)
         })
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingDown.rawValue, toAction: {
-            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil, userInfo: self.currentTrackInfo?.userInfo)
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil)
         })
     }
 
-    func updateRadioStation() {
-        let userInfo = currentTrackInfo?.userInfo
-        NotificationCenter.default.post(name: .iTunesRadioDidSetupRating, object: nil, userInfo: userInfo)
-    }
-
-}
-
-extension iTunesRadioStation {
-    
-    var currentTrackInfo: iTunesRadioStationTrackInfo? {
-        guard let track = iTunes?.currentTrack,
-        let rating = track.rating else {
-            return nil
-        }
-
-        let isPlaying = iTunes?.playerState == .playing
-        return iTunesRadioStationTrackInfo(rating: rating, isPlaying: isPlaying)
-    }
-    
 }
 
 extension iTunesRadioStation {

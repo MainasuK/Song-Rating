@@ -29,25 +29,25 @@ final class TrackingAreaResponder: NSView {
 }
 
 protocol PopoverProxyDelegate: class {
-    func popoverWillShow(_ notification: Notification)
-    func popoverDidShow(_ notification: Notification)
+    func popoverDidClose(_ notification: Notification)
     func popoverShouldDetach(_ popover: NSPopover) -> Bool
+    func popoverDidDetach(_ popover: NSPopover)
 }
 
 final class PopoverProxy: NSObject, NSPopoverDelegate {
 
     weak var delegate: PopoverProxyDelegate?
-
-    func popoverWillShow(_ notification: Notification) {
-        delegate?.popoverWillShow(notification)
-    }
-
-    func popoverDidShow(_ notification: Notification) {
-        delegate?.popoverDidShow(notification)
+    
+    func popoverDidClose(_ notification: Notification) {
+        delegate?.popoverDidClose(notification)
     }
 
     func popoverShouldDetach(_ popover: NSPopover) -> Bool {
         return delegate?.popoverShouldDetach(popover) ?? false
+    }
+    
+    func popoverDidDetach(_ popover: NSPopover) {
+        delegate?.popoverDidDetach(popover)
     }
 
 }
@@ -58,8 +58,9 @@ final class MenuBarRatingControl {
     let ratingControl = RatingControl(rating: 0)
     let menuBarIcon: MenuBarIcon
     let trackingAreaResponser = TrackingAreaResponder()
-    let popover = NSPopover()
     let popoverProxy = PopoverProxy()
+    
+    var detachedPopover: NSPopover?
 
     lazy private(set) var menuBarMenu: NSMenu = {
         let menu = NSMenu()
@@ -97,8 +98,8 @@ final class MenuBarRatingControl {
         popoverProxy.delegate = self
         ratingControl.delegate = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesPlayInfoChanged(_:)), name: .iTunesPlayInfoChanged, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioSetupRating(_:)), name: .iTunesRadioDidSetupRating, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesPlayerDidUpdated(_:)), name: .iTunesPlayerDidUpdated, object: nil)
+    
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingUp(_:)), name: .iTunesRadioRequestTrackRatingUp, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingDown(_:)), name: .iTunesRadioRequestTrackRatingDown, object: nil)
 
@@ -140,12 +141,16 @@ extension MenuBarRatingControl {
             ratingControl.action(from: sender, with: event)
 
         case .rightMouseUp:
-            guard let button = statusItem.button, !popover.isShown else { return }
-            popover.contentViewController = WindowManager.WindowType.about.viewController
+            guard let button = statusItem.button else { return }
+            
+            let popover = NSPopover()
+            popover.contentViewController = WindowManager.WindowType.popover.viewController
             popover.behavior = .transient
             popover.delegate = popoverProxy
-            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
 
+            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+            popover.contentViewController?.view.window?.makeKey()
+            
         default:
             os_log("%{public}s[%{public}ld], %{public}s: no handler for event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
         }
@@ -174,41 +179,30 @@ extension MenuBarRatingControl: RatingControlDelegate {
 
 extension MenuBarRatingControl {
     
-    @objc func iTunesPlayInfoChanged(_ notification: Notification) {
-        guard let playInfo = notification.object as? PlayInfo else {
-            return
-        }
-        isPlaying = playInfo.playerState == .playing
-        ratingControl.update(rating: playInfo.notComputedRating ?? 0)
-    }
-    
-    @objc func iTunesRadioSetupRating(_ notification: Notification) {
-        guard let change = iTunesRadioStationTrackInfo(notification) else {
-            return
-        }
+    @objc func iTunesPlayerDidUpdated(_ notification: Notification) {
+        let player = iTunesPlayer.shared
         
-        isPlaying = change.isPlaying
-        ratingControl.update(rating: change.rating)
+        isPlaying = player.isPlaying
+        let userRating = player.currentTrack?.userRating ?? 0
+        ratingControl.update(rating: userRating)
     }
     
     @objc func iTunesRadioRequestTrackRatingUp(_ notification: Notification) {
-        guard let change = iTunesRadioStationTrackInfo(notification),
-        change.isPlaying else {
+        isPlaying = iTunesPlayer.shared.isPlaying
+        guard isPlaying else {
             return
         }
         
-        isPlaying = change.isPlaying
         ratingControl.update(rating: ratingControl.rating + 20)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
     
     @objc func iTunesRadioRequestTrackRatingDown(_ notification: Notification) {
-        guard let change = iTunesRadioStationTrackInfo(notification),
-        change.isPlaying else {
+        isPlaying = iTunesPlayer.shared.isPlaying
+        guard isPlaying else {
             return
         }
         
-        isPlaying = change.isPlaying
         ratingControl.update(rating: ratingControl.rating - 20)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
@@ -239,17 +233,49 @@ extension MenuBarRatingControl: TrackingAreaResponderDelegate {
 
 // MARK: - PopoverProxyDelegate
 extension MenuBarRatingControl: PopoverProxyDelegate {
-
-    func popoverWillShow(_ notification: Notification) {
-        NSApplication.shared.activate(ignoringOtherApps: true)
-    }
-
-    func popoverDidShow(_ notification: Notification) {
-//        NSApplication.shared.activate(ignoringOtherApps: true)
+    
+    func popoverDidClose(_ notification: Notification) {
+        if let popover = detachedPopover, !popover.isShown {
+            detachedPopover = nil
+        }
     }
 
     func popoverShouldDetach(_ popover: NSPopover) -> Bool {
+        popover.configureCloseButton()
         return true
     }
+    
+    func popoverDidDetach(_ popover: NSPopover) {
+        detachedPopover?.close()
+        
+        popover.behavior = .applicationDefined
+        detachedPopover = popover
+    }
 
+}
+
+extension NSPopover {
+    
+    // tweak NSPopoverFrame: https://github.com/mstg/OSX-Runtime-Headers/blob/master/AppKit/NSPopoverFrame.h
+    func configureCloseButton() {
+        guard let popoverViewController = contentViewController as? PopoverViewController,
+        let superView = popoverViewController.view.superview else {
+            return
+        }
+        
+        guard NSStringFromClass(type(of: superView)) == "NSPopoverFrame" else {
+            return
+        }
+        
+        guard let closeButton = superView.value(forKey: "closeButton") as? NSButton else {
+            return
+        }
+        
+        closeButton.image = nil
+        closeButton.isEnabled = false
+
+        // tell view controller we tweak it
+        popoverViewController.hostPopover = self
+    }
+    
 }
