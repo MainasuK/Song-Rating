@@ -7,10 +7,30 @@
 //
 
 import Cocoa
+import DominantColor
 
 final class PlayerViewController: NSViewController {
     
-    let coverImageView = MovableImageView()
+    let backCoverImageView: MovableImageView = {
+        let view = MovableImageView()
+        view.wantsLayer = true
+        view.layer = CALayer()
+        view.layer?.contentsGravity = CALayerContentsGravity.resizeAspectFill
+        return view
+    }()
+    let backCoverImageVisualEffectView: NSVisualEffectView = {
+        let visualEffectView = NSVisualEffectView()
+        visualEffectView.blendingMode = .withinWindow
+        visualEffectView.material = .hudWindow
+        visualEffectView.isEmphasized = true
+        visualEffectView.state = .active
+        return visualEffectView
+    }()
+    let coverImageView: MovableImageView = {
+        let imageView = MovableImageView()
+        imageView.imageScaling = .scaleProportionallyUpOrDown
+        return imageView
+    }()
     let playerInfoView = PlayerInfoView()
 
     override func loadView() {
@@ -43,6 +63,24 @@ extension PlayerViewController {
             coverImageView.heightAnchor.constraint(equalTo: coverImageView.widthAnchor),
         ])
         
+        backCoverImageVisualEffectView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(backCoverImageVisualEffectView, positioned: .below, relativeTo: coverImageView)
+        NSLayoutConstraint.activate([
+            backCoverImageVisualEffectView.topAnchor.constraint(equalTo: coverImageView.topAnchor),
+            backCoverImageVisualEffectView.leadingAnchor.constraint(equalTo: coverImageView.leadingAnchor),
+            backCoverImageVisualEffectView.trailingAnchor.constraint(equalTo: coverImageView.trailingAnchor),
+            backCoverImageVisualEffectView.bottomAnchor.constraint(equalTo: coverImageView.bottomAnchor),
+        ])
+        
+        backCoverImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(backCoverImageView, positioned: .below, relativeTo: backCoverImageVisualEffectView)
+        NSLayoutConstraint.activate([
+            backCoverImageView.topAnchor.constraint(equalTo: coverImageView.topAnchor),
+            backCoverImageView.leadingAnchor.constraint(equalTo: coverImageView.leadingAnchor),
+            backCoverImageView.trailingAnchor.constraint(equalTo: coverImageView.trailingAnchor),
+            backCoverImageView.bottomAnchor.constraint(equalTo: coverImageView.bottomAnchor),
+        ])
+        
         playerInfoView.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(playerInfoView)
 
@@ -69,14 +107,26 @@ extension PlayerViewController {
             return
         }
         
-        if let artwork = track.artworks?().firstObject as? iTunesArtwork,
-            let data = artwork.rawData {
-            let image = NSImage(data: data)
-            coverImageView.image = image
+        defer {
             view.needsLayout = true
+        }
+        
+        if let artwork = track.artworks?().firstObject as? iTunesArtwork,
+        let data = artwork.rawData,
+        let image = NSImage(data: data) {
+            let transition = CATransition()
+            transition.duration = 0.33
+            transition.type = .fade
+            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            transition.isRemovedOnCompletion = true
+            coverImageView.layer?.add(transition, forKey: nil)
+
+            coverImageView.image = image
+            backCoverImageView.layer?.contents = image
             
         } else {
             coverImageView.image = nil
+            backCoverImageView.layer?.contents = nil
         }
         
         // setup playInfoView
