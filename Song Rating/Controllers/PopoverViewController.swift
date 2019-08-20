@@ -9,7 +9,7 @@
 import Cocoa
 
 final class StopProgressFreestandingTemplateButton: NSButton {
-//    override var allowsVibrancy: Bool { return false }
+    override var allowsVibrancy: Bool { return true }
 }
 
 final class PopoverViewController: NSViewController {
@@ -23,7 +23,18 @@ final class PopoverViewController: NSViewController {
     }
     
     private let playerViewController = PlayerViewController()
-    
+    private let closeButtonContainerVisualEffectView: NSVisualEffectView = {
+        let visualEffectView = NSVisualEffectView()
+        visualEffectView.wantsLayer = true
+        visualEffectView.blendingMode = .withinWindow
+        visualEffectView.material = .hudWindow
+        visualEffectView.isEmphasized = true
+        visualEffectView.state = .active
+        
+        visualEffectView.alphaValue = 0
+        
+        return visualEffectView
+    }()
     private lazy var closeButton: NSButton = {
         let button = StopProgressFreestandingTemplateButton()
         button.image = NSImage(named: NSImage.stopProgressFreestandingTemplateName)
@@ -32,6 +43,10 @@ final class PopoverViewController: NSViewController {
         button.isBordered = false
         button.target = self
         button.action = #selector(PopoverViewController.closeButtonPressed(_:))
+        
+        button.alphaValue = 0
+        button.isEnabled = false
+        
         return button
     }()
     
@@ -56,13 +71,22 @@ extension PopoverViewController {
             playerViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(closeButton)
+        closeButtonContainerVisualEffectView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(closeButtonContainerVisualEffectView)
         NSLayoutConstraint.activate([
-            closeButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 4),
-            closeButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 5),
+            closeButtonContainerVisualEffectView.topAnchor.constraint(equalTo: view.topAnchor, constant: 4),
+            closeButtonContainerVisualEffectView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 5),
+            closeButtonContainerVisualEffectView.widthAnchor.constraint(equalTo: closeButtonContainerVisualEffectView.heightAnchor, multiplier: 1.0),
         ])
-        closeButton.isHidden = true
+        
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButtonContainerVisualEffectView.addSubview(closeButton)
+        NSLayoutConstraint.activate([
+            closeButton.topAnchor.constraint(equalTo: closeButtonContainerVisualEffectView.topAnchor, constant: -1),
+            closeButton.leadingAnchor.constraint(equalTo: closeButtonContainerVisualEffectView.leadingAnchor, constant: -1),
+            closeButton.trailingAnchor.constraint(equalTo: closeButtonContainerVisualEffectView.trailingAnchor, constant: 1),
+            closeButton.bottomAnchor.constraint(equalTo: closeButtonContainerVisualEffectView.bottomAnchor, constant: 1),
+        ])
         
         NotificationCenter.default.addObserver(self, selector: #selector(PopoverViewController.iTunesPlayerDidUpdated(_:)), name: .iTunesPlayerDidUpdated, object: nil)
         view.addTrackingArea(NSTrackingArea(rect: view.bounds, options: [.activeAlways, .inVisibleRect, .mouseEnteredAndExited], owner: self, userInfo: nil))
@@ -70,6 +94,8 @@ extension PopoverViewController {
     
     override func viewDidAppear() {
         super.viewDidAppear()
+        
+        closeButtonContainerVisualEffectView.layer?.cornerRadius = floor(0.5 * closeButtonContainerVisualEffectView.frame.width)
         
         playerViewController.updateCurrectTrack(iTunesPlayer.shared.currentTrack)
     }
@@ -79,7 +105,9 @@ extension PopoverViewController {
         
         guard hostPopover != nil else { return }
         NSAnimationContext.runAnimationGroup { context in
-            closeButton.animator().isHidden = false
+            closeButtonContainerVisualEffectView.animator().alphaValue = 1
+            closeButton.animator().alphaValue = 1
+            closeButton.isEnabled = true
         }
     }
     
@@ -88,10 +116,10 @@ extension PopoverViewController {
         
         guard hostPopover != nil else { return }
         NSAnimationContext.runAnimationGroup({ context in
+            closeButtonContainerVisualEffectView.animator().alphaValue = 0
             closeButton.animator().alphaValue = 0
         }) {
-            self.closeButton.isHidden = true
-            self.closeButton.alphaValue = 1
+            self.closeButton.isEnabled = false
         }
     }
     
