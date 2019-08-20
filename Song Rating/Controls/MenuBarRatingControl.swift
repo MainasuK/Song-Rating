@@ -8,6 +8,7 @@
 
 import Cocoa
 import os
+import MASShortcut
 
 protocol TrackingAreaResponderDelegate: class {
     func mouseEntered(with event: NSEvent)
@@ -60,6 +61,7 @@ final class MenuBarRatingControl {
     let trackingAreaResponser = TrackingAreaResponder()
     let popoverProxy = PopoverProxy()
     
+    var undetachedPopover: NSPopover?
     var detachedPopover: NSPopover?
 
     lazy private(set) var menuBarMenu: NSMenu = {
@@ -104,6 +106,15 @@ final class MenuBarRatingControl {
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingDown(_:)), name: .iTunesRadioRequestTrackRatingDown, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.windowDidResize(_:)), name: NSWindow.didResizeNotification, object: nil)
+        
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.showOrClosePopover.rawValue, toAction: { [weak self] in
+            guard self?.undetachedPopover == nil else {
+                self?.undetachedPopover?.close()
+                self?.undetachedPopover = nil
+                return
+            }
+            self?.showPopover()
+        })
     }
     
 }
@@ -141,15 +152,7 @@ extension MenuBarRatingControl {
             ratingControl.action(from: sender, with: event)
 
         case .rightMouseUp:
-            guard let button = statusItem.button else { return }
-            
-            let popover = NSPopover()
-            popover.contentViewController = WindowManager.WindowType.popover.viewController
-            popover.behavior = .transient
-            popover.delegate = popoverProxy
-
-            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-            popover.contentViewController?.view.window?.makeKey()
+            showPopover()
             
         default:
             os_log("%{public}s[%{public}ld], %{public}s: no handler for event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
@@ -231,10 +234,34 @@ extension MenuBarRatingControl: TrackingAreaResponderDelegate {
 
 }
 
+extension MenuBarRatingControl {
+    
+    private func showPopover() {
+        guard let button = statusItem.button else { return }
+        
+        let popover = NSPopover()
+        popover.contentViewController = WindowManager.WindowType.popover.viewController
+        popover.behavior = .transient
+        popover.delegate = popoverProxy
+        
+        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        popover.contentViewController?.view.window?.makeKey()
+        
+        undetachedPopover = popover
+    }
+    
+}
+
 // MARK: - PopoverProxyDelegate
 extension MenuBarRatingControl: PopoverProxyDelegate {
     
     func popoverDidClose(_ notification: Notification) {
+        // check which popover closed and release it
+        
+        if let popover = undetachedPopover, !popover.isShown {
+            undetachedPopover = nil
+        }
+        
         if let popover = detachedPopover, !popover.isShown {
             detachedPopover = nil
         }
@@ -246,6 +273,7 @@ extension MenuBarRatingControl: PopoverProxyDelegate {
     }
     
     func popoverDidDetach(_ popover: NSPopover) {
+        undetachedPopover = nil
         detachedPopover?.close()
         
         popover.behavior = .applicationDefined

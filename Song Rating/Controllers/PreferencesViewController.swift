@@ -11,11 +11,14 @@ import MASShortcut
 
 final class PreferencesViewController: NSViewController {
 
-    lazy var SongRatingDownTextField: NSTextField = {
+    lazy var songRatingDownTextField: NSTextField = {
         return NSTextField(labelWithString: "Song rating down: ")
     }()
     lazy var songRatingUpTextField: NSTextField = {
         return NSTextField(labelWithString: "Song rating up: ")
+    }()
+    lazy var showOrClosePopoverTextField: NSTextField = {
+        return NSTextField(labelWithString: "Show/Close popover: ")
     }()
     let songRatingDownShortcutView: MASShortcutView = {
         let shortcutView = MASShortcutView()
@@ -25,6 +28,11 @@ final class PreferencesViewController: NSViewController {
     let songRatingUpShortcutView: MASShortcutView = {
         let shortcutView = MASShortcutView()
         shortcutView.associatedUserDefaultsKey = ShortcutKey.songRatingUp.rawValue
+        return shortcutView
+    }()
+    let showOrClosePopoverShortcutView: MASShortcutView = {
+        let shortcutView = MASShortcutView()
+        shortcutView.associatedUserDefaultsKey = ShortcutKey.showOrClosePopover.rawValue
         return shortcutView
     }()
 
@@ -38,8 +46,9 @@ final class PreferencesViewController: NSViewController {
         line.boxType = .separator
         
         let gridView = NSGridView(views: [
-            [SongRatingDownTextField, songRatingDownShortcutView],
+            [songRatingDownTextField, songRatingDownShortcutView],
             [songRatingUpTextField, songRatingUpShortcutView],
+            [showOrClosePopoverTextField, showOrClosePopoverShortcutView],
             [leadingPaddingView, trailingPaddingView]
         ])
         gridView.column(at: 0)
@@ -102,6 +111,7 @@ extension PreferencesViewController {
     enum ShortcutKey: String {
         case songRatingDown
         case songRatingUp
+        case showOrClosePopover
     }
     
 }
