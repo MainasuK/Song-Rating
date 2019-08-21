@@ -59,8 +59,10 @@ final class AutoScrollTextField: NSTextField {
     }
     
     
-    func reset() {
-        scrollTimes = 0
+    func reset(clearCounter: Bool = true) {
+        if clearCounter {
+            scrollTimes = 0
+        }
         offsetX = 0
         intervalTimer?.invalidate()
         intervalTimer = nil
@@ -78,9 +80,9 @@ extension AutoScrollTextField {
         needsDisplay = true
         
         if offsetX >= appendingAttributedStringValue.size().width {
-            reset()
-            
+            reset(clearCounter: false)
             scrollTimes += 1
+            
             if scrollTimes < scrollLimit {
                 scroll()
             }

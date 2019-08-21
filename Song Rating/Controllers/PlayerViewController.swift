@@ -101,15 +101,16 @@ extension PlayerViewController {
 extension PlayerViewController {
     
     func updateCurrectTrack(_ track: iTunesTrack?) {
-        guard let track = track else {
-            coverImageView.image = nil
-            coverImageView.needsLayout = true
-            return
-        }
-        
         defer {
             view.needsLayout = true
         }
+        
+        guard let track = track else {
+            coverImageView.image = nil
+            backCoverImageView.layer?.contents = nil
+            return
+        }
+        
         
         if let artwork = track.artworks?().firstObject as? iTunesArtwork,
         let data = artwork.rawData,
