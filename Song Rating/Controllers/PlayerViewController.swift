@@ -11,14 +11,16 @@ import DominantColor
 
 final class PlayerViewController: NSViewController {
     
-    let backCoverImageView: MovableImageView = {
+    private let playerHistoryViewController = PlayerHistoryViewController()
+    
+    private let backCoverImageView: MovableImageView = {
         let view = MovableImageView()
         view.wantsLayer = true
         view.layer = CALayer()
         view.layer?.contentsGravity = CALayerContentsGravity.resizeAspectFill
         return view
     }()
-    let backCoverImageVisualEffectView: NSVisualEffectView = {
+    private let backCoverImageVisualEffectView: NSVisualEffectView = {
         let visualEffectView = NSVisualEffectView()
         visualEffectView.blendingMode = .withinWindow
         visualEffectView.material = .hudWindow
@@ -26,15 +28,76 @@ final class PlayerViewController: NSViewController {
         visualEffectView.state = .active
         return visualEffectView
     }()
-    let coverImageView: MovableImageView = {
+    private let coverImageView: MovableImageView = {
         let imageView = MovableImageView()
         imageView.imageScaling = .scaleProportionallyUpOrDown
         return imageView
     }()
-    let playerInfoView = PlayerInfoView()
+    private let playerInfoView = PlayerInfoView()
 
     override func loadView() {
         self.view = NSView()
+    }
+    
+    private(set) var state = State.playerWithHistory
+    private var playerHistoryViewHeightLayoutConstraint: NSLayoutConstraint!
+    private lazy var playerHistoryTriggerButton: NSButton = {
+        let button = NSButton()
+        button.title = "Trigger"
+        button.target = self
+        button.action = #selector(PlayerViewController.playerHistoryTriggerButtonPressed(_:))
+        return button
+    }()
+    
+    var playerHeight: CGFloat {
+        return coverImageView.frame.height + playerInfoView.frame.height + playerHistoryTriggerButton.frame.height
+    }
+    
+    var playerHistoryHeight: CGFloat = 5 * 40
+    
+}
+
+extension PlayerViewController {
+    
+    @objc private func playerHistoryTriggerButtonPressed(_ sender: NSButton) {
+        state = state.toggle()
+        
+        // Use NSWindow API calculate correct frame (contains shadow margin)
+        guard let window = view.window else {
+            assertionFailure()
+            return
+        }
+        
+        let originalWindowFrameHeight = window.frame.size.height
+        let listHeight: CGFloat = state == .player ? 0.0 : playerHistoryHeight
+        
+        var contentRect = window.contentLayoutRect
+        contentRect.size.height = playerHeight + listHeight     // resize content height
+        let newFrameSize = window.frameRect(forContentRect: contentRect).size
+        
+        var newFrame = window.frame
+        newFrame.size.height = newFrameSize.height
+        let diff = originalWindowFrameHeight - newFrame.size.height
+        newFrame.origin.y += diff
+        
+        
+        window.setFrame(newFrame, display: true, animate: true)
+    }
+    
+}
+
+extension PlayerViewController {
+    
+    enum State {
+        case player
+        case playerWithHistory
+        
+        func toggle() -> State {
+            switch self {
+            case .player:               return .playerWithHistory
+            case .playerWithHistory:    return .player
+            }
+        }
     }
     
 }
@@ -43,7 +106,7 @@ extension PlayerViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         let stackView = NSStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
@@ -52,7 +115,7 @@ extension PlayerViewController {
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            ])
+        ])
         stackView.alignment = .centerX
         stackView.spacing = 0
         
@@ -83,10 +146,30 @@ extension PlayerViewController {
         
         playerInfoView.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(playerInfoView)
-
         NSLayoutConstraint.activate([
             playerInfoView.widthAnchor.constraint(equalTo: coverImageView.widthAnchor, multiplier: 1.0),
         ])
+        
+        stackView.addArrangedSubview(playerHistoryTriggerButton)
+        
+        addChild(playerHistoryViewController)
+        playerHistoryViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(playerHistoryViewController.view)
+        playerHistoryViewHeightLayoutConstraint = playerHistoryViewController.scrollView.heightAnchor.constraint(equalToConstant: playerHistoryHeight)
+        NSLayoutConstraint.activate([
+            playerHistoryViewController.view.widthAnchor.constraint(equalTo: coverImageView.widthAnchor),
+            playerHistoryViewHeightLayoutConstraint,    // placeholder constraint. deactive after appeare
+        ])
+    }
+    
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        
+        playerHistoryViewHeightLayoutConstraint.isActive = false
+        
+        #if DEBUG
+        WindowManager.shared.open(.popover)
+        #endif
     }
     
     override func viewWillDisappear() {
@@ -111,10 +194,18 @@ extension PlayerViewController {
             return
         }
         
+        // artwork.data is available in Catalina
+        let firstImage: NSImage? = {
+            guard let artwork = track.artworks?().firstObject as? iTunesArtwork else { return nil }
+            if #available(macOS 10.15, *) {
+                return artwork.data
+            } else {
+                guard let data = artwork.rawData else { return nil }
+                return NSImage(data: data)
+            }
+        }()
         
-        if let artwork = track.artworks?().firstObject as? iTunesArtwork,
-        let data = artwork.rawData,
-        let image = NSImage(data: data) {
+        if let image = firstImage {
             let transition = CATransition()
             transition.duration = 0.33
             transition.type = .fade
@@ -137,6 +228,9 @@ extension PlayerViewController {
         let caption = [track.artist ?? track.albumArtist, track.album].compactMap { $0 }.joined(separator: " – ")
         playerInfoView.captionTextField.stringValue = caption
         playerInfoView.captionTextField.scroll()
+        
+        // update history table view
+        playerHistoryViewController.playerHistoryTableView.reloadData()
     }
     
 }

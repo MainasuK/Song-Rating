@@ -113,6 +113,9 @@ extension WindowManager: NSWindowDelegate {
         case _ where window === self.preferencesWindowController?.window:
             preferencesWindowController = nil
             os_log("%{public}s[%{public}ld], %{public}s: Preferences window closed", ((#file as NSString).lastPathComponent), #line, #function)
+        case _ where window === self.popoverWindowController?.window:
+            popoverWindowController = nil
+            os_log("%{public}s[%{public}ld], %{public}s: Preferences window closed", ((#file as NSString).lastPathComponent), #line, #function)
         default:
             assertionFailure()
         }

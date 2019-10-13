@@ -29,10 +29,6 @@ final class AutoScrollTextField: NSTextField {
 
     override var stringValue: String {
         didSet {
-//            let attributes = [
-//                NSAttributedString.Key.foregroundColor : textColor ?? NSColor.labelColor,
-//                NSAttributedString.Key.font : font ?? NSFont.systemFont(ofSize: 13.0, weight: .semibold)
-//            ]
             let attributes = stringValue.isEmpty ? [:] : attributedStringValue.attributes(at: 0, effectiveRange: nil)
             appendingAttributedStringValue = NSAttributedString(string:  "    " + stringValue, attributes: attributes)
             appendedAttributedStringValue = NSAttributedString(string: stringValue + "    " + stringValue, attributes: attributes)

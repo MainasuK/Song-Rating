@@ -148,12 +148,3 @@ extension PopoverViewController {
     }
     
 }
-
-extension PopoverViewController {
-    
-    
-//    private func addCustomCloseButton() {
-//
-//    }
-   
-}

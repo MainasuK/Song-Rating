@@ -27,6 +27,7 @@
 		DB424A3C230877F400230C7E /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3B230877F400230C7E /* PlayerViewController.swift */; };
 		DB424A3E2308936F00230C7E /* AutoScrollTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3D2308936F00230C7E /* AutoScrollTextField.swift */; };
 		DB424A41230AF5C200230C7E /* PopoverWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A40230AF5C200230C7E /* PopoverWindow.swift */; };
+		DB424A45230D877900230C7E /* PlayerHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A44230D877800230C7E /* PlayerHistoryViewController.swift */; };
 		DB89C9EB22E2B7DF003981F5 /* MenuBarRatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */; };
 		DB89C9F322E2D766003981F5 /* MenuBarIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */; };
 		DB89C9F522E3176C003981F5 /* iTunesLibraryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89C9F422E3176C003981F5 /* iTunesLibraryTests.swift */; };
@@ -80,6 +81,7 @@
 		DB424A3B230877F400230C7E /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		DB424A3D2308936F00230C7E /* AutoScrollTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoScrollTextField.swift; sourceTree = "<group>"; };
 		DB424A40230AF5C200230C7E /* PopoverWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverWindow.swift; sourceTree = "<group>"; };
+		DB424A44230D877800230C7E /* PlayerHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHistoryViewController.swift; sourceTree = "<group>"; };
 		DB89C9EA22E2B7DF003981F5 /* MenuBarRatingControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarRatingControl.swift; sourceTree = "<group>"; };
 		DB89C9F222E2D766003981F5 /* MenuBarIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIcon.swift; sourceTree = "<group>"; };
 		DB89C9F422E3176C003981F5 /* iTunesLibraryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesLibraryTests.swift; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 				DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */,
 				DB424A3723073CB000230C7E /* PopoverViewController.swift */,
 				DB424A3B230877F400230C7E /* PlayerViewController.swift */,
+				DB424A44230D877800230C7E /* PlayerHistoryViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -443,6 +446,7 @@
 				DB424A3A23086C1200230C7E /* MovableImageView.swift in Sources */,
 				DB89C9EB22E2B7DF003981F5 /* MenuBarRatingControl.swift in Sources */,
 				DB89CA0022E37826003981F5 /* OSVersionHelper.swift in Sources */,
+				DB424A45230D877900230C7E /* PlayerHistoryViewController.swift in Sources */,
 				DB106CA622CA3EE700502D7C /* Stars.swift in Sources */,
 				DB2797732306F0EC00DDE3EB /* iTunesApplication.swift in Sources */,
 				DB424A3C230877F400230C7E /* PlayerViewController.swift in Sources */,
