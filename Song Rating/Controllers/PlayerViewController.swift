@@ -106,6 +106,11 @@ extension PlayerViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // V-StackView
+        // - backCoverImageVisualEffectView & coverImageView
+        // - playerInfoView
+        // - playerHistoryViewController
                 
         let stackView = NSStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -167,9 +172,11 @@ extension PlayerViewController {
         
         playerHistoryViewHeightLayoutConstraint.isActive = false
         
+        /*
         #if DEBUG
         WindowManager.shared.open(.popover)
         #endif
+        */
     }
     
     override func viewWillDisappear() {
@@ -197,12 +204,17 @@ extension PlayerViewController {
         // artwork.data is available in Catalina
         let firstImage: NSImage? = {
             guard let artwork = track.artworks?().firstObject as? iTunesArtwork else { return nil }
-            if #available(macOS 10.15, *) {
-                return artwork.data
-            } else {
-                guard let data = artwork.rawData else { return nil }
-                return NSImage(data: data)
+            if let descriptor = (artwork.data as Any) as? NSAppleEventDescriptor {
+                return NSImage(data: descriptor.data)
             }
+            if let image = (artwork.data as Any) as? NSImage {
+                return image
+            }
+            if let data = artwork.rawData, let image = NSImage(data: data) {
+                return image
+            }
+            
+            return nil
         }()
         
         if let image = firstImage {
