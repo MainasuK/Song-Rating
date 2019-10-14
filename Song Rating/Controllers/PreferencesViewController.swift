@@ -115,3 +115,19 @@ extension PreferencesViewController {
     }
     
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+@available(macOS 10.15.0, *)
+struct PreferencesViewController_Preview: PreviewProvider {
+    
+    static var previews: some View {
+        NSViewControllerPreview {
+            return PreferencesViewController()
+        }
+    }
+    
+}
+
+#endif

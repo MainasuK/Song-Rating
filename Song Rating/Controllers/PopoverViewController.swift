@@ -97,7 +97,7 @@ extension PopoverViewController {
         
         closeButtonContainerVisualEffectView.layer?.cornerRadius = floor(0.5 * closeButtonContainerVisualEffectView.frame.width)
         
-        playerViewController.updateCurrectTrack(iTunesPlayer.shared.currentTrack)
+        playerViewController.updateCurrentTrack(iTunesPlayer.shared.currentTrack)
     }
     
     override func mouseEntered(with event: NSEvent) {
@@ -140,7 +140,7 @@ extension PopoverViewController {
 extension PopoverViewController {
     
     @objc private func iTunesPlayerDidUpdated(_ notification: Notification) {
-        playerViewController.updateCurrectTrack(iTunesPlayer.shared.currentTrack)
+        playerViewController.updateCurrentTrack(iTunesPlayer.shared.currentTrack)
     }
     
     @objc private func closeButtonPressed(_ button: NSButton) {
@@ -148,3 +148,19 @@ extension PopoverViewController {
     }
     
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+@available(macOS 10.15.0, *)
+struct PopoverViewController_Preview: PreviewProvider {
+    
+    static var previews: some View {
+        NSViewControllerPreview {
+            return PopoverViewController()
+        }
+    }
+    
+}
+
+#endif

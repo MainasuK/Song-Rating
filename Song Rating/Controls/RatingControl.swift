@@ -134,3 +134,22 @@ extension RatingControl {
     }
     
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+@available(macOS 10.15.0, *)
+struct RatingControl_Preview: PreviewProvider {
+    
+    static var previews: some View {
+        ForEach(0..<6) { i in
+            NSViewPreview {
+                let ratingControl = RatingControl(rating: i * 20)
+                return NSImageView(image: ratingControl.starsImage)
+            }
+        }
+    }
+    
+}
+
+#endif

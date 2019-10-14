@@ -11,6 +11,7 @@ import DominantColor
 
 final class PlayerViewController: NSViewController {
     
+    private let playerPanelViewController = PlayerPanelViewController()
     private let playerHistoryViewController = PlayerHistoryViewController()
     
     private let backCoverImageView: MovableImageView = {
@@ -33,7 +34,6 @@ final class PlayerViewController: NSViewController {
         imageView.imageScaling = .scaleProportionallyUpOrDown
         return imageView
     }()
-    private let playerInfoView = PlayerInfoView()
 
     override func loadView() {
         self.view = NSView()
@@ -50,7 +50,7 @@ final class PlayerViewController: NSViewController {
     }()
     
     var playerHeight: CGFloat {
-        return coverImageView.frame.height + playerInfoView.frame.height + playerHistoryTriggerButton.frame.height
+        return coverImageView.frame.height + playerPanelViewController.view.frame.height + playerHistoryTriggerButton.frame.height
     }
     
     var playerHistoryHeight: CGFloat = 5 * 40
@@ -149,10 +149,11 @@ extension PlayerViewController {
             backCoverImageView.bottomAnchor.constraint(equalTo: coverImageView.bottomAnchor),
         ])
         
-        playerInfoView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(playerInfoView)
+        addChild(playerPanelViewController)
+        playerPanelViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(playerPanelViewController.view)
         NSLayoutConstraint.activate([
-            playerInfoView.widthAnchor.constraint(equalTo: coverImageView.widthAnchor, multiplier: 1.0),
+            playerPanelViewController.view.widthAnchor.constraint(equalTo: coverImageView.widthAnchor, multiplier: 1.0),
         ])
         
         stackView.addArrangedSubview(playerHistoryTriggerButton)
@@ -179,29 +180,28 @@ extension PlayerViewController {
         */
     }
     
-    override func viewWillDisappear() {
-        super.viewWillDisappear()
-        
-        playerInfoView.titleTextField.reset()
-        playerInfoView.captionTextField.reset()
-    }
-    
 }
 
 extension PlayerViewController {
     
-    func updateCurrectTrack(_ track: iTunesTrack?) {
+    func updateCurrentTrack(_ track: iTunesTrack?) {
         defer {
             view.needsLayout = true
+            
+            // update panel view
+            playerPanelViewController.updateCurrentTrack(track)
+            
+            // update history table view
+            playerHistoryViewController.playerHistoryTableView.reloadData()
         }
-        
+    
+        // update cover image
         guard let track = track else {
             coverImageView.image = nil
             backCoverImageView.layer?.contents = nil
             return
         }
-        
-        // artwork.data is available in Catalina
+    
         let firstImage: NSImage? = {
             guard let artwork = track.artworks?().firstObject as? iTunesArtwork else { return nil }
             if let descriptor = (artwork.data as Any) as? NSAppleEventDescriptor {
@@ -232,64 +232,27 @@ extension PlayerViewController {
             coverImageView.image = nil
             backCoverImageView.layer?.contents = nil
         }
-        
-        // setup playInfoView
-        playerInfoView.titleTextField.stringValue = track.name ?? "No Title"
-        playerInfoView.titleTextField.scroll()
-        
-        let caption = [track.artist ?? track.albumArtist, track.album].compactMap { $0 }.joined(separator: " – ")
-        playerInfoView.captionTextField.stringValue = caption
-        playerInfoView.captionTextField.scroll()
-        
-        // update history table view
-        playerHistoryViewController.playerHistoryTableView.reloadData()
     }
     
 }
 
-final class PlayerInfoView: NSView {
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+@available(macOS 10.15.0, *)
+struct PlayerViewController_Preview: PreviewProvider {
     
-    let titleTextField: AutoScrollTextField = {
-        let textField = AutoScrollTextField(labelWithString: "")
-        textField.font = NSFont.systemFont(ofSize: 14, weight: .semibold)
-        textField.textColor = NSColor.labelColor
-        return textField
-    }()
-    
-    let captionTextField: AutoScrollTextField = {
-        let textField = AutoScrollTextField(labelWithString: "")
-        textField.font = NSFont.systemFont(ofSize: 12, weight: .regular)
-        textField.textColor = NSColor.secondaryLabelColor
-        return textField
-    }()
-    
-    override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        _init()
-    }
-    
-    required init?(coder decoder: NSCoder) {
-        super.init(coder: decoder)
-        _init()
-    }
-    
-    private func _init() {
-        titleTextField.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(titleTextField)
-        NSLayoutConstraint.activate([
-            titleTextField.topAnchor.constraint(equalTo: topAnchor),
-            titleTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleTextField.trailingAnchor.constraint(equalTo: trailingAnchor),
-        ])
-        
-        captionTextField.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(captionTextField)
-        NSLayoutConstraint.activate([
-            captionTextField.topAnchor.constraint(equalTo: titleTextField.bottomAnchor),
-            captionTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            captionTextField.trailingAnchor.constraint(equalTo: trailingAnchor),
-            captionTextField.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
+    // Live preview
+    static var previews: some View {
+        NSViewControllerPreview {
+            let playerViewController = PlayerViewController()
+            NotificationCenter.default.addObserver(forName: .iTunesPlayerDidUpdated, object: nil, queue: .main) { notification in
+                playerViewController.updateCurrentTrack(iTunesPlayer.shared.currentTrack)
+            }
+            return playerViewController
+        }
     }
     
 }
+
+#endif

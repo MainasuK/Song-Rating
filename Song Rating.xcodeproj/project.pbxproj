@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		96C540E9972EAA2E182EB6DF /* Pods_Song_RatingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */; };
+		DB05F0632353909000CE6DF9 /* PlayerPanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05F0622353909000CE6DF9 /* PlayerPanelViewController.swift */; };
+		DB05F0652353912500CE6DF9 /* PlayerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05F0642353912500CE6DF9 /* PlayerInfoView.swift */; };
+		DB05F0862354CA5800CE6DF9 /* NSViewPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05F0852354CA5800CE6DF9 /* NSViewPreview.swift */; };
+		DB05F0882354CA6B00CE6DF9 /* NSViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05F0872354CA6B00CE6DF9 /* NSViewControllerPreview.swift */; };
+		DB05F08A2354FC7700CE6DF9 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05F0892354FC7700CE6DF9 /* PlayerControlView.swift */; };
 		DB106C4622C53D4B00502D7C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C4522C53D4B00502D7C /* AppDelegate.swift */; };
 		DB106C4A22C53D4C00502D7C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4922C53D4C00502D7C /* Assets.xcassets */; };
 		DB106C4D22C53D4C00502D7C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4B22C53D4C00502D7C /* Main.storyboard */; };
@@ -57,6 +62,11 @@
 		9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Song_Rating.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Song_RatingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB3C7008577650EFDD93EC17 /* Pods-Song RatingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song RatingTests.release.xcconfig"; path = "Target Support Files/Pods-Song RatingTests/Pods-Song RatingTests.release.xcconfig"; sourceTree = "<group>"; };
+		DB05F0622353909000CE6DF9 /* PlayerPanelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerPanelViewController.swift; sourceTree = "<group>"; };
+		DB05F0642353912500CE6DF9 /* PlayerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerInfoView.swift; sourceTree = "<group>"; };
+		DB05F0852354CA5800CE6DF9 /* NSViewPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSViewPreview.swift; sourceTree = "<group>"; };
+		DB05F0872354CA6B00CE6DF9 /* NSViewControllerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSViewControllerPreview.swift; sourceTree = "<group>"; };
+		DB05F0892354FC7700CE6DF9 /* PlayerControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		DB106C4222C53D4B00502D7C /* Song Rating.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Song Rating.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB106C4522C53D4B00502D7C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DB106C4922C53D4C00502D7C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -227,9 +237,11 @@
 			isa = PBXGroup;
 			children = (
 				DB106CA322CA3C7300502D7C /* Star.swift */,
-				DB424A40230AF5C200230C7E /* PopoverWindow.swift */,
 				DB106CA522CA3EE700502D7C /* Stars.swift */,
+				DB424A40230AF5C200230C7E /* PopoverWindow.swift */,
 				DB89C9FF22E37826003981F5 /* OSVersionHelper.swift */,
+				DB05F0852354CA5800CE6DF9 /* NSViewPreview.swift */,
+				DB05F0872354CA6B00CE6DF9 /* NSViewControllerPreview.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -241,6 +253,7 @@
 				DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */,
 				DB424A3723073CB000230C7E /* PopoverViewController.swift */,
 				DB424A3B230877F400230C7E /* PlayerViewController.swift */,
+				DB05F0622353909000CE6DF9 /* PlayerPanelViewController.swift */,
 				DB424A44230D877800230C7E /* PlayerHistoryViewController.swift */,
 			);
 			path = Controllers;
@@ -260,6 +273,8 @@
 			children = (
 				DB424A3D2308936F00230C7E /* AutoScrollTextField.swift */,
 				DB424A3923086C1200230C7E /* MovableImageView.swift */,
+				DB05F0642353912500CE6DF9 /* PlayerInfoView.swift */,
+				DB05F0892354FC7700CE6DF9 /* PlayerControlView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -441,6 +456,7 @@
 			files = (
 				DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */,
 				DB106CC422CA86A500502D7C /* iTunes.swift in Sources */,
+				DB05F0882354CA6B00CE6DF9 /* NSViewControllerPreview.swift in Sources */,
 				DB27976F2306EA6800DDE3EB /* iTunesPlayer.swift in Sources */,
 				DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */,
 				DB424A3A23086C1200230C7E /* MovableImageView.swift in Sources */,
@@ -449,10 +465,14 @@
 				DB424A45230D877900230C7E /* PlayerHistoryViewController.swift in Sources */,
 				DB106CA622CA3EE700502D7C /* Stars.swift in Sources */,
 				DB2797732306F0EC00DDE3EB /* iTunesApplication.swift in Sources */,
+				DB05F08A2354FC7700CE6DF9 /* PlayerControlView.swift in Sources */,
 				DB424A3C230877F400230C7E /* PlayerViewController.swift in Sources */,
 				DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */,
+				DB05F0652353912500CE6DF9 /* PlayerInfoView.swift in Sources */,
 				DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */,
 				DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */,
+				DB05F0632353909000CE6DF9 /* PlayerPanelViewController.swift in Sources */,
+				DB05F0862354CA5800CE6DF9 /* NSViewPreview.swift in Sources */,
 				DB89C9F322E2D766003981F5 /* MenuBarIcon.swift in Sources */,
 				DB106CA422CA3C7300502D7C /* Star.swift in Sources */,
 				DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */,

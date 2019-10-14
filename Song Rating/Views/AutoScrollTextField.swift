@@ -156,3 +156,22 @@ final class BezierLayoutManager: NSLayoutManager {
     }
     
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+@available(macOS 10.15.0, *)
+struct AutoScrollTextField_Preview: PreviewProvider {
+    
+    static var previews: some View {
+        NSViewPreview {
+            let autoScrollTextField = AutoScrollTextField()
+            autoScrollTextField.stringValue = Array(repeating: "AutoScrollTextField", count: 5).joined(separator: " ")
+            autoScrollTextField.scroll()
+            return autoScrollTextField
+        }
+    }
+    
+}
+
+#endif
