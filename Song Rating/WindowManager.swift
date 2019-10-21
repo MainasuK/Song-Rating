@@ -98,6 +98,18 @@ extension WindowManager {
 
 }
 
+extension WindowManager {
+    
+    @objc func preferencesMenuItemPressed(_ sender: NSMenuItem) {
+        open(.preferences)
+    }
+    
+    @objc func aboutMenuItemPressed(_ sender: NSMenuItem) {
+        open(.about)
+    }
+    
+}
+
 // MARK: - NSWindowDelegate
 extension WindowManager: NSWindowDelegate {
 

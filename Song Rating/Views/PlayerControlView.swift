@@ -17,39 +17,49 @@ final class PlayerControlView: NSView {
     private static let ellipsisImage = NSImage(named: "ellipsis.button")!
     private static let listBulletImage = NSImage(named: "list-bullet.button")!
     
-    private lazy var playPauseButton: NSButton = {
+    private(set) lazy var playPauseButton: NSButton = {
         let button = NSButton()
         button.imageScaling = .scaleProportionallyUpOrDown
         button.image = PlayerControlView.playImage
+        button.alternateImage = PlayerControlView.pauseImage
         button.isBordered = false
+        button.setButtonType(.toggle)
         return button
     }()
-    private lazy var forwardButton: NSButton = {
+    private(set) lazy var forwardButton: NSButton = {
         let button = NSButton()
         button.imageScaling = .scaleProportionallyUpOrDown
         button.image = PlayerControlView.forwardImage
         button.isBordered = false
+        button.setButtonType(.momentaryPushIn)
+        button.bezelStyle = .shadowlessSquare
         return button
     }()
-    private lazy var backwardButton: NSButton = {
+    private(set) lazy var backwardButton: NSButton = {
         let button = NSButton()
         button.imageScaling = .scaleProportionallyUpOrDown
         button.image = PlayerControlView.backwardImage
         button.isBordered = false
+        button.setButtonType(.momentaryPushIn)
+        button.bezelStyle = .shadowlessSquare
         return button
     }()
-    private lazy var menuButton: NSButton = {
+    private(set) lazy var menuButton: NSButton = {
         let button = NSButton()
         button.imageScaling = .scaleProportionallyUpOrDown
         button.image = PlayerControlView.ellipsisImage
         button.isBordered = false
+        button.setButtonType(.momentaryPushIn)
+        button.bezelStyle = .shadowlessSquare
         return button
     }()
-    private lazy var listButton: NSButton = {
+    private(set) lazy var listButton: NSButton = {
         let button = NSButton()
         button.imageScaling = .scaleProportionallyUpOrDown
         button.image = PlayerControlView.listBulletImage
         button.isBordered = false
+        button.setButtonType(.momentaryPushIn)
+        button.bezelStyle = .shadowlessSquare
         return button
     }()
     

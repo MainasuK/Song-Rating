@@ -15,6 +15,7 @@ final class PlayerViewController: NSViewController {
     private let playerPanelViewController = PlayerPanelViewController()
     private let playerHistoryViewController = PlayerHistoryViewController()
     
+    // cover
     private let backCoverImageView: MovableImageView = {
         let view = MovableImageView()
         view.wantsLayer = true
@@ -35,11 +36,8 @@ final class PlayerViewController: NSViewController {
         imageView.imageScaling = .scaleProportionallyUpOrDown
         return imageView
     }()
-
-    override func loadView() {
-        self.view = NSView()
-    }
     
+    // History
     private(set) var state = State.playerWithHistory
     private var playerHistoryViewHeightLayoutConstraint: NSLayoutConstraint!
     private lazy var playerHistoryTriggerButton: NSButton = {
@@ -50,11 +48,29 @@ final class PlayerViewController: NSViewController {
         return button
     }()
     
+    // Misc.
+    private lazy var menuButtonMenu: NSMenu = {
+        let menu = NSMenu()
+        let about = NSMenuItem(title: "About Song Rating", action: #selector(WindowManager.aboutMenuItemPressed(_:)), keyEquivalent: "")
+        about.target = WindowManager.shared
+        menu.addItem(about)
+        let preferences = NSMenuItem(title: "Preferences…", action: #selector(WindowManager.preferencesMenuItemPressed(_:)), keyEquivalent: ",")
+        preferences.target = WindowManager.shared
+        menu.addItem(preferences)
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "Quit Song Rating", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        return menu
+    }()
+    
+    // Computed property
     var playerHeight: CGFloat {
         return coverImageView.frame.height + playerPanelViewController.view.frame.height + playerHistoryTriggerButton.frame.height
     }
-    
     var playerHistoryHeight: CGFloat = 5 * 40
+    
+    override func loadView() {
+        self.view = NSView()
+    }
     
 }
 
@@ -109,6 +125,8 @@ extension PlayerViewController {
         super.viewDidLoad()
         
         view.addTrackingArea(NSTrackingArea(rect: view.bounds, options: [.activeAlways, .mouseEnteredAndExited, .inVisibleRect], owner: self, userInfo: nil))
+        
+        playerPanelViewController.delegate = self
 
         // V-StackView
         // - backCoverImageVisualEffectView & coverImageView
@@ -255,6 +273,21 @@ extension PlayerViewController {
             coverImageView.image = nil
             backCoverImageView.layer?.contents = nil
         }
+    }
+    
+}
+
+// MARK: - PlayerPanelViewControllerDelegate
+extension PlayerViewController: PlayerPanelViewControllerDelegate {
+    
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, menuButtonPressed button: NSButton) {
+        
+        guard let event = NSApplication.shared.currentEvent else {
+            return
+        }
+        
+        os_log("%{public}s[%{public}ld], %{public}s: menuButtonPressed", ((#file as NSString).lastPathComponent), #line, #function)
+        NSMenu.popUpContextMenu(menuButtonMenu, with: event, for: button)
     }
     
 }

@@ -64,10 +64,13 @@ final class MenuBarRatingControl {
     var undetachedPopover: NSPopover?
     var detachedPopover: NSPopover?
 
-    lazy private(set) var menuBarMenu: NSMenu = {
+    private(set) lazy var menuBarMenu: NSMenu = {
         let menu = NSMenu()
-        let preferences = NSMenuItem(title: "Preferences…", action: #selector(MenuBarRatingControl.preferencesMenuItemPressed(_:)), keyEquivalent: ",")
-        preferences.target = self
+        let about = NSMenuItem(title: "About Song Rating", action: #selector(WindowManager.aboutMenuItemPressed(_:)), keyEquivalent: "")
+        about.target = WindowManager.shared
+        menu.addItem(about)
+        let preferences = NSMenuItem(title: "Preferences…", action: #selector(WindowManager.preferencesMenuItemPressed(_:)), keyEquivalent: ",")
+        preferences.target = WindowManager.shared
         menu.addItem(preferences)
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit Song Rating", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
@@ -157,10 +160,6 @@ extension MenuBarRatingControl {
         default:
             os_log("%{public}s[%{public}ld], %{public}s: no handler for event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
         }
-    }
-
-    @objc func preferencesMenuItemPressed(_ sender: NSMenuItem) {
-        WindowManager.shared.open(.preferences)
     }
     
 }

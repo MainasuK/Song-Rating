@@ -8,6 +8,10 @@
 
 import Cocoa
 
+protocol PlayerPanelViewControllerDelegate: class {
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, menuButtonPressed button: NSButton)
+}
+
 final class PlayerPanelViewController: NSViewController {
     
     enum State {
@@ -20,6 +24,8 @@ final class PlayerPanelViewController: NSViewController {
             stateDidUpdate(self.state)
         }
     }
+    
+    weak var delegate: PlayerPanelViewControllerDelegate?
     
     private let playerInfoView = PlayerInfoView()
     private let playerControlView = PlayerControlView()
@@ -53,8 +59,10 @@ extension PlayerPanelViewController {
             playerControlView.trailingAnchor.constraint(equalTo: playerInfoView.trailingAnchor),
             playerControlView.bottomAnchor.constraint(equalTo: playerInfoView.bottomAnchor),
         ])
+        playerControlView.alphaValue = 0
         
-        state = .info
+        playerControlView.menuButton.target = self
+        playerControlView.menuButton.action = #selector(PlayerPanelViewController.menuButtonPressed(_:))
     }
     
     override func viewWillDisappear() {
@@ -85,13 +93,29 @@ extension PlayerPanelViewController {
     func stateDidUpdate(_ state: State) {
         switch state {
         case .control:
-            playerInfoView.isHidden = true
-            playerControlView.isHidden = false
+            playerInfoView.alphaValue = 0
+            playerControlView.alphaValue = 1
+            
+            playerInfoView.titleTextField.reset()
+            playerInfoView.titleTextField.scroll()
+            playerInfoView.captionTextField.reset()
+            playerInfoView.captionTextField.scroll()
+            
         case .info:
-            playerInfoView.animator().isHidden = false
-            playerControlView.animator().isHidden = true
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.33
+                playerInfoView.animator().alphaValue = 1
+                playerControlView.animator().alphaValue = 0
+            }
         }
-        
+    }
+    
+}
+
+extension PlayerPanelViewController {
+    
+    @objc private func menuButtonPressed(_ sender: NSButton) {
+        delegate?.playerPanelViewController(self, menuButtonPressed: sender)
     }
     
 }
