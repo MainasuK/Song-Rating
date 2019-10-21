@@ -27,8 +27,8 @@ struct Star {
             let radius = min(rect.height, rect.width) * 0.5
             let center = CGPoint(x: rect.midX, y: rect.midY - 0.5 * 0.191 * radius)
             
-            NSColor.black.setFill()
-            NSColor.black.setStroke()
+//            NSColor.black.setFill()
+//            NSColor.black.setStroke()
             
             if !fill {
                 let path = NSBezierPath()
@@ -93,3 +93,26 @@ extension Star {
     }
     
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+@available(macOS 10.15.0, *)
+struct Star_Preview: PreviewProvider {
+    
+    static var previews: some View {
+        Group {
+            NSViewPreview {
+                let star = Star(size: NSSize(width: 100.0, height: 100.0), fill: true)
+                return NSImageView(image: star.image)
+            }
+            NSViewPreview {
+                let star = Star(size: NSSize(width: 100.0, height: 100.0), fill: false)
+                return NSImageView(image: star.image)
+            }
+        }
+    }
+    
+}
+
+#endif

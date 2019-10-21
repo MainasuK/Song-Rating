@@ -12,8 +12,8 @@ import os
 import MASShortcut
 
 extension Notification.Name {
-    static let iTunesCurrentPlayInfoChanged = Notification.Name("iTunesCurrentPlayInfoChanged")
-    static let iTunesRadioDidSetupRating = Notification.Name("iTunesRadioDidSetupRating")
+//    static let iTunesPlayInfoChanged = Notification.Name("iTunesPlayInfoChanged")
+//    static let iTunesRadioDidSetupRating = Notification.Name("iTunesRadioDidSetupRating")
     static let iTunesRadioRequestTrackRatingUp = Notification.Name("iTunesRadioRequestTrackRatingUp")
     static let iTunesRadioRequestTrackRatingDown = Notification.Name("iTunesRadioRequestTrackRatingDown")
 }
@@ -28,10 +28,11 @@ final class iTunesRadioStation {
         application?.delegate = self
         return application
     }
-    
-    private(set) var currentPlayInfo: PlayInfo? {
+
+    private(set) var latestPlayInfo: PlayInfo? {
         didSet {
-            NotificationCenter.default.post(name: .iTunesCurrentPlayInfoChanged, object: currentPlayInfo)
+            iTunesPlayer.shared.update()
+            // os_log("%{public}s[%{public}ld], %{public}s: latestPlayInfo %s", ((#file as NSString).lastPathComponent), #line, #function, latestPlayInfo?.description ?? "nil")
         }
     }
     
@@ -43,40 +44,21 @@ final class iTunesRadioStation {
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.playInfoChanged(_:)), name: NSNotification.Name("com.apple.iTunes.playerInfo"), object: nil)
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(iTunesRadioStation.sourceSaved(_:)), name: NSNotification.Name("com.apple.iTunes.sourceSaved"), object: nil)  // only set rating in iTunes edit song info panel can trigger that
 
-        // Due to iTunes may already in playing before app launch, use updateRadioStation method check when app start
-        updateRadioStation()
+        // Due to iTunes may already playing before app launch,update player when app start
+        iTunesPlayer.shared.update(iTunes?.currentTrackCopy)
 
-        // Recieve shortcut to change track rating
-        // But post notification to rating control to keep UI and rating behavior consist (current rating set is debounce procession)
+        // Bind and broadcast keyboard
+        // Notify control directly without trigger player update notification
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingUp.rawValue, toAction: {
-            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil, userInfo: self.currentTrackRatingChange?.userInfo)
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingUp, object: nil)
         })
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRatingDown.rawValue, toAction: {
-            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil, userInfo: self.currentTrackRatingChange?.userInfo)
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil)
         })
     }
-    
-    
-    /// Use ScriptingBridge manually setup iTunes radio station
-    func updateRadioStation() {
-        NotificationCenter.default.post(name: .iTunesRadioDidSetupRating, object: nil, userInfo: currentTrackRatingChange?.userInfo)
-    }
 
-}
-
-extension iTunesRadioStation {
-    
-    var currentTrackRatingChange: iTunesRadioStationTrackRatingChange? {
-        guard let track = iTunes?.currentTrack,
-        let rating = track.rating else {
-            return nil
-        }
-        
-        let isPlaying = iTunes?.playerState == .playing
-        return iTunesRadioStationTrackRatingChange(rating: rating,
-                                                   isPlaying: isPlaying)
-    }
-    
 }
 
 extension iTunesRadioStation {
@@ -127,7 +109,7 @@ extension iTunesRadioStation {
             }
             #endif
             
-            self.currentPlayInfo = playInfo
+            self.latestPlayInfo = playInfo
             
         } catch {
             os_log(.error, "%s: fail to parse playInfo with error %{public}s", #function, error.localizedDescription)
@@ -140,7 +122,6 @@ extension iTunesRadioStation {
 
 extension iTunesRadioStation {
 
-
     /// setRating for current track
     ///
     /// - Parameter rating: integer in 0 ~ 100
@@ -148,13 +129,13 @@ extension iTunesRadioStation {
     func setRating(_ rating: Int) {
         debounceSetRatingTimer?.invalidate()
 
-        guard currentPlayInfo != nil || !(iTunes?.currentTrack?.name ?? "").isEmpty else {
+        guard latestPlayInfo != nil || !(iTunes?.currentTrack?.name ?? "").isEmpty else {
             os_log("%{public}s[%{public}ld], %{public}s: try to set rating but no current track info", ((#file as NSString).lastPathComponent), #line, #function)
             return
         }
 
-        // Note: currentPlayInfo could not set when App just launch without recieved playInfoChanged notification
-        let name = currentPlayInfo?.name ?? iTunes?.currentTrack?.name ?? "nil"
+        // Note: latestPlayInfo could not set when App just launch without recieved playInfoChanged notification
+        let name = latestPlayInfo?.name ?? iTunes?.currentTrack?.name ?? "nil"
         os_log("%{public}s[%{public}ld], %{public}s: set timer for 2.0s and set rating for %{public}s %{public}ld…", ((#file as NSString).lastPathComponent), #line, #function, name, rating)
 
         // FIXME: delay may cause set rating to *next* song just playing
@@ -172,6 +153,18 @@ extension iTunesRadioStation {
         debounceSetRatingTimer.flatMap {
             RunLoop.current.add($0, forMode: .default)
         }
+    }
+    
+    func backward() {
+        iTunes?.backTrack?()
+    }
+    
+    func forward() {
+        iTunes?.nextTrack?()
+    }
+    
+    func playPause() {
+        iTunes?.playpause?()
     }
     
 }

@@ -10,7 +10,15 @@ import Cocoa
 
 final class AboutViewController: NSViewController {
 
-    lazy var imageView = NSImageView()
+    // lazy var imageView = NSImageView()
+    lazy var visualEffectBackgroundView: NSVisualEffectView = {
+        let visualEffectView = NSVisualEffectView()
+        visualEffectView.blendingMode = .behindWindow
+        visualEffectView.material = .underWindowBackground
+        visualEffectView.isEmphasized = true
+        visualEffectView.state = .active
+        return visualEffectView
+    }()
     lazy var titleTextField: NSTextField = {
         let textField = NSTextField(labelWithString: String.infoValue(for: "CFBundleName") ?? "Song Rating")
         textField.font = NSFont.systemFont(ofSize: 18, weight: .semibold)
@@ -57,8 +65,11 @@ extension AboutViewController {
 
     func setupWindow() {
         view.window?.styleMask.remove(.resizable)
+        view.window?.styleMask.insert(.fullSizeContentView)
         view.window?.titleVisibility = .hidden
         view.window?.titlebarAppearsTransparent = true
+        view.window?.isOpaque = false
+        view.window?.isMovableByWindowBackground = true
     }
 
     @objc func contactMeButtonPressed(_ sender: NSButton) {
@@ -77,15 +88,24 @@ extension AboutViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        visualEffectBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(visualEffectBackgroundView)
+        NSLayoutConstraint.activate([
+            visualEffectBackgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            visualEffectBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            visualEffectBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            visualEffectBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
 
         let contentView = NSView()
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(contentView)
+        visualEffectBackgroundView.addSubview(contentView)
         NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: view.topAnchor, constant: 4),
-            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 16),
-            view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 8),
+            contentView.topAnchor.constraint(equalTo: visualEffectBackgroundView.topAnchor, constant: 4 + 22),
+            contentView.leadingAnchor.constraint(equalTo: visualEffectBackgroundView.leadingAnchor, constant: 16),
+            visualEffectBackgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 16),
+            visualEffectBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 8),
         ])
 
         titleTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -139,3 +159,19 @@ extension String {
     }
 
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+@available(OSX 10.15.0, *)
+struct AboutViewController_Preview: PreviewProvider {
+    
+    static var previews: some View {
+        NSViewControllerPreview {
+            return AboutViewController()
+        }
+    }
+    
+}
+
+#endif
