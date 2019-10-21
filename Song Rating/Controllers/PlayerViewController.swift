@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import os
 import DominantColor
 
 final class PlayerViewController: NSViewController {
@@ -107,6 +108,8 @@ extension PlayerViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.addTrackingArea(NSTrackingArea(rect: view.bounds, options: [.activeAlways, .mouseEnteredAndExited, .inVisibleRect], owner: self, userInfo: nil))
+
         // V-StackView
         // - backCoverImageVisualEffectView & coverImageView
         // - playerInfoView
@@ -156,7 +159,7 @@ extension PlayerViewController {
             playerPanelViewController.view.widthAnchor.constraint(equalTo: coverImageView.widthAnchor, multiplier: 1.0),
         ])
         
-        stackView.addArrangedSubview(playerHistoryTriggerButton)
+        // stackView.addArrangedSubview(playerHistoryTriggerButton)
         
         addChild(playerHistoryViewController)
         playerHistoryViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -180,7 +183,27 @@ extension PlayerViewController {
         */
     }
     
+
 }
+
+extension PlayerViewController {
+    
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        os_log("%{public}s[%{public}ld], %{public}s: mouseEntered", ((#file as NSString).lastPathComponent), #line, #function)
+        
+        playerPanelViewController.state = .control
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        os_log("%{public}s[%{public}ld], %{public}s: mouseEntered", ((#file as NSString).lastPathComponent), #line, #function)
+        
+        playerPanelViewController.state = .info
+    }
+    
+}
+
 
 extension PlayerViewController {
     
@@ -249,8 +272,9 @@ struct PlayerViewController_Preview: PreviewProvider {
             NotificationCenter.default.addObserver(forName: .iTunesPlayerDidUpdated, object: nil, queue: .main) { notification in
                 playerViewController.updateCurrentTrack(iTunesPlayer.shared.currentTrack)
             }
+            playerViewController.updateCurrentTrack(iTunesPlayer.shared.currentTrack)
             return playerViewController
-        }
+        }.frame(width: 300, height: 800, alignment: .center)
     }
     
 }

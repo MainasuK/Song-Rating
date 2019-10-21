@@ -35,21 +35,34 @@ final class PlayerInfoView: NSView {
     }
     
     private func _init() {
-        titleTextField.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(titleTextField)
+        let groupView = NSView()
+        groupView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(groupView)
         NSLayoutConstraint.activate([
-            titleTextField.topAnchor.constraint(equalTo: topAnchor),
-            titleTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleTextField.trailingAnchor.constraint(equalTo: trailingAnchor),
+            groupView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            groupView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            groupView.centerYAnchor.constraint(equalTo: centerYAnchor),
+        ])
+        
+        titleTextField.translatesAutoresizingMaskIntoConstraints = false
+        groupView.addSubview(titleTextField)
+        NSLayoutConstraint.activate([
+            titleTextField.topAnchor.constraint(equalTo: groupView.topAnchor),
+            titleTextField.leadingAnchor.constraint(equalTo: groupView.leadingAnchor),
+            titleTextField.trailingAnchor.constraint(equalTo: groupView.trailingAnchor),
         ])
         
         captionTextField.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(captionTextField)
+        groupView.addSubview(captionTextField)
         NSLayoutConstraint.activate([
             captionTextField.topAnchor.constraint(equalTo: titleTextField.bottomAnchor),
-            captionTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            captionTextField.trailingAnchor.constraint(equalTo: trailingAnchor),
-            captionTextField.bottomAnchor.constraint(equalTo: bottomAnchor)
+            captionTextField.leadingAnchor.constraint(equalTo: groupView.leadingAnchor),
+            captionTextField.trailingAnchor.constraint(equalTo: groupView.trailingAnchor),
+            captionTextField.bottomAnchor.constraint(equalTo: groupView.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            titleTextField.heightAnchor.constraint(equalTo: captionTextField.heightAnchor, multiplier: 1.0)
         ])
     }
     
@@ -67,7 +80,7 @@ struct PlayerInfoView_Preview: PreviewProvider {
             playerInfoView.titleTextField.stringValue = "Title"
             playerInfoView.captionTextField.stringValue = "Caption"
             return playerInfoView
-        }
+        }.frame(width: 300, height: 60, alignment: .center)
     }
     
 }

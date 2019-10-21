@@ -25,7 +25,8 @@ struct NSViewControllerPreview<ViewController: NSViewController>: NSViewControll
     }
     
     func updateNSViewController(_ viewController: ViewController, context: Context) {
-        
+        viewController.view.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        viewController.view.setContentHuggingPriority(.defaultHigh, for: .vertical)
     }
     
 }
