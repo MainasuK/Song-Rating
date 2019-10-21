@@ -38,7 +38,7 @@ final class PlayerViewController: NSViewController {
     }()
     
     // History
-    private(set) var state = State.playerWithHistory
+    private(set) var state = State.player // State.playerWithHistory
     private var playerHistoryViewHeightLayoutConstraint: NSLayoutConstraint!
     private lazy var playerHistoryTriggerButton: NSButton = {
         let button = NSButton()
@@ -179,6 +179,7 @@ extension PlayerViewController {
         
         // stackView.addArrangedSubview(playerHistoryTriggerButton)
         
+        /*
         addChild(playerHistoryViewController)
         playerHistoryViewController.view.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(playerHistoryViewController.view)
@@ -187,12 +188,15 @@ extension PlayerViewController {
             playerHistoryViewController.view.widthAnchor.constraint(equalTo: coverImageView.widthAnchor),
             playerHistoryViewHeightLayoutConstraint,    // placeholder constraint. deactive after appeare
         ])
+         */
     }
     
     override func viewDidAppear() {
         super.viewDidAppear()
         
+        /*
         playerHistoryViewHeightLayoutConstraint.isActive = false
+         */
         
         /*
         #if DEBUG

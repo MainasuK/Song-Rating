@@ -81,6 +81,8 @@ extension PlayerPanelViewController {
         playerControlView.playPauseButton.target = self
         playerControlView.playPauseButton.action = #selector(PlayerPanelViewController.playPauseButtonToggled(_:))
         
+        playerControlView.listButton.isHidden = true
+        
         NotificationCenter.default.addObserver(self, selector: #selector(PlayerPanelViewController.iTunesPlayerDidUpdated(_:)), name: .iTunesPlayerDidUpdated, object: nil)
     }
     
