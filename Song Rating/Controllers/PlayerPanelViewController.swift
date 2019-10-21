@@ -10,6 +10,10 @@ import Cocoa
 
 protocol PlayerPanelViewControllerDelegate: class {
     func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, menuButtonPressed button: NSButton)
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, listButtonPressed button: NSButton)
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, backwardButtonPressed button: NSButton)
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, forwardButtonPressed button: NSButton)
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, playPauseButtonToggled button: NSButton)
 }
 
 final class PlayerPanelViewController: NSViewController {
@@ -19,6 +23,11 @@ final class PlayerPanelViewController: NSViewController {
         case control
     }
     
+    var isStop = false {
+        didSet {
+            stateDidUpdate(.control)
+        }
+    }
     var state: State = .info {
         didSet {
             stateDidUpdate(self.state)
@@ -63,6 +72,22 @@ extension PlayerPanelViewController {
         
         playerControlView.menuButton.target = self
         playerControlView.menuButton.action = #selector(PlayerPanelViewController.menuButtonPressed(_:))
+        playerControlView.listButton.target = self
+        playerControlView.listButton.action = #selector(PlayerPanelViewController.listButtonPressed(_:))
+        playerControlView.backwardButton.target = self
+        playerControlView.backwardButton.action = #selector(PlayerPanelViewController.backwardButtonPressed(_:))
+        playerControlView.forwardButton.target = self
+        playerControlView.forwardButton.action = #selector(PlayerPanelViewController.forwardButtonPressed(_:))
+        playerControlView.playPauseButton.target = self
+        playerControlView.playPauseButton.action = #selector(PlayerPanelViewController.playPauseButtonToggled(_:))
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(PlayerPanelViewController.iTunesPlayerDidUpdated(_:)), name: .iTunesPlayerDidUpdated, object: nil)
+    }
+    
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        
+        playerControlView.playPauseButton.state = iTunesPlayer.shared.isPlaying ? .on : .off
     }
     
     override func viewWillDisappear() {
@@ -77,6 +102,8 @@ extension PlayerPanelViewController {
 extension PlayerPanelViewController {
     
     func updateCurrentTrack(_ track: iTunesTrack?) {
+        isStop = track == nil
+        
         guard let track = track else {
             return
         }
@@ -91,6 +118,15 @@ extension PlayerPanelViewController {
     }
     
     func stateDidUpdate(_ state: State) {
+        playerControlView.backwardButton.isEnabled = !isStop
+        playerControlView.forwardButton.isEnabled = !isStop
+        
+        guard !isStop else {
+            playerInfoView.alphaValue = 0
+            playerControlView.alphaValue = 1
+            return
+        }
+        
         switch state {
         case .control:
             playerInfoView.alphaValue = 0
@@ -116,6 +152,30 @@ extension PlayerPanelViewController {
     
     @objc private func menuButtonPressed(_ sender: NSButton) {
         delegate?.playerPanelViewController(self, menuButtonPressed: sender)
+    }
+    
+    @objc private func listButtonPressed(_ sender: NSButton) {
+        delegate?.playerPanelViewController(self, listButtonPressed: sender)
+    }
+    
+    @objc private func backwardButtonPressed(_ sender: NSButton) {
+        delegate?.playerPanelViewController(self, backwardButtonPressed: sender)
+    }
+    
+    @objc private func forwardButtonPressed(_ sender: NSButton) {
+        delegate?.playerPanelViewController(self, forwardButtonPressed: sender)
+    }
+    
+    @objc private func playPauseButtonToggled(_ sender: NSButton) {
+        delegate?.playerPanelViewController(self, playPauseButtonToggled: sender)
+    }
+
+    // NotificationCenter listener
+    @objc private func iTunesPlayerDidUpdated(_ notification: Notification) {
+        // prevent concurrent conflict
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.playerControlView.playPauseButton.state = iTunesPlayer.shared.isPlaying ? .on : .off
+        }
     }
     
 }

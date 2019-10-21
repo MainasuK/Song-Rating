@@ -244,18 +244,25 @@ extension PlayerViewController {
         }
     
         let firstImage: NSImage? = {
-            guard let artwork = track.artworks?().firstObject as? iTunesArtwork else { return nil }
-            if let descriptor = (artwork.data as Any) as? NSAppleEventDescriptor {
-                return NSImage(data: descriptor.data)
+            do {
+                return try ExceptionCatcher.catchException {
+                    guard let artwork = track.artworks?().firstObject as? iTunesArtwork else { return nil }
+                    if let descriptor = (artwork.data as Any) as? NSAppleEventDescriptor {
+                        return NSImage(data: descriptor.data)
+                    }
+                    if let image = (artwork.data as Any) as? NSImage {
+                        return image
+                    }
+                    if let data = artwork.rawData, let image = NSImage(data: data) {
+                        return image
+                    }
+                    
+                    return nil
+                } as? NSImage ?? nil
+            } catch {
+                os_log("%{public}s[%{public}ld], %{public}s: %{public}s", ((#file as NSString).lastPathComponent), #line, #function, error.localizedDescription)
+                return nil
             }
-            if let image = (artwork.data as Any) as? NSImage {
-                return image
-            }
-            if let data = artwork.rawData, let image = NSImage(data: data) {
-                return image
-            }
-            
-            return nil
         }()
         
         if let image = firstImage {
@@ -283,6 +290,27 @@ extension PlayerViewController: PlayerPanelViewControllerDelegate {
     func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, menuButtonPressed button: NSButton) {
         os_log("%{public}s[%{public}ld], %{public}s: menuButtonPressed", ((#file as NSString).lastPathComponent), #line, #function)
         menuButtonMenu.popUp(positioning: nil, at: NSPoint(x: button.bounds.midX, y: button.bounds.midY - 5), in: button)
+    }
+    
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, listButtonPressed button: NSButton) {
+        os_log("%{public}s[%{public}ld], %{public}s: listButtonPressed", ((#file as NSString).lastPathComponent), #line, #function)
+        
+    }
+    
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, backwardButtonPressed button: NSButton) {
+        os_log("%{public}s[%{public}ld], %{public}s: backwardButtonPressed", ((#file as NSString).lastPathComponent), #line, #function)
+        iTunesRadioStation.shared.backward()
+        
+    }
+    
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, forwardButtonPressed button: NSButton) {
+        os_log("%{public}s[%{public}ld], %{public}s: forwardButtonPressed", ((#file as NSString).lastPathComponent), #line, #function)
+        iTunesRadioStation.shared.forward()
+    }
+    
+    func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, playPauseButtonToggled button: NSButton) {
+        os_log("%{public}s[%{public}ld], %{public}s: playPauseButtonToggled", ((#file as NSString).lastPathComponent), #line, #function)
+        iTunesRadioStation.shared.playPause()
     }
     
 }

@@ -29,7 +29,7 @@ final class iTunesRadioStation {
         return application
     }
 
-    private var latestPlayInfo: PlayInfo? {
+    private(set) var latestPlayInfo: PlayInfo? {
         didSet {
             iTunesPlayer.shared.update()
             // os_log("%{public}s[%{public}ld], %{public}s: latestPlayInfo %s", ((#file as NSString).lastPathComponent), #line, #function, latestPlayInfo?.description ?? "nil")
@@ -153,6 +153,18 @@ extension iTunesRadioStation {
         debounceSetRatingTimer.flatMap {
             RunLoop.current.add($0, forMode: .default)
         }
+    }
+    
+    func backward() {
+        iTunes?.backTrack?()
+    }
+    
+    func forward() {
+        iTunes?.nextTrack?()
+    }
+    
+    func playPause() {
+        iTunes?.playpause?()
     }
     
 }

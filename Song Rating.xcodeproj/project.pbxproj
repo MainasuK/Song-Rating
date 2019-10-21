@@ -26,6 +26,7 @@
 		DB11065323047E7F001DA02A /* iTunesPlayerHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB11065223047E7F001DA02A /* iTunesPlayerHistory.swift */; };
 		DB27976F2306EA6800DDE3EB /* iTunesPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB27976E2306EA6800DDE3EB /* iTunesPlayer.swift */; };
 		DB2797732306F0EC00DDE3EB /* iTunesApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2797722306F0EC00DDE3EB /* iTunesApplication.swift */; };
+		DB334389235E102600B45ED0 /* ExceptionCatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = DB334388235E102600B45ED0 /* ExceptionCatcher.m */; };
 		DB424A352307259800230C7E /* iTunesTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A342307259800230C7E /* iTunesTrack.swift */; };
 		DB424A3823073CB000230C7E /* PopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3723073CB000230C7E /* PopoverViewController.swift */; };
 		DB424A3A23086C1200230C7E /* MovableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3923086C1200230C7E /* MovableImageView.swift */; };
@@ -85,6 +86,9 @@
 		DB11065223047E7F001DA02A /* iTunesPlayerHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesPlayerHistory.swift; sourceTree = "<group>"; };
 		DB27976E2306EA6800DDE3EB /* iTunesPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesPlayer.swift; sourceTree = "<group>"; };
 		DB2797722306F0EC00DDE3EB /* iTunesApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesApplication.swift; sourceTree = "<group>"; };
+		DB334387235E102500B45ED0 /* Song Rating-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Song Rating-Bridging-Header.h"; sourceTree = "<group>"; };
+		DB334388235E102600B45ED0 /* ExceptionCatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExceptionCatcher.m; sourceTree = "<group>"; };
+		DB33438A235E103200B45ED0 /* ExceptionCatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExceptionCatcher.h; sourceTree = "<group>"; };
 		DB424A342307259800230C7E /* iTunesTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesTrack.swift; sourceTree = "<group>"; };
 		DB424A3723073CB000230C7E /* PopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverViewController.swift; sourceTree = "<group>"; };
 		DB424A3923086C1200230C7E /* MovableImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovableImageView.swift; sourceTree = "<group>"; };
@@ -242,6 +246,9 @@
 				DB89C9FF22E37826003981F5 /* OSVersionHelper.swift */,
 				DB05F0852354CA5800CE6DF9 /* NSViewPreview.swift */,
 				DB05F0872354CA6B00CE6DF9 /* NSViewControllerPreview.swift */,
+				DB33438A235E103200B45ED0 /* ExceptionCatcher.h */,
+				DB334388235E102600B45ED0 /* ExceptionCatcher.m */,
+				DB334387235E102500B45ED0 /* Song Rating-Bridging-Header.h */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -332,6 +339,7 @@
 				TargetAttributes = {
 					DB106C4122C53D4B00502D7C = {
 						CreatedOnToolsVersion = 10.2.1;
+						LastSwiftMigration = 1110;
 						SystemCapabilities = {
 							com.apple.HardenedRuntime = {
 								enabled = 1;
@@ -456,6 +464,7 @@
 			files = (
 				DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */,
 				DB106CC422CA86A500502D7C /* iTunes.swift in Sources */,
+				DB334389235E102600B45ED0 /* ExceptionCatcher.m in Sources */,
 				DB05F0882354CA6B00CE6DF9 /* NSViewControllerPreview.swift in Sources */,
 				DB27976F2306EA6800DDE3EB /* iTunesPlayer.swift in Sources */,
 				DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */,
@@ -639,6 +648,7 @@
 			baseConfigurationReference = 607F74272AF7FF7D00E2879E /* Pods-Song Rating.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Song Rating/Song Rating.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -653,6 +663,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Song Rating/Helper/Song Rating-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -662,6 +674,7 @@
 			baseConfigurationReference = 3B451B28FF2FB910317B4EF7 /* Pods-Song Rating.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Song Rating/Song Rating.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -676,6 +689,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Song Rating/Helper/Song Rating-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

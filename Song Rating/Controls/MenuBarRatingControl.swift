@@ -78,8 +78,31 @@ final class MenuBarRatingControl {
     }()
     private(set) var isPlaying = false {
         didSet {
+            if let playState = iTunesRadioStation.shared.latestPlayInfo?.playerState {
+                self.playState = playState
+            } else {
+                if iTunesRadioStation.shared.iTunes?.playerState == .playing {
+                    self.playState = .playing
+                } else if iTunesRadioStation.shared.iTunes?.playerState == .paused {
+                    self.playState = .paused
+                } else {
+                    self.playState = .unknown
+                }
+            }
+            
             updateMenuBar()
         }
+    }
+    private(set) var playState: PlayInfo.PlayerState? {
+        didSet {
+            if playState == .unknown {
+                undetachedPopover?.close()
+            }
+        }
+    }
+    
+    var isStop: Bool {
+        return playState == .unknown
     }
     
     init() {
@@ -128,9 +151,10 @@ extension MenuBarRatingControl {
         let margin: CGFloat = 4 + 4
         let playingWidth = margin + ratingControl.starsImage.size.width
         let pauseWidth = margin + CGFloat(2) * ratingControl.spacing + ratingControl.starSize.width
-        statusItem.length = isPlaying ?  playingWidth : pauseWidth
-        statusItem.button?.image = isPlaying ? ratingControl.starsImage : menuBarIcon.image
-        statusItem.button?.setButtonType(isPlaying ? .momentaryChange : .onOff)
+        
+        statusItem.length = !isStop ?  playingWidth : pauseWidth
+        statusItem.button?.image = !isStop ? ratingControl.starsImage : menuBarIcon.image
+        statusItem.button?.setButtonType(!isStop ? .momentaryChange : .onOff)
     }
 }
 
@@ -143,11 +167,11 @@ extension MenuBarRatingControl {
         os_log("%{public}s[%{public}ld], %{public}s: menu bar button receive event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
 
         switch event.type {
-        case .leftMouseUp where !isPlaying:
+        case .leftMouseUp where isStop:
             let position = NSPoint(x: 0, y: sender.bounds.height + 5)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
 
-        case .rightMouseUp where !isPlaying:
+        case .rightMouseUp where isStop:
             let position = sender.convert(event.locationInWindow, to: nil)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
 
@@ -191,7 +215,7 @@ extension MenuBarRatingControl {
     
     @objc func iTunesRadioRequestTrackRatingUp(_ notification: Notification) {
         isPlaying = iTunesPlayer.shared.isPlaying
-        guard isPlaying else {
+        guard !isStop else {
             return
         }
         
@@ -201,7 +225,7 @@ extension MenuBarRatingControl {
     
     @objc func iTunesRadioRequestTrackRatingDown(_ notification: Notification) {
         isPlaying = iTunesPlayer.shared.isPlaying
-        guard isPlaying else {
+        guard !isStop else {
             return
         }
         
@@ -243,6 +267,7 @@ extension MenuBarRatingControl {
         popover.behavior = .transient
         popover.delegate = popoverProxy
         
+        // FIXME: should relative to windows
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         popover.contentViewController?.view.window?.makeKey()
         
