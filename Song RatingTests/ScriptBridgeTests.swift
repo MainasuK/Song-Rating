@@ -16,6 +16,23 @@ class ScriptBridgeTests: XCTestCase {
         let version = application?.version ?? ""
         
         XCTAssertFalse(version.isEmpty)
+        print(version)
+    }
+    
+    func testCurrentTrackToPlayInfo() {
+        let iTunes = iTunesRadioStation.shared.iTunes
+        let track = iTunes?.currentTrackCopy
+        
+        // Play something before start testing
+        XCTAssertNotNil(track)
+        
+        // cover image (if have)
+        let artwork = track?.artworks?().firstObject as? iTunesArtwork
+        let image = artwork?.data
+        XCTAssertNotNil(image)
+        
+        
+        
     }
     
 }

@@ -13,6 +13,7 @@ final class WindowManager: NSObject {
 
     private(set) var aboutWindowController: NSWindowController?
     private(set) var preferencesWindowController: NSWindowController?
+    private(set) var popoverWindowController: NSWindowController?
 
     var hasWindowDisplay: Bool {
         return ![aboutWindowController, preferencesWindowController].compactMap { $0 }.isEmpty
@@ -51,6 +52,11 @@ extension WindowManager {
                     preferencesWindowController = NSWindowController(window: NSWindow(contentViewController: windowType.viewController))
                 }
                 return preferencesWindowController
+            case .popover:
+                if popoverWindowController == nil {
+                    popoverWindowController = NSWindowController(window: NSWindow(contentViewController: windowType.viewController))
+                }
+                return popoverWindowController
             }
         }()
 
@@ -79,15 +85,29 @@ extension WindowManager {
     enum WindowType {
         case about
         case preferences
+        case popover
 
         var viewController: NSViewController {
             switch self {
             case .about:        return AboutViewController()
             case .preferences:  return PreferencesViewController()
+            case .popover:      return PopoverViewController()
             }
         }
     }
 
+}
+
+extension WindowManager {
+    
+    @objc func preferencesMenuItemPressed(_ sender: NSMenuItem) {
+        open(.preferences)
+    }
+    
+    @objc func aboutMenuItemPressed(_ sender: NSMenuItem) {
+        open(.about)
+    }
+    
 }
 
 // MARK: - NSWindowDelegate
@@ -105,6 +125,9 @@ extension WindowManager: NSWindowDelegate {
         case _ where window === self.preferencesWindowController?.window:
             preferencesWindowController = nil
             os_log("%{public}s[%{public}ld], %{public}s: Preferences window closed", ((#file as NSString).lastPathComponent), #line, #function)
+        case _ where window === self.popoverWindowController?.window:
+            popoverWindowController = nil
+            os_log("%{public}s[%{public}ld], %{public}s: Popover window closed", ((#file as NSString).lastPathComponent), #line, #function)
         default:
             assertionFailure()
         }

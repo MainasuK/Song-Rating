@@ -40,3 +40,20 @@ struct MenuBarIcon {
     }
     
 }
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+@available(macOS 10.15.0, *)
+struct MenuBarIcon_Preview: PreviewProvider {
+    
+    static var previews: some View {
+        NSViewPreview {
+            let menuBarIcon = MenuBarIcon(size: NSSize(width: 22, height: 22))
+            return NSImageView(image: menuBarIcon.image)
+        }
+    }
+    
+}
+
+#endif
