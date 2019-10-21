@@ -281,13 +281,8 @@ extension PlayerViewController {
 extension PlayerViewController: PlayerPanelViewControllerDelegate {
     
     func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, menuButtonPressed button: NSButton) {
-        
-        guard let event = NSApplication.shared.currentEvent else {
-            return
-        }
-        
         os_log("%{public}s[%{public}ld], %{public}s: menuButtonPressed", ((#file as NSString).lastPathComponent), #line, #function)
-        NSMenu.popUpContextMenu(menuButtonMenu, with: event, for: button)
+        menuButtonMenu.popUp(positioning: nil, at: NSPoint(x: button.bounds.midX, y: button.bounds.midY - 5), in: button)
     }
     
 }
