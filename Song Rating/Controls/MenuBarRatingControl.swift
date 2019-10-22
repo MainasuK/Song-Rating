@@ -93,7 +93,7 @@ final class MenuBarRatingControl {
             updateMenuBar()
         }
     }
-    private(set) var playState: PlayInfo.PlayerState? {
+    private(set) var playState: PlayInfo.PlayerState = .unknown {
         didSet {
             if playState == .unknown {
                 undetachedPopover?.close()
@@ -152,10 +152,11 @@ extension MenuBarRatingControl {
         let playingWidth = margin + ratingControl.starsImage.size.width
         let pauseWidth = margin + CGFloat(2) * ratingControl.spacing + ratingControl.starSize.width
         
-        statusItem.length = !isStop ?  playingWidth : pauseWidth
+        statusItem.length = !isStop ? playingWidth : pauseWidth
         statusItem.button?.image = !isStop ? ratingControl.starsImage : menuBarIcon.image
         statusItem.button?.setButtonType(!isStop ? .momentaryChange : .onOff)
     }
+    
 }
 
 extension MenuBarRatingControl {
@@ -238,8 +239,11 @@ extension MenuBarRatingControl {
             return
         }
 
+        DispatchQueue.once(token: "firstDisplay") {
+            updateMenuBar()
+        }
+        
         os_log("%{public}s[%{public}ld], %{public}s: window size change to %{public}s", ((#file as NSString).lastPathComponent), #line, #function, window.frame.debugDescription)
-
     }
     
 }
@@ -268,9 +272,32 @@ extension MenuBarRatingControl {
         popover.delegate = popoverProxy
         
         // FIXME: should relative to windows
-        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        // popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         popover.contentViewController?.view.window?.makeKey()
+
+        // Ref: https://stackoverflow.com/questions/48594212/how-to-open-a-nspopover-at-a-distance-from-the-system-bar/48604455#48604455
+        // TODO: fix windows leaking issue
+        let invisibleWindow = NSWindow(contentRect: NSMakeRect(0, 0, 20, 5), styleMask: .borderless, backing: .buffered, defer: false)
+        invisibleWindow.backgroundColor = .red
+        invisibleWindow.alphaValue = 0
+
+        // find the coordinates of the statusBarItem in screen space
+        let buttonRect:NSRect = button.convert(button.bounds, to: nil)
+        let screenRect:NSRect = button.window!.convertToScreen(buttonRect)
         
+        // calculate the bottom center position (10 is the half of the window width)
+        let posX = screenRect.origin.x + (screenRect.width / 2) - 10
+        let posY = screenRect.origin.y
+        
+        // position and show the window
+        invisibleWindow.setFrameOrigin(NSPoint(x: posX, y: posY))
+        invisibleWindow.makeKeyAndOrderFront(self)
+        invisibleWindow.level = .floating                       // make popover always on top
+        
+        // position and show the NSPopover
+        popover.show(relativeTo: invisibleWindow.contentView!.frame, of: invisibleWindow.contentView!, preferredEdge: NSRectEdge.minY)
+        popover.contentViewController?.view.window?.makeKey()   // fix popover not get focus issue
+    
         undetachedPopover = popover
     }
     

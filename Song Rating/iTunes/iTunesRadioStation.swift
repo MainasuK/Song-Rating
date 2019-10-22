@@ -25,6 +25,9 @@ final class iTunesRadioStation {
     
     var iTunes: iTunesApplication? {
         let application = SBApplication(bundleIdentifier: OSVersionHelper.bundleIdentifier)
+        guard application?.isRunning == true else {
+            return nil
+        }
         application?.delegate = self
         return application
     }

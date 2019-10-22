@@ -43,6 +43,7 @@
 		DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95216922CB186F007FCF40 /* WindowManager.swift */; };
 		DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */; };
 		DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */; };
+		DB9D9AF0235F7974008C53C3 /* DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9AEF235F7974008C53C3 /* DispatchQueue.swift */; };
 		FE421476F34E641428B030E9 /* Pods_Song_Rating.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */; };
 /* End PBXBuildFile section */
 
@@ -105,6 +106,7 @@
 		DB95216922CB186F007FCF40 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
+		DB9D9AEF235F7974008C53C3 /* DispatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchQueue.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +248,7 @@
 				DB89C9FF22E37826003981F5 /* OSVersionHelper.swift */,
 				DB05F0852354CA5800CE6DF9 /* NSViewPreview.swift */,
 				DB05F0872354CA6B00CE6DF9 /* NSViewControllerPreview.swift */,
+				DB9D9AEF235F7974008C53C3 /* DispatchQueue.swift */,
 				DB33438A235E103200B45ED0 /* ExceptionCatcher.h */,
 				DB334388235E102600B45ED0 /* ExceptionCatcher.m */,
 				DB334387235E102500B45ED0 /* Song Rating-Bridging-Header.h */,
@@ -485,6 +488,7 @@
 				DB89C9F322E2D766003981F5 /* MenuBarIcon.swift in Sources */,
 				DB106CA422CA3C7300502D7C /* Star.swift in Sources */,
 				DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */,
+				DB9D9AF0235F7974008C53C3 /* DispatchQueue.swift in Sources */,
 				DB424A352307259800230C7E /* iTunesTrack.swift in Sources */,
 				DB106C4622C53D4B00502D7C /* AppDelegate.swift in Sources */,
 				DB424A3E2308936F00230C7E /* AutoScrollTextField.swift in Sources */,
@@ -653,7 +657,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating/Info.plist";
@@ -661,7 +665,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -681,7 +685,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating/Info.plist";
@@ -689,7 +693,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import os
 
 protocol PlayerPanelViewControllerDelegate: class {
     func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, menuButtonPressed button: NSButton)
@@ -25,7 +26,7 @@ final class PlayerPanelViewController: NSViewController {
     
     var isStop = false {
         didSet {
-            stateDidUpdate(.control)
+            stateDidUpdate(isStop ? .control : .info)
         }
     }
     var state: State = .info {
@@ -49,7 +50,7 @@ extension PlayerPanelViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         playerInfoView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(playerInfoView)
         NSLayoutConstraint.activate([
@@ -120,6 +121,7 @@ extension PlayerPanelViewController {
     }
     
     func stateDidUpdate(_ state: State) {
+        os_log("%{public}s[%{public}ld], %{public}s: %{public}s", ((#file as NSString).lastPathComponent), #line, #function, String(describing: state))
         playerControlView.backwardButton.isEnabled = !isStop
         playerControlView.forwardButton.isEnabled = !isStop
         
