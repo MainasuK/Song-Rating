@@ -55,7 +55,7 @@ final class PlayerInfoView: NSView {
         captionTextField.translatesAutoresizingMaskIntoConstraints = false
         groupView.addSubview(captionTextField)
         NSLayoutConstraint.activate([
-            captionTextField.topAnchor.constraint(equalTo: titleTextField.bottomAnchor),
+            captionTextField.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 4),   // padding
             captionTextField.leadingAnchor.constraint(equalTo: groupView.leadingAnchor),
             captionTextField.trailingAnchor.constraint(equalTo: groupView.trailingAnchor),
             captionTextField.bottomAnchor.constraint(equalTo: groupView.bottomAnchor)
