@@ -93,7 +93,7 @@ final class MenuBarRatingControl {
             updateMenuBar()
         }
     }
-    private(set) var playState: PlayInfo.PlayerState? {
+    private(set) var playState: PlayInfo.PlayerState = .unknown {
         didSet {
             if playState == .unknown {
                 undetachedPopover?.close()
@@ -152,10 +152,11 @@ extension MenuBarRatingControl {
         let playingWidth = margin + ratingControl.starsImage.size.width
         let pauseWidth = margin + CGFloat(2) * ratingControl.spacing + ratingControl.starSize.width
         
-        statusItem.length = !isStop ?  playingWidth : pauseWidth
+        statusItem.length = !isStop ? playingWidth : pauseWidth
         statusItem.button?.image = !isStop ? ratingControl.starsImage : menuBarIcon.image
         statusItem.button?.setButtonType(!isStop ? .momentaryChange : .onOff)
     }
+    
 }
 
 extension MenuBarRatingControl {
@@ -238,8 +239,11 @@ extension MenuBarRatingControl {
             return
         }
 
+        DispatchQueue.once(token: "firstDisplay") {
+            updateMenuBar()
+        }
+        
         os_log("%{public}s[%{public}ld], %{public}s: window size change to %{public}s", ((#file as NSString).lastPathComponent), #line, #function, window.frame.debugDescription)
-
     }
     
 }
