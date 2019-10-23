@@ -23,6 +23,7 @@ final class WindowManager: NSObject {
     private let popoverProxy = PopoverProxy()
     
     weak var menuBarRatingControl: MenuBarRatingControl?
+    private(set) var invisibleWindows: [Int: NSWindow] = [:]
     private(set) var undetachedPopover: NSPopover?
     private(set) var detachedPopover: NSPopover?
 
@@ -42,7 +43,8 @@ final class WindowManager: NSObject {
                 self?.undetachedPopover = nil
                 return
             }
-            // menuBarRatingControl?.showPopover()
+            
+            self?.showPopover()
         })
     }
     
@@ -95,37 +97,44 @@ extension WindowManager {
             return
         }
         
-        let popover = NSPopover()
-        popover.contentViewController = WindowManager.WindowType.popover.viewController
-        popover.behavior = .transient
-        popover.delegate = popoverProxy
-        
-        // FIXME: should relative to windows
-        // popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-        popover.contentViewController?.view.window?.makeKey()
-
         // Ref: https://stackoverflow.com/questions/48594212/how-to-open-a-nspopover-at-a-distance-from-the-system-bar/48604455#48604455
         // TODO: fix windows leaking issue
-        let invisibleWindow = NSWindow(contentRect: NSMakeRect(0, 0, 20, 5), styleMask: .borderless, backing: .buffered, defer: false)
-        invisibleWindow.backgroundColor = .red
-        invisibleWindow.alphaValue = 1
+        let popoverRelativeWindow = NSWindow(contentRect: NSMakeRect(0, 0, 20, 5), styleMask: .borderless, backing: .buffered, defer: false)
+        popoverRelativeWindow.delegate = self
+        popoverRelativeWindow.backgroundColor = .red
+        popoverRelativeWindow.alphaValue = 1
 
         // find the coordinates of the statusBarItem in screen space
-        let buttonRect:NSRect = button.convert(button.bounds, to: nil)
-        let screenRect:NSRect = button.window!.convertToScreen(buttonRect)
+        let buttonRect = button.convert(button.bounds, to: nil)
+        guard let buttonWindow = button.window else {
+            assertionFailure()
+            return
+        }
+        let screenRect = buttonWindow.convertToScreen(buttonRect)
         
         // calculate the bottom center position (10 is the half of the window width)
         let posX = screenRect.origin.x + (screenRect.width / 2) - 10
         let posY = screenRect.origin.y
         
         // position and show the window
-        invisibleWindow.setFrameOrigin(NSPoint(x: posX, y: posY))
-        invisibleWindow.makeKeyAndOrderFront(self)
-        invisibleWindow.level = .floating                       // make popover always on top
+        popoverRelativeWindow.setFrameOrigin(NSPoint(x: posX, y: posY))
+        popoverRelativeWindow.makeKeyAndOrderFront(self)
+        popoverRelativeWindow.level = .floating                       // make popover always on top
+        popoverRelativeWindow.isReleasedWhenClosed = false            // seealso: WindowManager.popoverDidClose(_:)
+    
+        let popover = NSPopover()
+        popover.contentViewController = WindowManager.WindowType.popover.viewController
+        popover.behavior = .transient
+        popover.delegate = popoverProxy
+        
+        invisibleWindows[popover.hashValue] = popoverRelativeWindow
         
         // position and show the NSPopover
-        popover.show(relativeTo: invisibleWindow.contentView!.frame, of: invisibleWindow.contentView!, preferredEdge: NSRectEdge.minY)
-        popover.contentViewController?.view.window?.makeKey()   // fix popover not get focus issue
+        popover.show(relativeTo: popoverRelativeWindow.contentView!.frame, of: popoverRelativeWindow.contentView!, preferredEdge: NSRectEdge.minY)
+//        NSApplication.shared.activate(ignoringOtherApps: true)
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+//            popover.contentViewController?.view.window?.makeKey()   // fix popover not get focus issue
+//        }
     
         undetachedPopover = popover
     }
@@ -189,12 +198,11 @@ extension WindowManager: NSWindowDelegate {
             popoverWindowController = nil
             os_log("%{public}s[%{public}ld], %{public}s: Popover window closed", ((#file as NSString).lastPathComponent), #line, #function)
         default:
-            assertionFailure()
+            os_log("%{public}s[%{public}ld], %{public}s: %{public}s", ((#file as NSString).lastPathComponent), #line, #function, notification.description)
         }
 
         updateActivationPolicy()
     }
-
 }
 
 // MARK: - PopoverProxyDelegate
@@ -203,12 +211,22 @@ extension WindowManager: PopoverProxyDelegate {
     func popoverDidClose(_ notification: Notification) {
         // check which popover closed and release it
         
+        os_log("%{public}s[%{public}ld], %{public}s: %{public}s", ((#file as NSString).lastPathComponent), #line, #function, notification.description)
+        
         if let popover = undetachedPopover, !popover.isShown {
             undetachedPopover = nil
         }
         
         if let popover = detachedPopover, !popover.isShown {
             detachedPopover = nil
+        }
+        
+        // fix popover relative window crash app when set release when close issue
+        if let popover = notification.object as? NSPopover {
+            let window = self.invisibleWindows[popover.hashValue]       // retain
+            self.invisibleWindows[popover.hashValue] = nil
+            window?.close()
+            // auto release here
         }
     }
 
@@ -223,6 +241,8 @@ extension WindowManager: PopoverProxyDelegate {
         
         popover.behavior = .applicationDefined
         detachedPopover = popover
+        
+        os_log("%{public}s[%{public}ld], %{public}s: popoverDidDetach", ((#file as NSString).lastPathComponent), #line, #function)
     }
 
 }
