@@ -98,11 +98,10 @@ extension WindowManager {
         }
         
         // Ref: https://stackoverflow.com/questions/48594212/how-to-open-a-nspopover-at-a-distance-from-the-system-bar/48604455#48604455
-        // TODO: fix windows leaking issue
         let popoverRelativeWindow = NSWindow(contentRect: NSMakeRect(0, 0, 20, 5), styleMask: .borderless, backing: .buffered, defer: false)
         popoverRelativeWindow.delegate = self
         popoverRelativeWindow.backgroundColor = .red
-        popoverRelativeWindow.alphaValue = 1
+        popoverRelativeWindow.alphaValue = 0
 
         // find the coordinates of the statusBarItem in screen space
         let buttonRect = button.convert(button.bounds, to: nil)
