@@ -239,6 +239,7 @@ extension MenuBarRatingControl {
             return
         }
 
+        // Always update menu bar to prevent wrong state when iTunes not running
         DispatchQueue.once(token: "firstDisplay") {
             updateMenuBar()
         }
