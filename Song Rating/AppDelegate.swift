@@ -14,7 +14,7 @@ import MASShortcut
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     let radioStation = iTunesRadioStation.shared
-    var menuBarRatingControl: MenuBarRatingControl?
+    private(set) var menuBarRatingControl: MenuBarRatingControl?
     
     @IBAction func openAboutWindow(_ sender: NSMenuItem) {
         WindowManager.shared.open(.about)
@@ -25,6 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupUserDefaults()
     
         menuBarRatingControl = MenuBarRatingControl()
+        WindowManager.shared.menuBarRatingControl = menuBarRatingControl
         
 //        if UserDefaults.standard.bool(forKey: ApplicationKey.isFirstLaunch.rawValue) {
 //            UserDefaults.standard.set(false, forKey: ApplicationKey.isFirstLaunch.rawValue)

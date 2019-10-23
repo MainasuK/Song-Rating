@@ -8,7 +8,6 @@
 
 import Cocoa
 import os
-import MASShortcut
 
 protocol TrackingAreaResponderDelegate: class {
     func mouseEntered(with event: NSEvent)
@@ -59,11 +58,8 @@ final class MenuBarRatingControl {
     let ratingControl = RatingControl(rating: 0)
     let menuBarIcon: MenuBarIcon
     let trackingAreaResponser = TrackingAreaResponder()
-    let popoverProxy = PopoverProxy()
-    
-    var undetachedPopover: NSPopover?
-    var detachedPopover: NSPopover?
 
+    
     private(set) lazy var menuBarMenu: NSMenu = {
         let menu = NSMenu()
         let about = NSMenuItem(title: "About Song Rating", action: #selector(WindowManager.aboutMenuItemPressed(_:)), keyEquivalent: "")
@@ -95,8 +91,9 @@ final class MenuBarRatingControl {
     }
     private(set) var playState: PlayInfo.PlayerState = .unknown {
         didSet {
+            // FIXME: close undetached popover when menu bar collapse
             if playState == .unknown {
-                undetachedPopover?.close()
+                WindowManager.shared.undetachedPopover?.close()
             }
         }
     }
@@ -123,7 +120,7 @@ final class MenuBarRatingControl {
         button.addTrackingArea(trackingArea)
 
         trackingAreaResponser.delegate = self
-        popoverProxy.delegate = self
+        
         ratingControl.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesPlayerDidUpdated(_:)), name: .iTunesPlayerDidUpdated, object: nil)
@@ -132,15 +129,6 @@ final class MenuBarRatingControl {
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingDown(_:)), name: .iTunesRadioRequestTrackRatingDown, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.windowDidResize(_:)), name: NSWindow.didResizeNotification, object: nil)
-        
-        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.showOrClosePopover.rawValue, toAction: { [weak self] in
-            guard self?.undetachedPopover == nil else {
-                self?.undetachedPopover?.close()
-                self?.undetachedPopover = nil
-                return
-            }
-            self?.showPopover()
-        })
     }
     
 }
@@ -180,7 +168,7 @@ extension MenuBarRatingControl {
             ratingControl.action(from: sender, with: event)
 
         case .rightMouseUp:
-            showPopover()
+            WindowManager.shared.showPopover()
             
         default:
             os_log("%{public}s[%{public}ld], %{public}s: no handler for event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
@@ -262,94 +250,27 @@ extension MenuBarRatingControl: TrackingAreaResponderDelegate {
 
 }
 
-extension MenuBarRatingControl {
-    
-    private func showPopover() {
-        guard let button = statusItem.button else { return }
-        
-        let popover = NSPopover()
-        popover.contentViewController = WindowManager.WindowType.popover.viewController
-        popover.behavior = .transient
-        popover.delegate = popoverProxy
-        
-        // FIXME: should relative to windows
-        // popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-        popover.contentViewController?.view.window?.makeKey()
-
-        // Ref: https://stackoverflow.com/questions/48594212/how-to-open-a-nspopover-at-a-distance-from-the-system-bar/48604455#48604455
-        // TODO: fix windows leaking issue
-        let invisibleWindow = NSWindow(contentRect: NSMakeRect(0, 0, 20, 5), styleMask: .borderless, backing: .buffered, defer: false)
-        invisibleWindow.backgroundColor = .red
-        invisibleWindow.alphaValue = 0
-
-        // find the coordinates of the statusBarItem in screen space
-        let buttonRect:NSRect = button.convert(button.bounds, to: nil)
-        let screenRect:NSRect = button.window!.convertToScreen(buttonRect)
-        
-        // calculate the bottom center position (10 is the half of the window width)
-        let posX = screenRect.origin.x + (screenRect.width / 2) - 10
-        let posY = screenRect.origin.y
-        
-        // position and show the window
-        invisibleWindow.setFrameOrigin(NSPoint(x: posX, y: posY))
-        invisibleWindow.makeKeyAndOrderFront(self)
-        invisibleWindow.level = .floating                       // make popover always on top
-        
-        // position and show the NSPopover
-        popover.show(relativeTo: invisibleWindow.contentView!.frame, of: invisibleWindow.contentView!, preferredEdge: NSRectEdge.minY)
-        popover.contentViewController?.view.window?.makeKey()   // fix popover not get focus issue
-    
-        undetachedPopover = popover
-    }
-    
-}
-
-// MARK: - PopoverProxyDelegate
-extension MenuBarRatingControl: PopoverProxyDelegate {
-    
-    func popoverDidClose(_ notification: Notification) {
-        // check which popover closed and release it
-        
-        if let popover = undetachedPopover, !popover.isShown {
-            undetachedPopover = nil
-        }
-        
-        if let popover = detachedPopover, !popover.isShown {
-            detachedPopover = nil
-        }
-    }
-
-    func popoverShouldDetach(_ popover: NSPopover) -> Bool {
-        popover.configureCloseButton()
-        return true
-    }
-    
-    func popoverDidDetach(_ popover: NSPopover) {
-        undetachedPopover = nil
-        detachedPopover?.close()
-        
-        popover.behavior = .applicationDefined
-        detachedPopover = popover
-    }
-
-}
-
 extension NSPopover {
     
     // tweak NSPopoverFrame: https://github.com/mstg/OSX-Runtime-Headers/blob/master/AppKit/NSPopoverFrame.h
     func configureCloseButton() {
         guard let popoverViewController = contentViewController as? PopoverViewController,
         let superView = popoverViewController.view.superview else {
+            assertionFailure()
             return
         }
         
         guard NSStringFromClass(type(of: superView)) == "NSPopoverFrame" else {
+            assertionFailure()
             return
         }
         
         guard let closeButton = superView.value(forKey: "closeButton") as? NSButton else {
+            assertionFailure()
             return
         }
+        
+        // Tweak works under 10.14, 10.15
         
         closeButton.image = nil
         closeButton.isEnabled = false

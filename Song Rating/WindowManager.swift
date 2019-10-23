@@ -8,6 +8,7 @@
 
 import Cocoa
 import os
+import MASShortcut
 
 final class WindowManager: NSObject {
 
@@ -15,17 +16,36 @@ final class WindowManager: NSObject {
     private(set) var preferencesWindowController: NSWindowController?
     private(set) var popoverWindowController: NSWindowController?
 
-    var hasWindowDisplay: Bool {
+    private var hasWindowDisplay: Bool {
         return ![aboutWindowController, preferencesWindowController].compactMap { $0 }.isEmpty
     }
+    
+    private let popoverProxy = PopoverProxy()
+    
+    weak var menuBarRatingControl: MenuBarRatingControl?
+    private(set) var undetachedPopover: NSPopover?
+    private(set) var detachedPopover: NSPopover?
 
     // MARK: - Singleton
     public static let shared = WindowManager()
+    
     private override init() {
         super.init()
         
         NSWindow.allowsAutomaticWindowTabbing = false
+        
+        popoverProxy.delegate = self
+        
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.showOrClosePopover.rawValue, toAction: { [weak self] in
+            guard self?.undetachedPopover == nil else {
+                self?.undetachedPopover?.close()
+                self?.undetachedPopover = nil
+                return
+            }
+            // menuBarRatingControl?.showPopover()
+        })
     }
+    
 }
 
 extension WindowManager {
@@ -68,6 +88,46 @@ extension WindowManager {
         windowController?.window?.makeKeyAndOrderFront(nil)
 
         updateActivationPolicy()
+    }
+    
+    func showPopover() {
+        guard let button = menuBarRatingControl?.statusItem.button else {
+            return
+        }
+        
+        let popover = NSPopover()
+        popover.contentViewController = WindowManager.WindowType.popover.viewController
+        popover.behavior = .transient
+        popover.delegate = popoverProxy
+        
+        // FIXME: should relative to windows
+        // popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        popover.contentViewController?.view.window?.makeKey()
+
+        // Ref: https://stackoverflow.com/questions/48594212/how-to-open-a-nspopover-at-a-distance-from-the-system-bar/48604455#48604455
+        // TODO: fix windows leaking issue
+        let invisibleWindow = NSWindow(contentRect: NSMakeRect(0, 0, 20, 5), styleMask: .borderless, backing: .buffered, defer: false)
+        invisibleWindow.backgroundColor = .red
+        invisibleWindow.alphaValue = 1
+
+        // find the coordinates of the statusBarItem in screen space
+        let buttonRect:NSRect = button.convert(button.bounds, to: nil)
+        let screenRect:NSRect = button.window!.convertToScreen(buttonRect)
+        
+        // calculate the bottom center position (10 is the half of the window width)
+        let posX = screenRect.origin.x + (screenRect.width / 2) - 10
+        let posY = screenRect.origin.y
+        
+        // position and show the window
+        invisibleWindow.setFrameOrigin(NSPoint(x: posX, y: posY))
+        invisibleWindow.makeKeyAndOrderFront(self)
+        invisibleWindow.level = .floating                       // make popover always on top
+        
+        // position and show the NSPopover
+        popover.show(relativeTo: invisibleWindow.contentView!.frame, of: invisibleWindow.contentView!, preferredEdge: NSRectEdge.minY)
+        popover.contentViewController?.view.window?.makeKey()   // fix popover not get focus issue
+    
+        undetachedPopover = popover
     }
 
 }
@@ -133,6 +193,36 @@ extension WindowManager: NSWindowDelegate {
         }
 
         updateActivationPolicy()
+    }
+
+}
+
+// MARK: - PopoverProxyDelegate
+extension WindowManager: PopoverProxyDelegate {
+    
+    func popoverDidClose(_ notification: Notification) {
+        // check which popover closed and release it
+        
+        if let popover = undetachedPopover, !popover.isShown {
+            undetachedPopover = nil
+        }
+        
+        if let popover = detachedPopover, !popover.isShown {
+            detachedPopover = nil
+        }
+    }
+
+    func popoverShouldDetach(_ popover: NSPopover) -> Bool {
+        popover.configureCloseButton()
+        return true
+    }
+    
+    func popoverDidDetach(_ popover: NSPopover) {
+        undetachedPopover = nil
+        detachedPopover?.close()
+        
+        popover.behavior = .applicationDefined
+        detachedPopover = popover
     }
 
 }
