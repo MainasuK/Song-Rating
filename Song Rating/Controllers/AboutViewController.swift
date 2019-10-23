@@ -89,6 +89,8 @@ extension AboutViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "About"
+        
         visualEffectBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(visualEffectBackgroundView)
         NSLayoutConstraint.activate([
