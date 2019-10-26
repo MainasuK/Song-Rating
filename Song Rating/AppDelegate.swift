@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import ServiceManagement
 import os
 import MASShortcut
 
@@ -16,16 +17,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let radioStation = iTunesRadioStation.shared
     private(set) var menuBarRatingControl: MenuBarRatingControl?
     
+    private var launchAtLoginObservation: NSKeyValueObservation?
+    
     @IBAction func openAboutWindow(_ sender: NSMenuItem) {
         WindowManager.shared.open(.about)
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        // setup shortcut validator
+        MASShortcutValidator.shared()!.allowAnyShortcutWithOptionModifier = true
+        
         setupAppleEvent()
         setupUserDefaults()
-    
+        
+        // setup menu bar
         menuBarRatingControl = MenuBarRatingControl()
         WindowManager.shared.menuBarRatingControl = menuBarRatingControl
+        
+        #if DEBUG
+        // WindowManager.shared.open(.preferences)
+        #endif
         
 //        if UserDefaults.standard.bool(forKey: ApplicationKey.isFirstLaunch.rawValue) {
 //            UserDefaults.standard.set(false, forKey: ApplicationKey.isFirstLaunch.rawValue)
@@ -66,6 +77,7 @@ extension AppDelegate {
     }
     
     func setupUserDefaults() {
+        // register shortcut
         do {
             let ratingDownShortcut = MASShortcut(keyCode: kVK_ANSI_Comma, modifierFlags: .option)
             let ratingUpShortcut = MASShortcut(keyCode: kVK_ANSI_Period, modifierFlags: .option)
@@ -82,13 +94,32 @@ extension AppDelegate {
             os_log("%{public}s[%{public}ld], %{public}s: Default shortcut set fail", ((#file as NSString).lastPathComponent), #line, #function)
         }
         
+        // register application behavior
         UserDefaults.standard.register(defaults: [
-            ApplicationKey.isFirstLaunch.rawValue : true
+            ApplicationKey.isFirstLaunch.rawValue : true,
+            ApplicationKey.launchAtLogin.rawValue : false
         ])
+        
+        // setup observer
+        launchAtLoginObservation = UserDefaults.standard.observe(\.launchAtLogin, options: [.initial, .new]) { [weak self] defaults, change in
+            os_log("%{public}s[%{public}ld], %{public}s: launchAtLoginObservation observe .launchAtLogin get newValue: %{public}s | oldValue: %{public}s", ((#file as NSString).lastPathComponent), #line, #function, change.newValue?.description ?? "nil", change.oldValue?.description ?? "nil")
+            self?.setupLaunchAtLogin()
+        }
+        
     }
     
-    enum ApplicationKey: String {
-        case isFirstLaunch
+    private func setupLaunchAtLogin() {
+        let launcherAppId = "com.mainasuk.Song-Rating-Helper"
+        let runningApps = NSWorkspace.shared.runningApplications
+        let isRunning = runningApps.contains(where: { $0.bundleIdentifier == launcherAppId })
+        
+        let shouldLaunchAtLogin = UserDefaults.standard.launchAtLogin
+        SMLoginItemSetEnabled(launcherAppId as CFString, shouldLaunchAtLogin)
+        os_log("%{public}s[%{public}ld], %{public}s: set launchAtLogin to %{public}s", ((#file as NSString).lastPathComponent), #line, #function, shouldLaunchAtLogin.description)
+
+        if isRunning {
+            DistributedNotificationCenter.default().post(name: .killLauncher, object: Bundle.main.bundleIdentifier)
+        }
+        
     }
-    
 }

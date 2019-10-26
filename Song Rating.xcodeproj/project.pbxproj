@@ -44,6 +44,13 @@
 		DB95216E22CB1CB8007FCF40 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */; };
 		DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */; };
 		DB9D9AF0235F7974008C53C3 /* DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9AEF235F7974008C53C3 /* DispatchQueue.swift */; };
+		DB9D9B592363FC6B008C53C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9B582363FC6B008C53C3 /* AppDelegate.swift */; };
+		DB9D9B5D2363FC6D008C53C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB9D9B5C2363FC6D008C53C3 /* Assets.xcassets */; };
+		DB9D9B602363FC6D008C53C3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB9D9B5E2363FC6D008C53C3 /* Main.storyboard */; };
+		DB9D9B672363FD0A008C53C3 /* Song Rating Helper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = DB9D9B562363FC6B008C53C3 /* Song Rating Helper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DB9D9B6B2363FF45008C53C3 /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9B6A2363FF45008C53C3 /* NotificationName.swift */; };
+		DB9D9B6C2363FF45008C53C3 /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9B6A2363FF45008C53C3 /* NotificationName.swift */; };
+		DB9D9B6F2364288E008C53C3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9B6E2364288E008C53C3 /* UserDefaults.swift */; };
 		FE421476F34E641428B030E9 /* Pods_Song_Rating.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +63,19 @@
 			remoteInfo = "Song Rating";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DB9D9B662363FCBB008C53C3 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LoginItems;
+			dstSubfolderSpec = 1;
+			files = (
+				DB9D9B672363FD0A008C53C3 /* Song Rating Helper.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3B451B28FF2FB910317B4EF7 /* Pods-Song Rating.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song Rating.release.xcconfig"; path = "Target Support Files/Pods-Song Rating/Pods-Song Rating.release.xcconfig"; sourceTree = "<group>"; };
@@ -107,6 +127,15 @@
 		DB95216D22CB1CB8007FCF40 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		DB95217122CB3E68007FCF40 /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		DB9D9AEF235F7974008C53C3 /* DispatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchQueue.swift; sourceTree = "<group>"; };
+		DB9D9B562363FC6B008C53C3 /* Song Rating Helper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Song Rating Helper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB9D9B582363FC6B008C53C3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DB9D9B5C2363FC6D008C53C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DB9D9B5F2363FC6D008C53C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DB9D9B612363FC6D008C53C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DB9D9B622363FC6D008C53C3 /* Song_Rating_Helper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Song_Rating_Helper.entitlements; sourceTree = "<group>"; };
+		DB9D9B682363FD2E008C53C3 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
+		DB9D9B6A2363FF45008C53C3 /* NotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationName.swift; sourceTree = "<group>"; };
+		DB9D9B6E2364288E008C53C3 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +156,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DB9D9B532363FC6B008C53C3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -144,6 +180,7 @@
 		7E6699F3E558528B857B7A62 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DB9D9B682363FD2E008C53C3 /* ServiceManagement.framework */,
 				DB89C9FD22E31B67003981F5 /* iTunesLibrary.framework */,
 				9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */,
 				B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */,
@@ -156,6 +193,7 @@
 			children = (
 				DB106C4422C53D4B00502D7C /* Song Rating */,
 				DB106C5722C53D4C00502D7C /* Song RatingTests */,
+				DB9D9B572363FC6B008C53C3 /* Song Rating Helper */,
 				DB106C4322C53D4B00502D7C /* Products */,
 				46D6891CD4F2EAD4E5A9A137 /* Pods */,
 				7E6699F3E558528B857B7A62 /* Frameworks */,
@@ -167,6 +205,7 @@
 			children = (
 				DB106C4222C53D4B00502D7C /* Song Rating.app */,
 				DB106C5422C53D4C00502D7C /* Song RatingTests.xctest */,
+				DB9D9B562363FC6B008C53C3 /* Song Rating Helper.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -180,6 +219,7 @@
 				DB27976D2306E97500DDE3EB /* Controllers */,
 				DB424A3F2308937D00230C7E /* Views */,
 				DB106CC622CA9EB600502D7C /* Controls */,
+				DB9D9B6D2364287E008C53C3 /* Extension */,
 				DB27976C2306E95A00DDE3EB /* Helper */,
 				DB106CC822CA9F2D00502D7C /* iTunes */,
 				DB106CC722CA9ECE00502D7C /* Supporting Files */,
@@ -248,7 +288,6 @@
 				DB89C9FF22E37826003981F5 /* OSVersionHelper.swift */,
 				DB05F0852354CA5800CE6DF9 /* NSViewPreview.swift */,
 				DB05F0872354CA6B00CE6DF9 /* NSViewControllerPreview.swift */,
-				DB9D9AEF235F7974008C53C3 /* DispatchQueue.swift */,
 				DB33438A235E103200B45ED0 /* ExceptionCatcher.h */,
 				DB334388235E102600B45ED0 /* ExceptionCatcher.m */,
 				DB334387235E102500B45ED0 /* Song Rating-Bridging-Header.h */,
@@ -289,6 +328,28 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		DB9D9B572363FC6B008C53C3 /* Song Rating Helper */ = {
+			isa = PBXGroup;
+			children = (
+				DB9D9B582363FC6B008C53C3 /* AppDelegate.swift */,
+				DB9D9B6A2363FF45008C53C3 /* NotificationName.swift */,
+				DB9D9B5C2363FC6D008C53C3 /* Assets.xcassets */,
+				DB9D9B5E2363FC6D008C53C3 /* Main.storyboard */,
+				DB9D9B612363FC6D008C53C3 /* Info.plist */,
+				DB9D9B622363FC6D008C53C3 /* Song_Rating_Helper.entitlements */,
+			);
+			path = "Song Rating Helper";
+			sourceTree = "<group>";
+		};
+		DB9D9B6D2364287E008C53C3 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				DB9D9AEF235F7974008C53C3 /* DispatchQueue.swift */,
+				DB9D9B6E2364288E008C53C3 /* UserDefaults.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -301,6 +362,7 @@
 				DB106C3F22C53D4B00502D7C /* Frameworks */,
 				DB106C4022C53D4B00502D7C /* Resources */,
 				B9D1366C1C48BE28820D5B87 /* [CP] Embed Pods Frameworks */,
+				DB9D9B662363FCBB008C53C3 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -330,13 +392,30 @@
 			productReference = DB106C5422C53D4C00502D7C /* Song RatingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		DB9D9B552363FC6B008C53C3 /* Song Rating Helper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB9D9B652363FC6D008C53C3 /* Build configuration list for PBXNativeTarget "Song Rating Helper" */;
+			buildPhases = (
+				DB9D9B522363FC6B008C53C3 /* Sources */,
+				DB9D9B532363FC6B008C53C3 /* Frameworks */,
+				DB9D9B542363FC6B008C53C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Song Rating Helper";
+			productName = "Song Rating Helper";
+			productReference = DB9D9B562363FC6B008C53C3 /* Song Rating Helper.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		DB106C3A22C53D4B00502D7C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1020;
+				LastSwiftUpdateCheck = 1110;
 				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = "Cirno MainasuK";
 				TargetAttributes = {
@@ -356,6 +435,9 @@
 						CreatedOnToolsVersion = 10.2.1;
 						TestTargetID = DB106C4122C53D4B00502D7C;
 					};
+					DB9D9B552363FC6B008C53C3 = {
+						CreatedOnToolsVersion = 11.1;
+					};
 				};
 			};
 			buildConfigurationList = DB106C3D22C53D4B00502D7C /* Build configuration list for PBXProject "Song Rating" */;
@@ -373,6 +455,7 @@
 			targets = (
 				DB106C4122C53D4B00502D7C /* Song Rating */,
 				DB106C5322C53D4C00502D7C /* Song RatingTests */,
+				DB9D9B552363FC6B008C53C3 /* Song Rating Helper */,
 			);
 		};
 /* End PBXProject section */
@@ -391,6 +474,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB9D9B542363FC6B008C53C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB9D9B5D2363FC6D008C53C3 /* Assets.xcassets in Resources */,
+				DB9D9B602363FC6D008C53C3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +561,7 @@
 				DB106CC422CA86A500502D7C /* iTunes.swift in Sources */,
 				DB334389235E102600B45ED0 /* ExceptionCatcher.m in Sources */,
 				DB05F0882354CA6B00CE6DF9 /* NSViewControllerPreview.swift in Sources */,
+				DB9D9B6F2364288E008C53C3 /* UserDefaults.swift in Sources */,
 				DB27976F2306EA6800DDE3EB /* iTunesPlayer.swift in Sources */,
 				DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */,
 				DB424A3A23086C1200230C7E /* MovableImageView.swift in Sources */,
@@ -481,6 +574,7 @@
 				DB424A3C230877F400230C7E /* PlayerViewController.swift in Sources */,
 				DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */,
 				DB05F0652353912500CE6DF9 /* PlayerInfoView.swift in Sources */,
+				DB9D9B6B2363FF45008C53C3 /* NotificationName.swift in Sources */,
 				DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */,
 				DB106CA822CA45BB00502D7C /* RatingControl.swift in Sources */,
 				DB05F0632353909000CE6DF9 /* PlayerPanelViewController.swift in Sources */,
@@ -508,6 +602,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DB9D9B522363FC6B008C53C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB9D9B6C2363FF45008C53C3 /* NotificationName.swift in Sources */,
+				DB9D9B592363FC6B008C53C3 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -523,6 +626,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				DB106C4C22C53D4C00502D7C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		DB9D9B5E2363FC6D008C53C3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DB9D9B5F2363FC6D008C53C3 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -746,6 +857,48 @@
 			};
 			name = Release;
 		};
+		DB9D9B632363FC6D008C53C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Song Rating Helper/Song_Rating_Helper.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = A8K92XFF77;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "Song Rating Helper/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating-Helper";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DB9D9B642363FC6D008C53C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Song Rating Helper/Song_Rating_Helper.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = A8K92XFF77;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "Song Rating Helper/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating-Helper";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -772,6 +925,15 @@
 			buildConfigurations = (
 				DB106C6122C53D4C00502D7C /* Debug */,
 				DB106C6222C53D4C00502D7C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DB9D9B652363FC6D008C53C3 /* Build configuration list for PBXNativeTarget "Song Rating Helper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB9D9B632363FC6D008C53C3 /* Debug */,
+				DB9D9B642363FC6D008C53C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

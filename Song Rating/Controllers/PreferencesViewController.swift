@@ -10,7 +10,10 @@ import Cocoa
 import MASShortcut
 
 final class PreferencesViewController: NSViewController {
-
+    
+    lazy var StartupTextField: NSTextField = {
+        return NSTextField(labelWithString: "Startup: ")
+    }()
     lazy var songRatingDownTextField: NSTextField = {
         return NSTextField(labelWithString: "Song rating down: ")
     }()
@@ -19,6 +22,10 @@ final class PreferencesViewController: NSViewController {
     }()
     lazy var showOrClosePopoverTextField: NSTextField = {
         return NSTextField(labelWithString: "Show/Close popover: ")
+    }()
+    let launchAtLoginCheckboxButton: NSButton = {
+        let button = NSButton(checkboxWithTitle: "Launch at login", target: nil, action: nil)
+        return button
     }()
     let songRatingDownShortcutView: MASShortcutView = {
         let shortcutView = MASShortcutView()
@@ -46,12 +53,16 @@ final class PreferencesViewController: NSViewController {
         line.boxType = .separator
         
         let gridView = NSGridView(views: [
+            [StartupTextField, launchAtLoginCheckboxButton],
+            [line],
             [songRatingDownTextField, songRatingDownShortcutView],
             [songRatingUpTextField, songRatingUpShortcutView],
             [showOrClosePopoverTextField, showOrClosePopoverShortcutView],
             [leadingPaddingView, trailingPaddingView]
         ])
-        gridView.column(at: 0)
+        
+        gridView.row(at: 0).rowAlignment = .lastBaseline
+        
         gridView.column(at: 0).xPlacement = .trailing
         gridView.column(at: 1).xPlacement = .leading
         gridView.rowSpacing = 8
@@ -63,11 +74,25 @@ final class PreferencesViewController: NSViewController {
 
         return gridView
     }()
+    
+    var launchAtLoginObservation: NSKeyValueObservation?
 
     override func loadView() {
         self.view = NSView()
     }
     
+    deinit {
+        launchAtLoginObservation?.invalidate()
+    }
+    
+}
+
+extension PreferencesViewController {
+    
+    @objc private func launchAtLoginCheckboxButtonChanged(_ sender: NSButton) {
+        UserDefaults.standard.launchAtLogin = sender.state == .on
+    }
+
 }
 
 extension PreferencesViewController {
@@ -95,9 +120,12 @@ extension PreferencesViewController {
             leadingPaddingView.widthAnchor.constraint(equalTo: trailingPaddingView.widthAnchor, multiplier: 1.0),
             gridView.widthAnchor.constraint(greaterThanOrEqualToConstant: 420), // magic width
         ])
-
-        // setup shortcut validator
-        MASShortcutValidator.shared()!.allowAnyShortcutWithOptionModifier = true
+        
+        launchAtLoginCheckboxButton.target = self
+        launchAtLoginCheckboxButton.action = #selector(PreferencesViewController.launchAtLoginCheckboxButtonChanged(_:))
+        launchAtLoginObservation = UserDefaults.standard.observe(\.launchAtLogin, options: [.initial, .new]) { [weak self] defaults, launchAtLogin in
+            self?.launchAtLoginCheckboxButton.state = defaults.launchAtLogin ? .on : .off
+        }
     }
     
     override func viewDidAppear() {

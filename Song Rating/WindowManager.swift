@@ -217,7 +217,7 @@ extension WindowManager: PopoverProxyDelegate {
     func popoverDidClose(_ notification: Notification) {
         // check which popover closed and release it
         
-        os_log("%{public}s[%{public}ld], %{public}s: %{public}s", ((#file as NSString).lastPathComponent), #line, #function, notification.description)
+        os_log("%{public}s[%{public}ld], %{public}s: notification: %s", ((#file as NSString).lastPathComponent), #line, #function, notification.description)
         
         if let popover = undetachedPopover, !popover.isShown {
             undetachedPopover = nil
