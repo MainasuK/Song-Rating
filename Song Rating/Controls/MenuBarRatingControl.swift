@@ -156,19 +156,19 @@ extension MenuBarRatingControl {
         os_log("%{public}s[%{public}ld], %{public}s: menu bar button receive event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
 
         switch event.type {
-        case .leftMouseUp where isStop:
+        case .leftMouseUp where isStop :
             let position = NSPoint(x: 0, y: sender.bounds.height + 5)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
-
+            
         case .rightMouseUp where isStop:
             let position = sender.convert(event.locationInWindow, to: nil)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
-
+            
         case .leftMouseUp, .leftMouseDragged:
             ratingControl.action(from: sender, with: event)
 
         case .rightMouseUp:
-            WindowManager.shared.showPopover()
+            WindowManager.shared.triggerPopover()
             
         default:
             os_log("%{public}s[%{public}ld], %{public}s: no handler for event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)

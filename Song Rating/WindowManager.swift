@@ -44,7 +44,7 @@ final class WindowManager: NSObject {
                 return
             }
             
-            self?.showPopover()
+            self?.triggerPopover()
         })
     }
     
@@ -92,8 +92,15 @@ extension WindowManager {
         updateActivationPolicy()
     }
     
-    func showPopover() {
+    func triggerPopover() {
         guard let button = menuBarRatingControl?.statusItem.button else {
+            return
+        }
+        
+        // close undetached popover if displaying
+        guard undetachedPopover == nil else {
+            undetachedPopover?.close()
+            undetachedPopover = nil
             return
         }
         
