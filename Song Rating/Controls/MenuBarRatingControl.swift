@@ -181,7 +181,7 @@ extension MenuBarRatingControl {
 extension MenuBarRatingControl: RatingControlDelegate {
     
     func ratingControl(_ ratingControl: RatingControl, shouldUpdateRating rating: Int) -> Bool {
-        return isPlaying
+        return !isStop
     }
     
     func ratingControl(_ ratingControl: RatingControl, userDidUpdateRating rating: Int) {
