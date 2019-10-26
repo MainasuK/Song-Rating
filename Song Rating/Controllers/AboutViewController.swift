@@ -25,8 +25,8 @@ final class AboutViewController: NSViewController {
         return textField
     }()
     lazy var versionTextFiled: NSTextField = {
-        let build = String.infoValue(for: "CFBundleVersion").flatMap { "(\($0))"} ?? "(NA)"
         let version = String.infoValue(for: "CFBundleShortVersionString") ?? "NA"
+        let build = String.infoValue(for: "CFBundleVersion").flatMap { "(\($0))" } ?? "(NA)"
         let string = [version, build].joined(separator: " ")
         let textField = NSTextField(labelWithString: string)
         textField.font = NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .regular)
@@ -88,6 +88,8 @@ extension AboutViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        title = "About"
         
         visualEffectBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(visualEffectBackgroundView)

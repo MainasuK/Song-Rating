@@ -12,4 +12,5 @@ macOS app for rating music in iTunes/Music.app
 [https://github.com/MainasuK/Song-Rating/releases](https://github.com/MainasuK/Song-Rating/releases)
 
 ## FAQ
-Coming soon
+### How can I check the track rating in iTunes/Music.app?  
+Check the checkbox for "Star Ratings" in General preferences. [More info](https://support.apple.com/guide/music/general-preferences-mus4130f48/mac)
