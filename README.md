@@ -14,3 +14,7 @@ macOS app for rating music in iTunes/Music.app
 ## FAQ
 ### How can I check the track rating in iTunes/Music.app?  
 Check the checkbox for "Star Ratings" in General preferences. [More info](https://support.apple.com/guide/music/general-preferences-mus4130f48/mac)
+
+### Why Song Rating not show star rating when iTunes/Music playing?
+Please check the Security & Privacy settings and check the checkbox of Song Rating.
+![Automation](./Press/Automation.png)

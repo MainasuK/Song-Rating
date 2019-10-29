@@ -22,14 +22,18 @@ final class iTunesRadioStation {
 
     // MARK: - Singleton
     static let shared = iTunesRadioStation()
-    
-    var iTunes: iTunesApplication? {
+
+    private lazy var _iTunes: iTunesApplication? = {
         let application = SBApplication(bundleIdentifier: OSVersionHelper.bundleIdentifier)
-        guard application?.isRunning == true else {
-            return nil
-        }
         application?.delegate = self
         return application
+    }()
+    
+    var iTunes: iTunesApplication? {
+        guard _iTunes?.isRunning == true else {
+            return nil
+        }
+        return _iTunes
     }
 
     private(set) var latestPlayInfo: PlayInfo? {

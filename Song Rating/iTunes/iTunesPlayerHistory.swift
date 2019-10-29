@@ -35,10 +35,12 @@ extension iTunesPlayerHistory {
         _tracks = _tracks.suffix(limit)
         
         os_log("%{public}s[%{public}ld], %{public}s: playback history append track: %{public}s", ((#file as NSString).lastPathComponent), #line, #function, track.name ?? "null")
-        
+
+        /*
         for track in tracks {
-            // print(track.name, track.databaseID)
+            print(track.name, track.databaseID)
         }
+         */
     }
     
 }
