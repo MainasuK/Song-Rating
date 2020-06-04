@@ -1,28 +1,16 @@
 PODS:
-  - DominantColor (0.1.0)
   - MASShortcut (2.4.0)
 
 DEPENDENCIES:
-  - DominantColor (from `https://github.com/indragiek/DominantColor.git`)
   - MASShortcut
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - MASShortcut
 
-EXTERNAL SOURCES:
-  DominantColor:
-    :git: https://github.com/indragiek/DominantColor.git
-
-CHECKOUT OPTIONS:
-  DominantColor:
-    :commit: 4a46b75f6c9230b374bce6d92b78e54a3107b167
-    :git: https://github.com/indragiek/DominantColor.git
-
 SPEC CHECKSUMS:
-  DominantColor: 78c1f1ca1143b3bdf599187c7875df92d76b934d
   MASShortcut: d9e4909e878661cc42877cc9d6efbe638273ab57
 
-PODFILE CHECKSUM: 22990987400160704799d9a65bb9be8983c907a2
+PODFILE CHECKSUM: 10e6f5005867dbb3964c6d40690aff5abd64540b
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1

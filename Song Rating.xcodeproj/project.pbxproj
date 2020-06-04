@@ -416,7 +416,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1110;
+				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "Cirno MainasuK";
 				TargetAttributes = {
 					DB106C4122C53D4B00502D7C = {
@@ -768,7 +768,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating/Info.plist";
@@ -776,7 +776,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -796,7 +796,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating/Info.plist";
@@ -804,7 +804,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -862,6 +862,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Song Rating Helper/Song_Rating_Helper.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;
@@ -884,6 +885,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Song Rating Helper/Song_Rating_Helper.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;

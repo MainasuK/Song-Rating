@@ -6,16 +6,16 @@
 //  Copyright © 2019 Cirno MainasuK. All rights reserved.
 //
 
-import Cocoa
 import os
-import DominantColor
+import Cocoa
+import CoreImage
 
 final class PlayerViewController: NSViewController {
     
     private let playerPanelViewController = PlayerPanelViewController()
     private let playerHistoryViewController = PlayerHistoryViewController()
     
-    // cover
+    // back cover with blur effect
     private let backCoverImageView: MovableImageView = {
         let view = MovableImageView()
         view.wantsLayer = true
@@ -23,14 +23,8 @@ final class PlayerViewController: NSViewController {
         view.layer?.contentsGravity = CALayerContentsGravity.resizeAspectFill
         return view
     }()
-    private let backCoverImageVisualEffectView: NSVisualEffectView = {
-        let visualEffectView = NSVisualEffectView()
-        visualEffectView.blendingMode = .withinWindow
-        visualEffectView.material = .hudWindow
-        visualEffectView.isEmphasized = true
-        visualEffectView.state = .active
-        return visualEffectView
-    }()
+
+    // normal cover
     private let coverImageView: MovableImageView = {
         let imageView = MovableImageView()
         imageView.imageScaling = .scaleProportionallyUpOrDown
@@ -129,7 +123,7 @@ extension PlayerViewController {
         playerPanelViewController.delegate = self
 
         // V-StackView
-        // - backCoverImageVisualEffectView & coverImageView
+        // - backCoverImageView & coverImageView
         // - playerInfoView
         // - playerHistoryViewController
                 
@@ -151,18 +145,9 @@ extension PlayerViewController {
             coverImageView.widthAnchor.constraint(equalToConstant: 300),
             coverImageView.heightAnchor.constraint(equalTo: coverImageView.widthAnchor),
         ])
-        
-        backCoverImageVisualEffectView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(backCoverImageVisualEffectView, positioned: .below, relativeTo: coverImageView)
-        NSLayoutConstraint.activate([
-            backCoverImageVisualEffectView.topAnchor.constraint(equalTo: coverImageView.topAnchor),
-            backCoverImageVisualEffectView.leadingAnchor.constraint(equalTo: coverImageView.leadingAnchor),
-            backCoverImageVisualEffectView.trailingAnchor.constraint(equalTo: coverImageView.trailingAnchor),
-            backCoverImageVisualEffectView.bottomAnchor.constraint(equalTo: coverImageView.bottomAnchor),
-        ])
-        
+
         backCoverImageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(backCoverImageView, positioned: .below, relativeTo: backCoverImageVisualEffectView)
+        view.addSubview(backCoverImageView, positioned: .below, relativeTo: stackView)
         NSLayoutConstraint.activate([
             backCoverImageView.topAnchor.constraint(equalTo: coverImageView.topAnchor),
             backCoverImageView.leadingAnchor.constraint(equalTo: coverImageView.leadingAnchor),
@@ -278,7 +263,34 @@ extension PlayerViewController {
             coverImageView.layer?.add(transition, forKey: nil)
 
             coverImageView.image = image
-            backCoverImageView.layer?.contents = image
+            backCoverImageView.layer?.contents = NSImage(size: coverImageView.frame.size, flipped: true) { rect -> Bool in
+                let context = CIContext()
+                guard let tiffData = image.tiffRepresentation, let ciImage = CIImage(data: tiffData),
+                let clampFilter = CIFilter(name: "CIAffineClamp"),
+                let gaussianBlur = CIFilter(name: "CIGaussianBlur") else {
+                    return true
+                }
+                let extent = ciImage.extent
+
+                clampFilter.setValue(ciImage, forKey: kCIInputImageKey)
+                clampFilter.setValue(NSAffineTransform(transform: .identity), forKey: kCIInputTransformKey)
+                guard let clampFilterOutput = clampFilter.outputImage else {
+                    return true
+                }
+                                
+                gaussianBlur.setValue(clampFilterOutput, forKey: kCIInputImageKey)
+                gaussianBlur.setValue(100, forKey: kCIInputRadiusKey)
+                
+                guard let outputImage = gaussianBlur.outputImage,
+                let cgImage = context.createCGImage(outputImage, from: extent) else {
+                    return true
+                }
+            
+                let nsImage = NSImage(cgImage: cgImage, size: .zero)
+                nsImage.draw(in: rect)
+                
+                return true
+            }
             
         } else {
             coverImageView.image = nil
