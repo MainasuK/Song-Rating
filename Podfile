@@ -5,7 +5,6 @@ target 'Song Rating' do
 
   # Pods for Song Rating
   pod 'MASShortcut'
-  pod 'DominantColor', :git => 'https://github.com/indragiek/DominantColor.git'
  
   target 'Song RatingTests' do
     inherit! :search_paths

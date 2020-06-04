@@ -32,6 +32,7 @@ final class PopoverViewController: NSViewController {
         visualEffectView.state = .active
         
         visualEffectView.alphaValue = 0
+        visualEffectView.maskImage = NSImage(named: NSImage.stopProgressFreestandingTemplateName)   // clip non-button part effect out 
         
         return visualEffectView
     }()
