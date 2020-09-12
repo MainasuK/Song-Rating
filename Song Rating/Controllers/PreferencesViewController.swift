@@ -20,6 +20,9 @@ final class PreferencesViewController: NSViewController {
     lazy var songRatingUpTextField: NSTextField = {
         return NSTextField(labelWithString: "Song rating up: ")
     }()
+    lazy var songRating1TextField: NSTextField = {
+        return NSTextField(labelWithString: "★: ")
+    }()
     lazy var showOrClosePopoverTextField: NSTextField = {
         return NSTextField(labelWithString: "Show/Close popover: ")
     }()
@@ -35,6 +38,11 @@ final class PreferencesViewController: NSViewController {
     let songRatingUpShortcutView: MASShortcutView = {
         let shortcutView = MASShortcutView()
         shortcutView.associatedUserDefaultsKey = ShortcutKey.songRatingUp.rawValue
+        return shortcutView
+    }()
+    let songRating1ShortcutView: MASShortcutView = {
+        let shortcutView = MASShortcutView()
+        shortcutView.associatedUserDefaultsKey = ShortcutKey.songRating1.rawValue
         return shortcutView
     }()
     let showOrClosePopoverShortcutView: MASShortcutView = {
@@ -57,6 +65,7 @@ final class PreferencesViewController: NSViewController {
             [line],
             [songRatingDownTextField, songRatingDownShortcutView],
             [songRatingUpTextField, songRatingUpShortcutView],
+            [songRating1TextField, songRating1ShortcutView],
             [showOrClosePopoverTextField, showOrClosePopoverShortcutView],
             [leadingPaddingView, trailingPaddingView]
         ])
@@ -140,6 +149,7 @@ extension PreferencesViewController {
         case songRatingDown
         case songRatingUp
         case showOrClosePopover
+        case songRating1
     }
     
 }

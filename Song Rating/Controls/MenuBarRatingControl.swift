@@ -127,6 +127,7 @@ final class MenuBarRatingControl {
     
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingUp(_:)), name: .iTunesRadioRequestTrackRatingUp, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingDown(_:)), name: .iTunesRadioRequestTrackRatingDown, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating1(_:)), name: .iTunesRadioRequestTrackRating1, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.windowDidResize(_:)), name: NSWindow.didResizeNotification, object: nil)
     }
@@ -219,6 +220,16 @@ extension MenuBarRatingControl {
         }
         
         ratingControl.update(rating: ratingControl.rating - 20)
+        iTunesRadioStation.shared.setRating(ratingControl.rating)
+    }
+    
+    @objc func iTunesRadioRequestTrackRating1(_ notification: Notification) {
+        isPlaying = iTunesPlayer.shared.isPlaying
+        guard !isStop else {
+            return
+        }
+        
+        ratingControl.update(rating: 20)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
 
