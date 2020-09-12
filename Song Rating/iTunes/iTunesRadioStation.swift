@@ -17,6 +17,7 @@ extension Notification.Name {
     static let iTunesRadioRequestTrackRatingUp = Notification.Name("iTunesRadioRequestTrackRatingUp")
     static let iTunesRadioRequestTrackRatingDown = Notification.Name("iTunesRadioRequestTrackRatingDown")
     static let iTunesRadioRequestTrackRating1 = Notification.Name("iTunesRadioRequestTrackRating1")
+    static let iTunesRadioRequestTrackRating0 = Notification.Name("iTunesRadioRequestTrackRating0")
 }
 
 final class iTunesRadioStation {
@@ -68,6 +69,10 @@ final class iTunesRadioStation {
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRating1.rawValue, toAction: {
             iTunesPlayer.shared.update(broadcast: false)
             NotificationCenter.default.post(name: .iTunesRadioRequestTrackRating1, object: nil)
+        })
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRating0.rawValue, toAction: {
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRating0, object: nil)
         })
     }
 

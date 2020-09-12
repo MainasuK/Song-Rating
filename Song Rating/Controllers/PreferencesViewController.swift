@@ -10,7 +10,7 @@ import Cocoa
 import MASShortcut
 
 final class PreferencesViewController: NSViewController {
-    
+
     lazy var StartupTextField: NSTextField = {
         return NSTextField(labelWithString: "Startup: ")
     }()
@@ -22,6 +22,9 @@ final class PreferencesViewController: NSViewController {
     }()
     lazy var songRating1TextField: NSTextField = {
         return NSTextField(labelWithString: "★: ")
+    }()
+    lazy var songRating0TextField: NSTextField = {
+        return NSTextField(labelWithString: "Remove stars: ")
     }()
     lazy var showOrClosePopoverTextField: NSTextField = {
         return NSTextField(labelWithString: "Show/Close popover: ")
@@ -45,6 +48,11 @@ final class PreferencesViewController: NSViewController {
         shortcutView.associatedUserDefaultsKey = ShortcutKey.songRating1.rawValue
         return shortcutView
     }()
+    let songRating0ShortcutView: MASShortcutView = {
+        let shortcutView = MASShortcutView()
+        shortcutView.associatedUserDefaultsKey = ShortcutKey.songRating0.rawValue
+        return shortcutView
+    }()
     let showOrClosePopoverShortcutView: MASShortcutView = {
         let shortcutView = MASShortcutView()
         shortcutView.associatedUserDefaultsKey = ShortcutKey.showOrClosePopover.rawValue
@@ -59,23 +67,24 @@ final class PreferencesViewController: NSViewController {
         let empty = NSGridCell.emptyContentView
         let line = NSBox()
         line.boxType = .separator
-        
+
         let gridView = NSGridView(views: [
             [StartupTextField, launchAtLoginCheckboxButton],
             [line],
             [songRatingDownTextField, songRatingDownShortcutView],
             [songRatingUpTextField, songRatingUpShortcutView],
             [songRating1TextField, songRating1ShortcutView],
+            [songRating0TextField, songRating0ShortcutView],
             [showOrClosePopoverTextField, showOrClosePopoverShortcutView],
             [leadingPaddingView, trailingPaddingView]
         ])
-        
+
         gridView.row(at: 0).rowAlignment = .lastBaseline
-        
+
         gridView.column(at: 0).xPlacement = .trailing
         gridView.column(at: 1).xPlacement = .leading
         gridView.rowSpacing = 8
-        
+
         let lineRow = gridView.cell(for: line)?.row
         lineRow?.mergeCells(in: NSMakeRange(0, 2))
         lineRow?.topPadding = 8
@@ -83,21 +92,21 @@ final class PreferencesViewController: NSViewController {
 
         return gridView
     }()
-    
+
     var launchAtLoginObservation: NSKeyValueObservation?
 
     override func loadView() {
         self.view = NSView()
     }
-    
+
     deinit {
         launchAtLoginObservation?.invalidate()
     }
-    
+
 }
 
 extension PreferencesViewController {
-    
+
     @objc private func launchAtLoginCheckboxButtonChanged(_ sender: NSButton) {
         UserDefaults.standard.launchAtLogin = sender.state == .on
     }
@@ -105,7 +114,7 @@ extension PreferencesViewController {
 }
 
 extension PreferencesViewController {
-    
+
     func setupWindow() {
         view.window?.styleMask.remove(.resizable)
     }
@@ -129,14 +138,14 @@ extension PreferencesViewController {
             leadingPaddingView.widthAnchor.constraint(equalTo: trailingPaddingView.widthAnchor, multiplier: 1.0),
             gridView.widthAnchor.constraint(greaterThanOrEqualToConstant: 420), // magic width
         ])
-        
+
         launchAtLoginCheckboxButton.target = self
         launchAtLoginCheckboxButton.action = #selector(PreferencesViewController.launchAtLoginCheckboxButtonChanged(_:))
         launchAtLoginObservation = UserDefaults.standard.observe(\.launchAtLogin, options: [.initial, .new]) { [weak self] defaults, launchAtLogin in
             self?.launchAtLoginCheckboxButton.state = defaults.launchAtLogin ? .on : .off
         }
     }
-    
+
     override func viewDidAppear() {
         setupWindow()
     }
@@ -150,8 +159,9 @@ extension PreferencesViewController {
         case songRatingUp
         case showOrClosePopover
         case songRating1
+        case songRating0
     }
-    
+
 }
 
 #if canImport(SwiftUI) && DEBUG
@@ -159,13 +169,13 @@ import SwiftUI
 
 @available(macOS 10.15.0, *)
 struct PreferencesViewController_Preview: PreviewProvider {
-    
+
     static var previews: some View {
         NSViewControllerPreview {
             return PreferencesViewController()
         }
     }
-    
+
 }
 
 #endif
