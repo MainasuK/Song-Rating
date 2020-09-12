@@ -20,6 +20,18 @@ final class PreferencesViewController: NSViewController {
     lazy var songRatingUpTextField: NSTextField = {
         return NSTextField(labelWithString: "Song rating up: ")
     }()
+    lazy var songRating5TextField: NSTextField = {
+        return NSTextField(labelWithString: "★★★★★: ")
+    }()
+    lazy var songRating4TextField: NSTextField = {
+        return NSTextField(labelWithString: "★★★★: ")
+    }()
+    lazy var songRating3TextField: NSTextField = {
+        return NSTextField(labelWithString: "★★★: ")
+    }()
+    lazy var songRating2TextField: NSTextField = {
+        return NSTextField(labelWithString: "★★: ")
+    }()
     lazy var songRating1TextField: NSTextField = {
         return NSTextField(labelWithString: "★: ")
     }()
@@ -41,6 +53,26 @@ final class PreferencesViewController: NSViewController {
     let songRatingUpShortcutView: MASShortcutView = {
         let shortcutView = MASShortcutView()
         shortcutView.associatedUserDefaultsKey = ShortcutKey.songRatingUp.rawValue
+        return shortcutView
+    }()
+    let songRating5ShortcutView: MASShortcutView = {
+        let shortcutView = MASShortcutView()
+        shortcutView.associatedUserDefaultsKey = ShortcutKey.songRating5.rawValue
+        return shortcutView
+    }()
+    let songRating4ShortcutView: MASShortcutView = {
+        let shortcutView = MASShortcutView()
+        shortcutView.associatedUserDefaultsKey = ShortcutKey.songRating4.rawValue
+        return shortcutView
+    }()
+    let songRating3ShortcutView: MASShortcutView = {
+        let shortcutView = MASShortcutView()
+        shortcutView.associatedUserDefaultsKey = ShortcutKey.songRating3.rawValue
+        return shortcutView
+    }()
+    let songRating2ShortcutView: MASShortcutView = {
+        let shortcutView = MASShortcutView()
+        shortcutView.associatedUserDefaultsKey = ShortcutKey.songRating2.rawValue
         return shortcutView
     }()
     let songRating1ShortcutView: MASShortcutView = {
@@ -73,6 +105,10 @@ final class PreferencesViewController: NSViewController {
             [line],
             [songRatingDownTextField, songRatingDownShortcutView],
             [songRatingUpTextField, songRatingUpShortcutView],
+            [songRating5TextField, songRating5ShortcutView],
+            [songRating4TextField, songRating4ShortcutView],
+            [songRating3TextField, songRating3ShortcutView],
+            [songRating2TextField, songRating2ShortcutView],
             [songRating1TextField, songRating1ShortcutView],
             [songRating0TextField, songRating0ShortcutView],
             [showOrClosePopoverTextField, showOrClosePopoverShortcutView],
@@ -158,6 +194,10 @@ extension PreferencesViewController {
         case songRatingDown
         case songRatingUp
         case showOrClosePopover
+        case songRating5
+        case songRating4
+        case songRating3
+        case songRating2
         case songRating1
         case songRating0
     }

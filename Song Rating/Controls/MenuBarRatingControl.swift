@@ -127,6 +127,10 @@ final class MenuBarRatingControl {
 
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingUp(_:)), name: .iTunesRadioRequestTrackRatingUp, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingDown(_:)), name: .iTunesRadioRequestTrackRatingDown, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating5(_:)), name: .iTunesRadioRequestTrackRating5, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating4(_:)), name: .iTunesRadioRequestTrackRating4, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating3(_:)), name: .iTunesRadioRequestTrackRating3, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating2(_:)), name: .iTunesRadioRequestTrackRating2, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating1(_:)), name: .iTunesRadioRequestTrackRating1, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating0(_:)), name: .iTunesRadioRequestTrackRating0, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.windowDidResize(_:)), name: NSWindow.didResizeNotification, object: nil)
@@ -223,6 +227,46 @@ extension MenuBarRatingControl {
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
 
+    @objc func iTunesRadioRequestTrackRating5(_ notification: Notification) {
+        isPlaying = iTunesPlayer.shared.isPlaying
+        guard !isStop else {
+            return
+        }
+
+        ratingControl.update(rating: 5 * 20)
+        iTunesRadioStation.shared.setRating(ratingControl.rating)
+    }
+
+    @objc func iTunesRadioRequestTrackRating4(_ notification: Notification) {
+        isPlaying = iTunesPlayer.shared.isPlaying
+        guard !isStop else {
+            return
+        }
+
+        ratingControl.update(rating: 4 * 20)
+        iTunesRadioStation.shared.setRating(ratingControl.rating)
+    }
+
+    @objc func iTunesRadioRequestTrackRating3(_ notification: Notification) {
+        isPlaying = iTunesPlayer.shared.isPlaying
+        guard !isStop else {
+            return
+        }
+
+        ratingControl.update(rating: 3 * 20)
+        iTunesRadioStation.shared.setRating(ratingControl.rating)
+    }
+
+    @objc func iTunesRadioRequestTrackRating2(_ notification: Notification) {
+        isPlaying = iTunesPlayer.shared.isPlaying
+        guard !isStop else {
+            return
+        }
+
+        ratingControl.update(rating: 2 * 20)
+        iTunesRadioStation.shared.setRating(ratingControl.rating)
+    }
+
     @objc func iTunesRadioRequestTrackRating1(_ notification: Notification) {
         isPlaying = iTunesPlayer.shared.isPlaying
         guard !isStop else {
@@ -232,7 +276,7 @@ extension MenuBarRatingControl {
         ratingControl.update(rating: 20)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
-    
+
     @objc func iTunesRadioRequestTrackRating0(_ notification: Notification) {
         isPlaying = iTunesPlayer.shared.isPlaying
         guard !isStop else {
