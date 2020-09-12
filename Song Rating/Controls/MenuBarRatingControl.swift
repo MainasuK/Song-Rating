@@ -228,63 +228,37 @@ extension MenuBarRatingControl {
     }
 
     @objc func iTunesRadioRequestTrackRating5(_ notification: Notification) {
-        isPlaying = iTunesPlayer.shared.isPlaying
-        guard !isStop else {
-            return
-        }
-
-        ratingControl.update(rating: 5 * 20)
-        iTunesRadioStation.shared.setRating(ratingControl.rating)
+        setRating(stars: 5)
     }
 
     @objc func iTunesRadioRequestTrackRating4(_ notification: Notification) {
-        isPlaying = iTunesPlayer.shared.isPlaying
-        guard !isStop else {
-            return
-        }
-
-        ratingControl.update(rating: 4 * 20)
-        iTunesRadioStation.shared.setRating(ratingControl.rating)
+        setRating(stars: 4)
     }
 
     @objc func iTunesRadioRequestTrackRating3(_ notification: Notification) {
-        isPlaying = iTunesPlayer.shared.isPlaying
-        guard !isStop else {
-            return
-        }
-
-        ratingControl.update(rating: 3 * 20)
-        iTunesRadioStation.shared.setRating(ratingControl.rating)
+        setRating(stars: 3)
     }
 
     @objc func iTunesRadioRequestTrackRating2(_ notification: Notification) {
-        isPlaying = iTunesPlayer.shared.isPlaying
-        guard !isStop else {
-            return
-        }
-
-        ratingControl.update(rating: 2 * 20)
-        iTunesRadioStation.shared.setRating(ratingControl.rating)
+        setRating(stars: 2)
     }
 
     @objc func iTunesRadioRequestTrackRating1(_ notification: Notification) {
-        isPlaying = iTunesPlayer.shared.isPlaying
-        guard !isStop else {
-            return
-        }
-
-        ratingControl.update(rating: 20)
-        iTunesRadioStation.shared.setRating(ratingControl.rating)
+        setRating(stars: 1)
     }
 
     @objc func iTunesRadioRequestTrackRating0(_ notification: Notification) {
-        isPlaying = iTunesPlayer.shared.isPlaying
-        guard !isStop else {
-            return
-        }
+        setRating(stars: 0)
+    }
 
-        ratingControl.update(rating: 0)
-        iTunesRadioStation.shared.setRating(ratingControl.rating)
+    @objc func setRating(stars: Int) {
+      isPlaying = iTunesPlayer.shared.isPlaying
+      guard !isStop else {
+          return
+      }
+
+      ratingControl.update(rating: stars * 20)
+      iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
 
     @objc func windowDidResize(_ notification: Notification) {
