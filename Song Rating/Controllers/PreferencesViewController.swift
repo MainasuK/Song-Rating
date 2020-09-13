@@ -10,6 +10,10 @@ import Cocoa
 import MASShortcut
 
 final class PreferencesViewController: NSViewController {
+    
+    static var defaultTextFieldFontSize: CGFloat {
+        return NSTextField(labelWithString: "sample").font!.pointSize
+    }
 
     lazy var StartupTextField: NSTextField = {
         return NSTextField(labelWithString: "Startup: ")
@@ -21,19 +25,29 @@ final class PreferencesViewController: NSViewController {
         return NSTextField(labelWithString: "Song rating up: ")
     }()
     lazy var songRating5TextField: NSTextField = {
-        return NSTextField(labelWithString: "★★★★★: ")
+        let attributedString = PreferencesViewController.starsAttributedString(count: 5, fontSize: PreferencesViewController.defaultTextFieldFontSize)
+        attributedString.append(NSAttributedString(string: ": "))
+        return NSTextField(labelWithAttributedString: attributedString)
     }()
     lazy var songRating4TextField: NSTextField = {
-        return NSTextField(labelWithString: "★★★★: ")
+        let attributedString = PreferencesViewController.starsAttributedString(count: 4, fontSize: PreferencesViewController.defaultTextFieldFontSize)
+        attributedString.append(NSAttributedString(string: ": "))
+        return NSTextField(labelWithAttributedString: attributedString)
     }()
     lazy var songRating3TextField: NSTextField = {
-        return NSTextField(labelWithString: "★★★: ")
+        let attributedString = PreferencesViewController.starsAttributedString(count: 3, fontSize: PreferencesViewController.defaultTextFieldFontSize)
+        attributedString.append(NSAttributedString(string: ": "))
+        return NSTextField(labelWithAttributedString: attributedString)
     }()
     lazy var songRating2TextField: NSTextField = {
-        return NSTextField(labelWithString: "★★: ")
+        let attributedString = PreferencesViewController.starsAttributedString(count: 2, fontSize: PreferencesViewController.defaultTextFieldFontSize)
+        attributedString.append(NSAttributedString(string: ": "))
+        return NSTextField(labelWithAttributedString: attributedString)
     }()
     lazy var songRating1TextField: NSTextField = {
-        return NSTextField(labelWithString: "★: ")
+        let attributedString = PreferencesViewController.starsAttributedString(count: 1, fontSize: PreferencesViewController.defaultTextFieldFontSize)
+        attributedString.append(NSAttributedString(string: ": "))
+        return NSTextField(labelWithAttributedString: attributedString)
     }()
     lazy var songRating0TextField: NSTextField = {
         return NSTextField(labelWithString: "Remove stars: ")
@@ -97,21 +111,20 @@ final class PreferencesViewController: NSViewController {
 
     lazy var gridView: NSGridView = {
         let empty = NSGridCell.emptyContentView
-        let line = NSBox()
-        line.boxType = .separator
-
+        
         let gridView = NSGridView(views: [
             [StartupTextField, launchAtLoginCheckboxButton],
-            [line],
+            [NSBox.separatorLine],
             [songRatingDownTextField, songRatingDownShortcutView],
             [songRatingUpTextField, songRatingUpShortcutView],
-            [songRating5TextField, songRating5ShortcutView],
-            [songRating4TextField, songRating4ShortcutView],
-            [songRating3TextField, songRating3ShortcutView],
-            [songRating2TextField, songRating2ShortcutView],
-            [songRating1TextField, songRating1ShortcutView],
-            [songRating0TextField, songRating0ShortcutView],
             [showOrClosePopoverTextField, showOrClosePopoverShortcutView],
+            [NSBox.separatorLine],
+            [songRating0TextField, songRating0ShortcutView],
+            [songRating1TextField, songRating1ShortcutView],
+            [songRating2TextField, songRating2ShortcutView],
+            [songRating3TextField, songRating3ShortcutView],
+            [songRating4TextField, songRating4ShortcutView],
+            [songRating5TextField, songRating5ShortcutView],
             [leadingPaddingView, trailingPaddingView]
         ])
 
@@ -120,11 +133,16 @@ final class PreferencesViewController: NSViewController {
         gridView.column(at: 0).xPlacement = .trailing
         gridView.column(at: 1).xPlacement = .leading
         gridView.rowSpacing = 8
-
-        let lineRow = gridView.cell(for: line)?.row
-        lineRow?.mergeCells(in: NSMakeRange(0, 2))
-        lineRow?.topPadding = 8
-        lineRow?.bottomPadding = 8
+        
+        let lines = gridView.subviews.filter { ($0 as? NSBox)?.boxType == .separator }
+        for line in lines {
+            guard let lineRow = gridView.cell(for: line)?.row else {
+                continue
+            }
+            lineRow.mergeCells(in: NSMakeRange(0, 2))
+            lineRow.topPadding = 8
+            lineRow.bottomPadding = 8
+        }
 
         return gridView
     }()
@@ -139,6 +157,30 @@ final class PreferencesViewController: NSViewController {
         launchAtLoginObservation?.invalidate()
     }
 
+}
+
+extension PreferencesViewController {
+    private static func starsAttributedString(count: Int, fontSize: CGFloat) -> NSMutableAttributedString {
+        let attributedString = NSMutableAttributedString()
+        let font = NSFont.systemFont(ofSize: fontSize)
+        let stars = Stars(
+            stars: Array(repeating: Star(size: CGSize(width: fontSize, height: fontSize), fill: true), count: count),
+            spacing: 3
+        )
+        let image = stars.image
+        image.isTemplate = true
+        let attachment = NSTextAttachment()
+        attachment.image = image.withTintColor(.labelColor)
+        // center vertical image
+        attachment.bounds = CGRect(
+            x: 0,
+            y: (font.capHeight - image.size.height) * 0.5,
+            width: image.size.width,
+            height: image.size.height
+        )
+        attributedString.append(NSAttributedString(attachment: attachment))
+        return attributedString
+    }
 }
 
 extension PreferencesViewController {
