@@ -51,6 +51,8 @@
 		DB9D9B6B2363FF45008C53C3 /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9B6A2363FF45008C53C3 /* NotificationName.swift */; };
 		DB9D9B6C2363FF45008C53C3 /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9B6A2363FF45008C53C3 /* NotificationName.swift */; };
 		DB9D9B6F2364288E008C53C3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9B6E2364288E008C53C3 /* UserDefaults.swift */; };
+		DBD6A936250DA48E002C1B6C /* NSBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD6A935250DA48E002C1B6C /* NSBox.swift */; };
+		DBD6A938250E0A1C002C1B6C /* NSImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD6A937250E0A1C002C1B6C /* NSImage.swift */; };
 		FE421476F34E641428B030E9 /* Pods_Song_Rating.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */; };
 /* End PBXBuildFile section */
 
@@ -136,6 +138,8 @@
 		DB9D9B682363FD2E008C53C3 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
 		DB9D9B6A2363FF45008C53C3 /* NotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationName.swift; sourceTree = "<group>"; };
 		DB9D9B6E2364288E008C53C3 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		DBD6A935250DA48E002C1B6C /* NSBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSBox.swift; sourceTree = "<group>"; };
+		DBD6A937250E0A1C002C1B6C /* NSImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -346,6 +350,8 @@
 			children = (
 				DB9D9AEF235F7974008C53C3 /* DispatchQueue.swift */,
 				DB9D9B6E2364288E008C53C3 /* UserDefaults.swift */,
+				DBD6A935250DA48E002C1B6C /* NSBox.swift */,
+				DBD6A937250E0A1C002C1B6C /* NSImage.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -569,10 +575,12 @@
 				DB89CA0022E37826003981F5 /* OSVersionHelper.swift in Sources */,
 				DB424A45230D877900230C7E /* PlayerHistoryViewController.swift in Sources */,
 				DB106CA622CA3EE700502D7C /* Stars.swift in Sources */,
+				DBD6A938250E0A1C002C1B6C /* NSImage.swift in Sources */,
 				DB2797732306F0EC00DDE3EB /* iTunesApplication.swift in Sources */,
 				DB05F08A2354FC7700CE6DF9 /* PlayerControlView.swift in Sources */,
 				DB424A3C230877F400230C7E /* PlayerViewController.swift in Sources */,
 				DB95216A22CB186F007FCF40 /* WindowManager.swift in Sources */,
+				DBD6A936250DA48E002C1B6C /* NSBox.swift in Sources */,
 				DB05F0652353912500CE6DF9 /* PlayerInfoView.swift in Sources */,
 				DB9D9B6B2363FF45008C53C3 /* NotificationName.swift in Sources */,
 				DB95217222CB3E68007FCF40 /* PreferencesViewController.swift in Sources */,
@@ -768,7 +776,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating/Info.plist";
@@ -776,7 +784,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.4;
+				MARKETING_VERSION = 1.2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -796,7 +804,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating/Info.plist";
@@ -804,7 +812,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.4;
+				MARKETING_VERSION = 1.2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

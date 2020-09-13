@@ -96,8 +96,14 @@ extension RatingControl {
         
         // assert image center aligment without resize and leading & tariling margin added
         let position = sender.convert(event.locationInWindow, to: nil)  //  leading margin | image | trailing margin
-        let systemLeftMargin = 0.5 * (width - imageWidth)               //  leading margin (default 4 on menu bar)
-        let positionX = position.x - systemLeftMargin                   // -leading margin ~ image.size.with
+        let systemLeftMargin: CGFloat = {
+            if #available(macOS 11.0, *) {
+                return 20 + 0.5 * (width - imageWidth)                  //  big sur magic container width + leading margin
+            } else {
+                return 0.5 * (width - imageWidth)                       //  leading margin (default 4)
+            }
+        }()
+        let positionX = position.x - systemLeftMargin                   // x in range: -leading margin ~ image.size.with
         
         var rating: Int?
         let array = Array(0..<5)

@@ -37,7 +37,7 @@ protocol PopoverProxyDelegate: class {
 final class PopoverProxy: NSObject, NSPopoverDelegate {
 
     weak var delegate: PopoverProxyDelegate?
-    
+
     func popoverDidClose(_ notification: Notification) {
         delegate?.popoverDidClose(notification)
     }
@@ -45,7 +45,7 @@ final class PopoverProxy: NSObject, NSPopoverDelegate {
     func popoverShouldDetach(_ popover: NSPopover) -> Bool {
         return delegate?.popoverShouldDetach(popover) ?? false
     }
-    
+
     func popoverDidDetach(_ popover: NSPopover) {
         delegate?.popoverDidDetach(popover)
     }
@@ -53,13 +53,13 @@ final class PopoverProxy: NSObject, NSPopoverDelegate {
 }
 
 final class MenuBarRatingControl {
-    
+
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     let ratingControl = RatingControl(rating: 0)
     let menuBarIcon: MenuBarIcon
     let trackingAreaResponser = TrackingAreaResponder()
 
-    
+
     private(set) lazy var menuBarMenu: NSMenu = {
         let menu = NSMenu()
         let about = NSMenuItem(title: "About Song Rating", action: #selector(WindowManager.aboutMenuItemPressed(_:)), keyEquivalent: "")
@@ -85,7 +85,7 @@ final class MenuBarRatingControl {
                     self.playState = .unknown
                 }
             }
-            
+
             updateMenuBar()
         }
     }
@@ -97,11 +97,11 @@ final class MenuBarRatingControl {
             }
         }
     }
-    
+
     var isStop: Bool {
         return playState == .unknown
     }
-    
+
     init() {
         menuBarIcon = MenuBarIcon(size: ratingControl.starSize)
 
@@ -120,35 +120,40 @@ final class MenuBarRatingControl {
         button.addTrackingArea(trackingArea)
 
         trackingAreaResponser.delegate = self
-        
+
         ratingControl.delegate = self
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesPlayerDidUpdated(_:)), name: .iTunesPlayerDidUpdated, object: nil)
-    
+
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingUp(_:)), name: .iTunesRadioRequestTrackRatingUp, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRatingDown(_:)), name: .iTunesRadioRequestTrackRatingDown, object: nil)
-
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating5(_:)), name: .iTunesRadioRequestTrackRating5, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating4(_:)), name: .iTunesRadioRequestTrackRating4, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating3(_:)), name: .iTunesRadioRequestTrackRating3, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating2(_:)), name: .iTunesRadioRequestTrackRating2, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating1(_:)), name: .iTunesRadioRequestTrackRating1, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.iTunesRadioRequestTrackRating0(_:)), name: .iTunesRadioRequestTrackRating0, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MenuBarRatingControl.windowDidResize(_:)), name: NSWindow.didResizeNotification, object: nil)
     }
-    
+
 }
 
 extension MenuBarRatingControl {
-    
+
     private func updateMenuBar() {
         let margin: CGFloat = 4 + 4
         let playingWidth = margin + ratingControl.starsImage.size.width
         let pauseWidth = margin + CGFloat(2) * ratingControl.spacing + ratingControl.starSize.width
-        
+
         statusItem.length = !isStop ? playingWidth : pauseWidth
         statusItem.button?.image = !isStop ? ratingControl.starsImage : menuBarIcon.image
         statusItem.button?.setButtonType(!isStop ? .momentaryChange : .onOff)
     }
-    
+
 }
 
 extension MenuBarRatingControl {
-    
+
     @objc func action(_ sender: NSButton) {
         guard let event = NSApp.currentEvent else {
             return
@@ -159,67 +164,101 @@ extension MenuBarRatingControl {
         case .leftMouseUp where isStop :
             let position = NSPoint(x: 0, y: sender.bounds.height + 5)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
-            
+
         case .rightMouseUp where isStop:
             let position = sender.convert(event.locationInWindow, to: nil)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
-            
+
         case .leftMouseUp, .leftMouseDragged:
             ratingControl.action(from: sender, with: event)
 
         case .rightMouseUp:
             WindowManager.shared.triggerPopover()
-            
+
         default:
             os_log("%{public}s[%{public}ld], %{public}s: no handler for event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
         }
     }
-    
+
 }
 
 // MARK: - RatingControlDelegate
 extension MenuBarRatingControl: RatingControlDelegate {
-    
+
     func ratingControl(_ ratingControl: RatingControl, shouldUpdateRating rating: Int) -> Bool {
         return !isStop
     }
-    
+
     func ratingControl(_ ratingControl: RatingControl, userDidUpdateRating rating: Int) {
         // Update iTunes current track rating
         iTunesRadioStation.shared.setRating(rating)
         statusItem.button?.needsDisplay = true
     }
-    
+
 }
 
 extension MenuBarRatingControl {
-    
+
     @objc func iTunesPlayerDidUpdated(_ notification: Notification) {
         let player = iTunesPlayer.shared
-        
+
         isPlaying = player.isPlaying
         let userRating = player.currentTrack?.userRating ?? 0
         ratingControl.update(rating: userRating)
     }
-    
+
     @objc func iTunesRadioRequestTrackRatingUp(_ notification: Notification) {
         isPlaying = iTunesPlayer.shared.isPlaying
         guard !isStop else {
             return
         }
-        
+
         ratingControl.update(rating: ratingControl.rating + 20)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
-    
+
     @objc func iTunesRadioRequestTrackRatingDown(_ notification: Notification) {
         isPlaying = iTunesPlayer.shared.isPlaying
         guard !isStop else {
             return
         }
-        
+
         ratingControl.update(rating: ratingControl.rating - 20)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
+    }
+
+    @objc func iTunesRadioRequestTrackRating5(_ notification: Notification) {
+        setRating(stars: 5)
+    }
+
+    @objc func iTunesRadioRequestTrackRating4(_ notification: Notification) {
+        setRating(stars: 4)
+    }
+
+    @objc func iTunesRadioRequestTrackRating3(_ notification: Notification) {
+        setRating(stars: 3)
+    }
+
+    @objc func iTunesRadioRequestTrackRating2(_ notification: Notification) {
+        setRating(stars: 2)
+    }
+
+    @objc func iTunesRadioRequestTrackRating1(_ notification: Notification) {
+        setRating(stars: 1)
+    }
+
+    @objc func iTunesRadioRequestTrackRating0(_ notification: Notification) {
+        setRating(stars: 0)
+    }
+
+    @objc func setRating(stars: Int) {
+      isPlaying = iTunesPlayer.shared.isPlaying
+      guard !isStop else {
+          return
+      }
+
+      ratingControl.update(rating: stars * 20)
+      iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
 
     @objc func windowDidResize(_ notification: Notification) {
@@ -231,10 +270,10 @@ extension MenuBarRatingControl {
         DispatchQueue.once(token: "firstDisplay") {
             updateMenuBar()
         }
-        
+
         os_log("%{public}s[%{public}ld], %{public}s: window size change to %{public}s", ((#file as NSString).lastPathComponent), #line, #function, window.frame.debugDescription)
     }
-    
+
 }
 
 // MARK: - TrackingAreaResponderDelegate
@@ -251,7 +290,7 @@ extension MenuBarRatingControl: TrackingAreaResponderDelegate {
 }
 
 extension NSPopover {
-    
+
     // tweak NSPopoverFrame: https://github.com/mstg/OSX-Runtime-Headers/blob/master/AppKit/NSPopoverFrame.h
     func configureCloseButton() {
         guard let popoverViewController = contentViewController as? PopoverViewController,
@@ -259,24 +298,24 @@ extension NSPopover {
             assertionFailure()
             return
         }
-        
+
         guard NSStringFromClass(type(of: superView)) == "NSPopoverFrame" else {
             assertionFailure()
             return
         }
-        
+
         guard let closeButton = superView.value(forKey: "closeButton") as? NSButton else {
             assertionFailure()
             return
         }
-        
+
         // Tweak works under 10.14, 10.15
-        
+
         closeButton.image = nil
         closeButton.isEnabled = false
 
         // tell view controller we tweak it
         popoverViewController.hostPopover = self
     }
-    
+
 }
