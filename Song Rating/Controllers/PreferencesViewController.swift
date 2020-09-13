@@ -161,16 +161,17 @@ final class PreferencesViewController: NSViewController {
 
 extension PreferencesViewController {
     private static func starsAttributedString(count: Int, fontSize: CGFloat) -> NSMutableAttributedString {
-        let attributedString = NSMutableAttributedString()
         let font = NSFont.systemFont(ofSize: fontSize)
         let stars = Stars(
             stars: Array(repeating: Star(size: CGSize(width: fontSize, height: fontSize), fill: true), count: count),
             spacing: 3
         )
-        let image = stars.image
+        var image = stars.image
         image.isTemplate = true
+        image = image.withTintColor(.labelColor)
+        
         let attachment = NSTextAttachment()
-        attachment.image = image.withTintColor(.labelColor)
+        attachment.image = image
         // center vertical image
         attachment.bounds = CGRect(
             x: 0,
@@ -178,7 +179,13 @@ extension PreferencesViewController {
             width: image.size.width,
             height: image.size.height
         )
-        attributedString.append(NSAttributedString(attachment: attachment))
+
+        let attributedString = NSMutableAttributedString()
+        let attachmentAttributedString = NSAttributedString(attachment: attachment)
+        attributedString.append(attachmentAttributedString)
+        // not works. use tinted image workaround it
+        attributedString.addAttribute(.foregroundColor, value: NSColor.labelColor, range: NSRange(location: 0, length: attributedString.length))
+   
         return attributedString
     }
 }
