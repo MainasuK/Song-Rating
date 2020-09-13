@@ -16,6 +16,12 @@ extension Notification.Name {
 //    static let iTunesRadioDidSetupRating = Notification.Name("iTunesRadioDidSetupRating")
     static let iTunesRadioRequestTrackRatingUp = Notification.Name("iTunesRadioRequestTrackRatingUp")
     static let iTunesRadioRequestTrackRatingDown = Notification.Name("iTunesRadioRequestTrackRatingDown")
+    static let iTunesRadioRequestTrackRating5 = Notification.Name("iTunesRadioRequestTrackRating5")
+    static let iTunesRadioRequestTrackRating4 = Notification.Name("iTunesRadioRequestTrackRating4")
+    static let iTunesRadioRequestTrackRating3 = Notification.Name("iTunesRadioRequestTrackRating3")
+    static let iTunesRadioRequestTrackRating2 = Notification.Name("iTunesRadioRequestTrackRating2")
+    static let iTunesRadioRequestTrackRating1 = Notification.Name("iTunesRadioRequestTrackRating1")
+    static let iTunesRadioRequestTrackRating0 = Notification.Name("iTunesRadioRequestTrackRating0")
 }
 
 final class iTunesRadioStation {
@@ -28,7 +34,7 @@ final class iTunesRadioStation {
         application?.delegate = self
         return application
     }()
-    
+
     var iTunes: iTunesApplication? {
         guard _iTunes?.isRunning == true else {
             return nil
@@ -42,9 +48,9 @@ final class iTunesRadioStation {
             // os_log("%{public}s[%{public}ld], %{public}s: latestPlayInfo %s", ((#file as NSString).lastPathComponent), #line, #function, latestPlayInfo?.description ?? "nil")
         }
     }
-    
+
     private var debounceSetRatingTimer: Timer?
-    
+
     private init() {
         // Listen iTunes play state change notification
         // Note: The notification name on Catalina is same as Mojave
@@ -64,17 +70,41 @@ final class iTunesRadioStation {
             iTunesPlayer.shared.update(broadcast: false)
             NotificationCenter.default.post(name: .iTunesRadioRequestTrackRatingDown, object: nil)
         })
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRating5.rawValue, toAction: {
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRating5, object: nil)
+        })
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRating4.rawValue, toAction: {
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRating4, object: nil)
+        })
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRating3.rawValue, toAction: {
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRating3, object: nil)
+        })
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRating2.rawValue, toAction: {
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRating2, object: nil)
+        })
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRating1.rawValue, toAction: {
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRating1, object: nil)
+        })
+        MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.songRating0.rawValue, toAction: {
+            iTunesPlayer.shared.update(broadcast: false)
+            NotificationCenter.default.post(name: .iTunesRadioRequestTrackRating0, object: nil)
+        })
     }
 
 }
 
 extension iTunesRadioStation {
-    
+
     @objc func sourceSaved(_ notification: Notification) {
         os_log("%{public}s[%{public}ld], %{public}s: sourceSaved", ((#file as NSString).lastPathComponent), #line, #function)
         playInfoChanged(notification)
     }
-    
+
     @objc func playInfoChanged(_ notification: Notification) {
         var dict: [String : Any] = [:]
         for (key, value) in notification.userInfo ?? [:] {
@@ -93,7 +123,7 @@ extension iTunesRadioStation {
                 continue
             }
         }
-        
+
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: dict, options: [])
             let decoder = JSONDecoder()
@@ -103,9 +133,9 @@ extension iTunesRadioStation {
                 return AnyKey(stringValue: key.stringValue.snakeCaseKey) ?? AnyKey(stringValue: "")!
             }
             let playInfo = try decoder.decode(PlayInfo.self, from: jsonData)
-            
+
             os_log("%{public}s[%{public}ld], %{public}s: %{public}s", ((#file as NSString).lastPathComponent), #line, #function, playInfo.shortDescription)
-            
+
             #if DEBUG
             let keys = Set(dict.keys.map { $0.snakeCaseKey })
             let labels = Mirror(reflecting: playInfo).children.compactMap { $0.label }
@@ -115,16 +145,16 @@ extension iTunesRadioStation {
                 os_log(.debug, "%{public}s[%{public}ld], %{public}s: remains info in dict %s not parse", ((#file as NSString).lastPathComponent), #line, #function, remainsDict.debugDescription)
             }
             #endif
-            
+
             self.latestPlayInfo = playInfo
-            
+
         } catch {
             os_log(.error, "%s: fail to parse playInfo with error %{public}s", #function, error.localizedDescription)
             assertionFailure(error.localizedDescription)
             return
         }
     }
-    
+
 }
 
 extension iTunesRadioStation {
@@ -161,24 +191,24 @@ extension iTunesRadioStation {
             RunLoop.current.add($0, forMode: .default)
         }
     }
-    
+
     func backward() {
         iTunes?.backTrack?()
     }
-    
+
     func forward() {
         iTunes?.nextTrack?()
     }
-    
+
     func playPause() {
         iTunes?.playpause?()
     }
-    
+
 }
 
 // MARK: - SBApplicationDelegate
 extension iTunesRadioStation: SBApplicationDelegate {
-    
+
     func eventDidFail(_ event: UnsafePointer<AppleEvent>, withError error: Error) -> Any? {
         var appleEvent = event.pointee
         let chars = [UInt8](Data(bytes: &appleEvent.descriptorType, count: 4))
@@ -186,27 +216,27 @@ extension iTunesRadioStation: SBApplicationDelegate {
         os_log("%{public}s[%{public}ld], %{public}s: AppleEvent (%{public}s) call fail with error %{public}s", ((#file as NSString).lastPathComponent), #line, #function, id, error.localizedDescription)
         return nil
     }
-    
+
 }
 
 extension String {
-    
+
     var snakeCaseKey: String {
         let joined = self.split(separator: " ").joined()
         return joined.prefix(1).lowercased() + joined.dropFirst()
     }
-    
+
 }
 
 fileprivate struct AnyKey: CodingKey {
     var stringValue: String
     var intValue: Int?
-    
+
     init?(stringValue: String) {
         self.stringValue = stringValue
         self.intValue = nil
     }
-    
+
     init?(intValue: Int) {
         self.stringValue = String(intValue)
         self.intValue = intValue
