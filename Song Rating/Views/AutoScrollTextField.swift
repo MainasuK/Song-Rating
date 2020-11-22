@@ -116,24 +116,24 @@ extension AutoScrollTextField {
         var transfrom = AffineTransform()
         transfrom.scale(x: 1.0, y: -1.0)
         transfrom.translate(x: leftMargin-offsetX, y: -bounds.height + abs(font!.descender))
-        
+
         path.transform(using: transfrom)
-        
+
         let textColor = self.textColor ?? NSColor.labelColor
-        
+
         let leftGradientStart = (offsetX-leftMargin) / path.bounds.width
         let leftGradientEnd = offsetX / path.bounds.width
-        
+
         let rightGradientStart = (bounds.width - rightMargin - leftMargin + offsetX) / path.bounds.width
         let rightGradientEnd = (bounds.width - leftMargin + offsetX) / path.bounds.width
-        
+
         let gradient = NSGradient(colorsAndLocations:
             (textColor.withAlphaComponent(0), leftGradientStart),
             (textColor, leftGradientEnd),
             (textColor, rightGradientStart),
             (textColor.withAlphaComponent(0), rightGradientEnd)
         )
-        
+
         textColor.setFill()
         gradient?.draw(in: path, angle: 0)
     }
@@ -143,10 +143,17 @@ extension AutoScrollTextField {
 final class BezierLayoutManager: NSLayoutManager {
     
     var path: NSBezierPath?
-    
+
     // note: this method may call multiple times to show entity string
-    override func showCGGlyphs(_ glyphs: UnsafePointer<CGGlyph>, positions: UnsafePointer<NSPoint>, count glyphCount: Int, font: NSFont, matrix textMatrix: AffineTransform, attributes: [NSAttributedString.Key : Any] = [:], in graphicsContext: NSGraphicsContext) {
-        
+    override func showCGGlyphs(
+        _ glyphs: UnsafePointer<CGGlyph>,
+        positions: UnsafePointer<CGPoint>,
+        count glyphCount: Int,
+        font: NSFont,
+        textMatrix: CGAffineTransform,
+        attributes: [NSAttributedString.Key : Any] = [:],
+        in CGContext: CGContext
+    ) {
         if path == nil {
             path = NSBezierPath()
             path?.move(to: .zero)
@@ -154,7 +161,7 @@ final class BezierLayoutManager: NSLayoutManager {
         
         path?.append(withCGGlyphs: glyphs, count: glyphCount, in: font)
     }
-    
+
 }
 
 #if canImport(SwiftUI) && DEBUG
