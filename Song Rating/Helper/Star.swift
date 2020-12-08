@@ -11,26 +11,36 @@ import Cocoa
 struct Star {
     
     let size: NSSize
-    let fill: Bool
+    let style: Style
     
-    init(size: NSSize, fill: Bool) {
+    init(size: NSSize, style: Style) {
         self.size = size
-        self.fill = fill
+        self.style = style
     }
     
     var image: NSImage {
-        return Star.image(in: size, fill: fill)
+        return Star.image(in: size, style: style)
     }
     
-    static func image(in size: NSSize, fill: Bool) -> NSImage {
+}
+
+extension Star {
+    enum Style {
+        case dot
+        case full
+        case half
+    }
+}
+
+extension Star {
+    
+    static func image(in size: NSSize, style: Style) -> NSImage {
         return NSImage(size: size, flipped: false, drawingHandler: { rect -> Bool in
             let radius = min(rect.height, rect.width) * 0.5
             let center = CGPoint(x: rect.midX, y: rect.midY - 0.5 * 0.191 * radius)
             
-//            NSColor.black.setFill()
-//            NSColor.black.setStroke()
-            
-            if !fill {
+            switch style {
+            case .dot:
                 let path = NSBezierPath()
                 let width = radius * 0.5
                 let size = CGSize(width: width, height: width)
@@ -39,21 +49,35 @@ struct Star {
                 path.stroke()
                 path.fill()
                 return true
+            case .full:
+                let points = Star.starPoints(at: center, with: radius)
+                let path = NSBezierPath()
+                path.move(to: points[0])
+                
+                for point in points[1...] {
+                    path.line(to: point)
+                }
+                path.close()
+                
+                path.stroke()
+                path.fill()
+                
+                return true
+            case .half:
+                let points = Star.halfStarPoints(at: center, with: radius)
+                let path = NSBezierPath()
+                path.move(to: points[0])
+                
+                for point in points[1...] {
+                    path.line(to: point)
+                }
+                path.close()
+                
+                path.stroke()
+                path.fill()
+                
+                return true
             }
-            
-            let points = Star.starPoints(at: center, with: radius)
-            let path = NSBezierPath()
-            path.move(to: points[0])
-            
-            for point in points[1...] {
-                path.line(to: point)
-            }
-            path.close()
-            
-            path.stroke()
-            path.fill()
-            
-            return true
         })
     }
     
@@ -66,7 +90,7 @@ extension Star {
         let r = R * sin(Angle(18).radius) / sin(Angle(126).radius)  // inner radius
         
         return [
-            CGPoint(x: R * cos(Angle(162).radius), y: R * sin(Angle(162).radius)),
+            CGPoint(x: R * cos(Angle(162).radius), y: R * sin(Angle(162).radius)),  // point at top-left outer corner -> clockwise
             CGPoint(x: r * cos(Angle(126).radius), y: r * sin(Angle(126).radius)),
             CGPoint(x: R * cos(Angle(90).radius),  y: R * sin(Angle(90).radius)),
             CGPoint(x: r * cos(Angle(54).radius),  y: r * sin(Angle(54).radius)),
@@ -76,9 +100,14 @@ extension Star {
             CGPoint(x: r * cos(Angle(270).radius), y: r * sin(Angle(270).radius)),
             CGPoint(x: R * cos(Angle(234).radius), y: R * sin(Angle(234).radius)),
             CGPoint(x: r * cos(Angle(198).radius), y: r * sin(Angle(198).radius)),
-            ].map {
-                CGPoint(x: center.x + $0.x, y: center.y + $0.y)
+        ].map {
+            CGPoint(x: center.x + $0.x, y: center.y + $0.y)
         }
+    }
+    
+    static func halfStarPoints(at center: CGPoint, with radius: CGFloat) -> [CGPoint] {
+        let points = Star.starPoints(at: center, with: radius)
+        return points.prefix(3) + points.suffix(3)
     }
     
     struct Angle {
@@ -103,11 +132,15 @@ struct Star_Preview: PreviewProvider {
     static var previews: some View {
         Group {
             NSViewPreview {
-                let star = Star(size: NSSize(width: 100.0, height: 100.0), fill: true)
+                let star = Star(size: NSSize(width: 100.0, height: 100.0), style: .dot)
                 return NSImageView(image: star.image)
             }
             NSViewPreview {
-                let star = Star(size: NSSize(width: 100.0, height: 100.0), fill: false)
+                let star = Star(size: NSSize(width: 100.0, height: 100.0), style: .full)
+                return NSImageView(image: star.image)
+            }
+            NSViewPreview {
+                let star = Star(size: NSSize(width: 100.0, height: 100.0), style: .half)
                 return NSImageView(image: star.image)
             }
         }

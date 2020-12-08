@@ -163,7 +163,7 @@ extension PreferencesViewController {
     private static func starsAttributedString(count: Int, fontSize: CGFloat) -> NSMutableAttributedString {
         let font = NSFont.systemFont(ofSize: fontSize)
         let stars = Stars(
-            stars: Array(repeating: Star(size: CGSize(width: fontSize, height: fontSize), fill: true), count: count),
+            stars: Array(repeating: Star(size: CGSize(width: fontSize, height: fontSize), style: .full), count: count),
             spacing: 3
         )
         var image = stars.image
