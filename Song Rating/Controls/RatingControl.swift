@@ -106,7 +106,7 @@ extension RatingControl {
         
         let systemLeftMargin: CGFloat = {
             if #available(macOS 11.0, *) {
-                return 20 + 0.5 * (width - imageWidth)                  //  Big Sur magic container width + leading margin
+                return 10 + 0.5 * (width - imageWidth)                  //  Big Sur magic container width + leading margin
             } else {
                 return 0.5 * (width - imageWidth)                       //  leading margin (default 4)
             }

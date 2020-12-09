@@ -1,6 +1,8 @@
 # Song Rating
 macOS app for rating music in iTunes/Music.app
 
+<img src="./Press/Snapshot.png" width=300 style="border-radius:4px">
+
 ## Requirements
 - macOS 10.14 +
 
