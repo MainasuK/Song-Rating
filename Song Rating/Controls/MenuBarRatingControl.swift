@@ -58,7 +58,24 @@ final class MenuBarRatingControl {
     let ratingControl = RatingControl(rating: 0)
     let menuBarIcon: MenuBarIcon
     let trackingAreaResponser = TrackingAreaResponder()
-
+    
+    private let clickGestureRecognizer: NSClickGestureRecognizer = {
+        let gestureRecognizer = NSClickGestureRecognizer()
+        return gestureRecognizer
+    }()
+    private let doubleClickGestureRecognizer: NSClickGestureRecognizer = {
+        let gestureRecognizer = NSClickGestureRecognizer()
+        gestureRecognizer.numberOfClicksRequired = 2
+        return gestureRecognizer
+    }()
+    private let pressGestureRecognizer: NSPressGestureRecognizer = {
+        let gestureRecognizer = NSPressGestureRecognizer()
+        return gestureRecognizer
+    }()
+    private let panGestureRecognizer: NSPanGestureRecognizer = {
+        let gestureRecognizer = NSPanGestureRecognizer()
+        return gestureRecognizer
+    }()
 
     private(set) lazy var menuBarMenu: NSMenu = {
         let menu = NSMenu()
@@ -91,9 +108,9 @@ final class MenuBarRatingControl {
     }
     private(set) var playState: PlayInfo.PlayerState = .unknown {
         didSet {
-            // FIXME: close undetached popover when menu bar collapse
+            // FIXME: close attached popover when menu bar collapse
             if playState == .unknown {
-                WindowManager.shared.undetachedPopover?.close()
+                WindowManager.shared.attachedPopover?.close()
             }
         }
     }
@@ -111,10 +128,30 @@ final class MenuBarRatingControl {
         }
 
         button.image = ratingControl.starsImage
-        button.sendAction(on: [.leftMouseUp, .rightMouseUp, .leftMouseDragged])
+        button.sendAction(on: [.rightMouseUp])
         button.action = #selector(MenuBarRatingControl.action(_:))
         button.target = self
         button.setButtonType(.momentaryChange)
+        
+        // set fail rule
+        doubleClickGestureRecognizer.shouldRequireFailure(of: clickGestureRecognizer)
+        panGestureRecognizer.shouldRequireFailure(of: pressGestureRecognizer)
+        
+        clickGestureRecognizer.action = #selector(MenuBarRatingControl.clickGestureRecognizerHandler(_:))
+        clickGestureRecognizer.target = self
+        button.addGestureRecognizer(clickGestureRecognizer)
+        
+        doubleClickGestureRecognizer.action = #selector(MenuBarRatingControl.doubleClickGestureRecognizerHandler(_:))
+        doubleClickGestureRecognizer.target = self
+        button.addGestureRecognizer(doubleClickGestureRecognizer)
+        
+        pressGestureRecognizer.action = #selector(MenuBarRatingControl.pressGestureRecognizerHandler(_:))
+        pressGestureRecognizer.target = self
+        button.addGestureRecognizer(pressGestureRecognizer)
+        
+        panGestureRecognizer.action = #selector(MenuBarRatingControl.panGestureRecognizerHandler(_:))
+        panGestureRecognizer.target = self
+        button.addGestureRecognizer(panGestureRecognizer)
 
         let trackingArea = NSTrackingArea(rect: button.bounds, options: [.activeAlways, .mouseEnteredAndExited, .mouseMoved], owner: trackingAreaResponser, userInfo: nil)
         button.addTrackingArea(trackingArea)
@@ -154,23 +191,16 @@ extension MenuBarRatingControl {
 
 extension MenuBarRatingControl {
 
-    @objc func action(_ sender: NSButton) {
+    @objc private func action(_ sender: NSButton) {
         guard let event = NSApp.currentEvent else {
             return
         }
         os_log("%{public}s[%{public}ld], %{public}s: menu bar button receive event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
 
         switch event.type {
-        case .leftMouseUp where isStop :
-            let position = NSPoint(x: 0, y: sender.bounds.height + 5)
-            menuBarMenu.popUp(positioning: nil, at: position, in: sender)
-
         case .rightMouseUp where isStop:
             let position = sender.convert(event.locationInWindow, to: nil)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
-
-        case .leftMouseUp, .leftMouseDragged:
-            ratingControl.action(from: sender, with: event)
 
         case .rightMouseUp:
             WindowManager.shared.triggerPopover()
@@ -179,7 +209,56 @@ extension MenuBarRatingControl {
             os_log("%{public}s[%{public}ld], %{public}s: no handler for event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
         }
     }
+    
+    @objc private func clickGestureRecognizerHandler(_ sender: NSClickGestureRecognizer) {
+        os_log("%{public}s[%{public}ld], %{public}s: %s", ((#file as NSString).lastPathComponent), #line, #function, sender.debugDescription)
+        guard let button = statusItem.button else { return }
+        
+        switch sender.state {
+        case .ended:
+            ratingControl.action(from: button, by: sender, behavior: .full)
+        default:
+            break
+        }
+    }
+    
+    @objc private func doubleClickGestureRecognizerHandler(_ sender: NSClickGestureRecognizer) {
+        os_log("%{public}s[%{public}ld], %{public}s: %s", ((#file as NSString).lastPathComponent), #line, #function, sender.debugDescription)
+        guard let button = statusItem.button else { return }
+        
+        switch sender.state {
+        case .ended:
+            ratingControl.action(from: button, by: sender, behavior: UserDefaults.standard.allowHalfStar ? .half : .full)
+        default:
+            break
+        }
+    }
+    
+    @objc private func pressGestureRecognizerHandler(_ sender: NSPressGestureRecognizer) {
+        os_log("%{public}s[%{public}ld], %{public}s: %s", ((#file as NSString).lastPathComponent), #line, #function, sender.debugDescription)
+        guard let button = statusItem.button else { return }
 
+        switch sender.state {
+        case .ended:
+            ratingControl.action(from: button, by: sender, behavior: .full)
+        default:
+            break
+        }
+    }
+
+
+    @objc private func panGestureRecognizerHandler(_ sender: NSPanGestureRecognizer) {
+        os_log("%{public}s[%{public}ld], %{public}s: %s", ((#file as NSString).lastPathComponent), #line, #function, sender.debugDescription)
+        guard let button = statusItem.button else { return }
+        
+        switch sender.state {
+        case .changed, .ended:
+            ratingControl.action(from: button, by: sender, behavior: UserDefaults.standard.allowHalfStar ? .both: .full)
+        default:
+            break
+        }
+    }
+    
 }
 
 // MARK: - RatingControlDelegate
@@ -212,8 +291,8 @@ extension MenuBarRatingControl {
         guard !isStop else {
             return
         }
-
-        ratingControl.update(rating: ratingControl.rating + 20)
+        let ratingChange: Int = UserDefaults.standard.allowHalfStar ? 10 : 20
+        ratingControl.update(rating: ratingControl.rating + ratingChange)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
 
@@ -223,7 +302,8 @@ extension MenuBarRatingControl {
             return
         }
 
-        ratingControl.update(rating: ratingControl.rating - 20)
+        let ratingChange: Int = UserDefaults.standard.allowHalfStar ? 10 : 20
+        ratingControl.update(rating: ratingControl.rating - ratingChange)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
 
