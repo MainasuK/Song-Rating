@@ -228,7 +228,7 @@ extension MenuBarRatingControl {
         
         switch sender.state {
         case .ended:
-            ratingControl.action(from: button, by: sender, behavior: .half)
+            ratingControl.action(from: button, by: sender, behavior: UserDefaults.standard.allowHalfStar ? .half : .full)
         default:
             break
         }
@@ -253,7 +253,7 @@ extension MenuBarRatingControl {
         
         switch sender.state {
         case .changed, .ended:
-            ratingControl.action(from: button, by: sender, behavior: .both)
+            ratingControl.action(from: button, by: sender, behavior: UserDefaults.standard.allowHalfStar ? .both: .full)
         default:
             break
         }
@@ -291,8 +291,8 @@ extension MenuBarRatingControl {
         guard !isStop else {
             return
         }
-
-        ratingControl.update(rating: ratingControl.rating + 20)
+        let ratingChange: Int = UserDefaults.standard.allowHalfStar ? 10 : 20
+        ratingControl.update(rating: ratingControl.rating + ratingChange)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
 
@@ -302,7 +302,8 @@ extension MenuBarRatingControl {
             return
         }
 
-        ratingControl.update(rating: ratingControl.rating - 20)
+        let ratingChange: Int = UserDefaults.standard.allowHalfStar ? 10 : 20
+        ratingControl.update(rating: ratingControl.rating - ratingChange)
         iTunesRadioStation.shared.setRating(ratingControl.rating)
     }
 
