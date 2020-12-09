@@ -24,7 +24,7 @@ final class WindowManager: NSObject {
     
     weak var menuBarRatingControl: MenuBarRatingControl?
     private(set) var invisibleWindows: [Int: NSWindow] = [:]
-    private(set) var undetachedPopover: NSPopover?
+    private(set) var attachedPopover: NSPopover?
     private(set) var detachedPopover: NSPopover?
 
     // MARK: - Singleton
@@ -38,9 +38,9 @@ final class WindowManager: NSObject {
         popoverProxy.delegate = self
         
         MASShortcutBinder.shared()?.bindShortcut(withDefaultsKey: PreferencesViewController.ShortcutKey.showOrClosePopover.rawValue, toAction: { [weak self] in
-            guard self?.undetachedPopover == nil else {
-                self?.undetachedPopover?.close()
-                self?.undetachedPopover = nil
+            guard self?.attachedPopover == nil else {
+                self?.attachedPopover?.close()
+                self?.attachedPopover = nil
                 return
             }
             
@@ -98,9 +98,9 @@ extension WindowManager {
         }
         
         // close undetached popover if displaying
-        guard undetachedPopover == nil else {
-            undetachedPopover?.close()
-            undetachedPopover = nil
+        guard attachedPopover == nil else {
+            attachedPopover?.close()
+            attachedPopover = nil
             return
         }
         
@@ -142,7 +142,7 @@ extension WindowManager {
 //            popover.contentViewController?.view.window?.makeKey()   // fix popover not get focus issue
 //        }
     
-        undetachedPopover = popover
+        attachedPopover = popover
     }
 
 }
@@ -219,8 +219,8 @@ extension WindowManager: PopoverProxyDelegate {
         
         os_log("%{public}s[%{public}ld], %{public}s: notification: %s", ((#file as NSString).lastPathComponent), #line, #function, notification.description)
         
-        if let popover = undetachedPopover, !popover.isShown {
-            undetachedPopover = nil
+        if let popover = attachedPopover, !popover.isShown {
+            attachedPopover = nil
         }
         
         if let popover = detachedPopover, !popover.isShown {
@@ -242,7 +242,7 @@ extension WindowManager: PopoverProxyDelegate {
     }
     
     func popoverDidDetach(_ popover: NSPopover) {
-        undetachedPopover = nil
+        attachedPopover = nil
         detachedPopover?.close()
         
         popover.behavior = .applicationDefined

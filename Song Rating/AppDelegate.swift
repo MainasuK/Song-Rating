@@ -114,10 +114,11 @@ extension AppDelegate {
             os_log("%{public}s[%{public}ld], %{public}s: Default shortcut set fail", ((#file as NSString).lastPathComponent), #line, #function)
         }
         
-        // register application behavior
+        // register application default behavior
         UserDefaults.standard.register(defaults: [
             ApplicationKey.isFirstLaunch.rawValue : true,
-            ApplicationKey.launchAtLogin.rawValue : false
+            ApplicationKey.launchAtLogin.rawValue : false,
+            ApplicationKey.allowHalfStar.rawValue : false
         ])
         
         // setup observer

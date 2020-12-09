@@ -11,6 +11,7 @@ import Foundation
 enum ApplicationKey: String {
     case isFirstLaunch
     case launchAtLogin
+    case allowHalfStar
 }
 
 extension UserDefaults {
@@ -40,6 +41,15 @@ extension UserDefaults {
         }
         set {
             set(newValue, forKey: ApplicationKey.launchAtLogin.rawValue)
+        }
+    }
+    
+    @objc dynamic var allowHalfStar: Bool {
+        get {
+            return bool(forKey: ApplicationKey.allowHalfStar.rawValue)
+        }
+        set {
+            set(newValue, forKey: ApplicationKey.allowHalfStar.rawValue)
         }
     }
     
