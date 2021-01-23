@@ -112,11 +112,18 @@ final class MenuBarRatingControl {
             if playState == .unknown {
                 WindowManager.shared.attachedPopover?.close()
             }
+            updateGestureRecognizerBehavior()
         }
     }
 
     var isStop: Bool {
         return playState == .unknown
+    }
+    
+    func updateGestureRecognizerBehavior() {
+        // deliver .leftMouseUp action without delay when player stop
+        clickGestureRecognizer.delaysPrimaryMouseButtonEvents       = !isStop
+        doubleClickGestureRecognizer.delaysPrimaryMouseButtonEvents = !isStop
     }
 
     init() {
@@ -139,7 +146,6 @@ final class MenuBarRatingControl {
         
         clickGestureRecognizer.action = #selector(MenuBarRatingControl.clickGestureRecognizerHandler(_:))
         clickGestureRecognizer.target = self
-        clickGestureRecognizer.delaysPrimaryMouseButtonEvents = false   // make .leftMouseUp action for button works
         button.addGestureRecognizer(clickGestureRecognizer)
         
         doubleClickGestureRecognizer.action = #selector(MenuBarRatingControl.doubleClickGestureRecognizerHandler(_:))
