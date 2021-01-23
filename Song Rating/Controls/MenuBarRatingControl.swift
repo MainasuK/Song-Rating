@@ -128,7 +128,7 @@ final class MenuBarRatingControl {
         }
 
         button.image = ratingControl.starsImage
-        button.sendAction(on: [.rightMouseUp])
+        button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         button.action = #selector(MenuBarRatingControl.action(_:))
         button.target = self
         button.setButtonType(.momentaryChange)
@@ -139,6 +139,7 @@ final class MenuBarRatingControl {
         
         clickGestureRecognizer.action = #selector(MenuBarRatingControl.clickGestureRecognizerHandler(_:))
         clickGestureRecognizer.target = self
+        clickGestureRecognizer.delaysPrimaryMouseButtonEvents = false   // make .leftMouseUp action for button works
         button.addGestureRecognizer(clickGestureRecognizer)
         
         doubleClickGestureRecognizer.action = #selector(MenuBarRatingControl.doubleClickGestureRecognizerHandler(_:))
@@ -198,6 +199,9 @@ extension MenuBarRatingControl {
         os_log("%{public}s[%{public}ld], %{public}s: menu bar button receive event %s", ((#file as NSString).lastPathComponent), #line, #function, event.debugDescription)
 
         switch event.type {
+        case .leftMouseUp where isStop:
+            let position = NSPoint(x: 0, y: sender.bounds.height + 8)
+            menuBarMenu.popUp(positioning: nil, at: position, in: sender)
         case .rightMouseUp where isStop:
             let position = sender.convert(event.locationInWindow, to: nil)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
