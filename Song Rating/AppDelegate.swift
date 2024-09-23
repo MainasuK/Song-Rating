@@ -10,9 +10,14 @@ import Cocoa
 import ServiceManagement
 import os
 import MASShortcut
+import DiscordGameSDK
+import ArkanaKeys
+import SDK
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
+    
+    let context = AppContext()
 
     let radioStation = iTunesRadioStation.shared
     private(set) var menuBarRatingControl: MenuBarRatingControl?
@@ -142,5 +147,13 @@ extension AppDelegate {
             DistributedNotificationCenter.default().post(name: .killLauncher, object: Bundle.main.bundleIdentifier)
         }
         
+    }
+}
+
+extension AppContext {
+    @MainActor
+    static var shared: AppContext {
+        let appDelegate = NSApplication.shared.delegate as! AppDelegate
+        return appDelegate.context
     }
 }
