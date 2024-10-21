@@ -79,15 +79,15 @@ extension AppDelegate {
     func setupUserDefaults() {
         // register shortcut
         do {
-            let ratingDownShortcut = MASShortcut(keyCode: kVK_ANSI_Comma, modifierFlags: .option)
-            let ratingUpShortcut = MASShortcut(keyCode: kVK_ANSI_Period, modifierFlags: .option)
-            let showOrClosePopoverShortcut = MASShortcut(keyCode: kVK_ANSI_Slash, modifierFlags: .option)
-            let songRating5Shortcut = MASShortcut(keyCode: kVK_ANSI_5, modifierFlags: .control)
-            let songRating4Shortcut = MASShortcut(keyCode: kVK_ANSI_4, modifierFlags: .control)
-            let songRating3Shortcut = MASShortcut(keyCode: kVK_ANSI_3, modifierFlags: .control)
-            let songRating2Shortcut = MASShortcut(keyCode: kVK_ANSI_2, modifierFlags: .control)
-            let songRating1Shortcut = MASShortcut(keyCode: kVK_ANSI_1, modifierFlags: .control)
-            let songRating0Shortcut = MASShortcut(keyCode: kVK_ANSI_Grave, modifierFlags: .control)
+            let ratingDownShortcut = MASShortcut(keyCode: kVK_ANSI_Comma, modifierFlags: [.option, .control])
+            let ratingUpShortcut = MASShortcut(keyCode: kVK_ANSI_Period, modifierFlags: [.option, .control])
+            let showOrClosePopoverShortcut = MASShortcut(keyCode: kVK_ANSI_Slash, modifierFlags: [.option, .control])
+            let songRating5Shortcut = MASShortcut(keyCode: kVK_ANSI_5, modifierFlags: [.option, .control])
+            let songRating4Shortcut = MASShortcut(keyCode: kVK_ANSI_4, modifierFlags: [.option, .control])
+            let songRating3Shortcut = MASShortcut(keyCode: kVK_ANSI_3, modifierFlags: [.option, .control])
+            let songRating2Shortcut = MASShortcut(keyCode: kVK_ANSI_2, modifierFlags: [.option, .control])
+            let songRating1Shortcut = MASShortcut(keyCode: kVK_ANSI_1, modifierFlags: [.option, .control])
+            let songRating0Shortcut = MASShortcut(keyCode: kVK_ANSI_Grave, modifierFlags: [.option, .control])
 
             let ratingDownShortcutData = try NSKeyedArchiver.archivedData(withRootObject: ratingDownShortcut as Any, requiringSecureCoding: false)
             let ratingUpShortcutData = try NSKeyedArchiver.archivedData(withRootObject: ratingUpShortcut as Any, requiringSecureCoding: false)

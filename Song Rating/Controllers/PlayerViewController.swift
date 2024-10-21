@@ -189,7 +189,6 @@ extension PlayerViewController {
         #endif
         */
     }
-    
 
 }
 
@@ -208,7 +207,7 @@ extension PlayerViewController {
         
         playerPanelViewController.state = .info
     }
-    
+
 }
 
 

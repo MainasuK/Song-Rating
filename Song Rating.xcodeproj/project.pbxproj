@@ -3,11 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		96C540E9972EAA2E182EB6DF /* Pods_Song_RatingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */; };
 		DB05F0632353909000CE6DF9 /* PlayerPanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05F0622353909000CE6DF9 /* PlayerPanelViewController.swift */; };
 		DB05F0652353912500CE6DF9 /* PlayerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05F0642353912500CE6DF9 /* PlayerInfoView.swift */; };
 		DB05F0862354CA5800CE6DF9 /* NSViewPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05F0852354CA5800CE6DF9 /* NSViewPreview.swift */; };
@@ -27,6 +26,7 @@
 		DB27976F2306EA6800DDE3EB /* iTunesPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB27976E2306EA6800DDE3EB /* iTunesPlayer.swift */; };
 		DB2797732306F0EC00DDE3EB /* iTunesApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2797722306F0EC00DDE3EB /* iTunesApplication.swift */; };
 		DB334389235E102600B45ED0 /* ExceptionCatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = DB334388235E102600B45ED0 /* ExceptionCatcher.m */; };
+		DB398D152CB522CA00E722A1 /* SDK in Frameworks */ = {isa = PBXBuildFile; productRef = DB398D142CB522CA00E722A1 /* SDK */; };
 		DB424A352307259800230C7E /* iTunesTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A342307259800230C7E /* iTunesTrack.swift */; };
 		DB424A3823073CB000230C7E /* PopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3723073CB000230C7E /* PopoverViewController.swift */; };
 		DB424A3A23086C1200230C7E /* MovableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB424A3923086C1200230C7E /* MovableImageView.swift */; };
@@ -53,7 +53,6 @@
 		DB9D9B6F2364288E008C53C3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D9B6E2364288E008C53C3 /* UserDefaults.swift */; };
 		DBD6A936250DA48E002C1B6C /* NSBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD6A935250DA48E002C1B6C /* NSBox.swift */; };
 		DBD6A938250E0A1C002C1B6C /* NSImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD6A937250E0A1C002C1B6C /* NSImage.swift */; };
-		FE421476F34E641428B030E9 /* Pods_Song_Rating.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,12 +79,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3B451B28FF2FB910317B4EF7 /* Pods-Song Rating.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song Rating.release.xcconfig"; path = "Target Support Files/Pods-Song Rating/Pods-Song Rating.release.xcconfig"; sourceTree = "<group>"; };
-		607F74272AF7FF7D00E2879E /* Pods-Song Rating.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song Rating.debug.xcconfig"; path = "Target Support Files/Pods-Song Rating/Pods-Song Rating.debug.xcconfig"; sourceTree = "<group>"; };
-		6B0E3B3CE6260A0C7B82DB6C /* Pods-Song RatingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song RatingTests.debug.xcconfig"; path = "Target Support Files/Pods-Song RatingTests/Pods-Song RatingTests.debug.xcconfig"; sourceTree = "<group>"; };
-		9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Song_Rating.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Song_RatingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BB3C7008577650EFDD93EC17 /* Pods-Song RatingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Song RatingTests.release.xcconfig"; path = "Target Support Files/Pods-Song RatingTests/Pods-Song RatingTests.release.xcconfig"; sourceTree = "<group>"; };
 		DB05F0622353909000CE6DF9 /* PlayerPanelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerPanelViewController.swift; sourceTree = "<group>"; };
 		DB05F0642353912500CE6DF9 /* PlayerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerInfoView.swift; sourceTree = "<group>"; };
 		DB05F0852354CA5800CE6DF9 /* NSViewPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSViewPreview.swift; sourceTree = "<group>"; };
@@ -112,6 +105,7 @@
 		DB334387235E102500B45ED0 /* Song Rating-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Song Rating-Bridging-Header.h"; sourceTree = "<group>"; };
 		DB334388235E102600B45ED0 /* ExceptionCatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExceptionCatcher.m; sourceTree = "<group>"; };
 		DB33438A235E103200B45ED0 /* ExceptionCatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExceptionCatcher.h; sourceTree = "<group>"; };
+		DB398D132CB51F7F00E722A1 /* SDK */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SDK; sourceTree = "<group>"; };
 		DB424A342307259800230C7E /* iTunesTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunesTrack.swift; sourceTree = "<group>"; };
 		DB424A3723073CB000230C7E /* PopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverViewController.swift; sourceTree = "<group>"; };
 		DB424A3923086C1200230C7E /* MovableImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovableImageView.swift; sourceTree = "<group>"; };
@@ -148,7 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB89C9FE22E31B67003981F5 /* iTunesLibrary.framework in Frameworks */,
-				FE421476F34E641428B030E9 /* Pods_Song_Rating.framework in Frameworks */,
+				DB398D152CB522CA00E722A1 /* SDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,7 +150,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96C540E9972EAA2E182EB6DF /* Pods_Song_RatingTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,24 +163,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		46D6891CD4F2EAD4E5A9A137 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				607F74272AF7FF7D00E2879E /* Pods-Song Rating.debug.xcconfig */,
-				3B451B28FF2FB910317B4EF7 /* Pods-Song Rating.release.xcconfig */,
-				6B0E3B3CE6260A0C7B82DB6C /* Pods-Song RatingTests.debug.xcconfig */,
-				BB3C7008577650EFDD93EC17 /* Pods-Song RatingTests.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		7E6699F3E558528B857B7A62 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				DB9D9B682363FD2E008C53C3 /* ServiceManagement.framework */,
 				DB89C9FD22E31B67003981F5 /* iTunesLibrary.framework */,
-				9DFF0EB36C01E667D4778CCC /* Pods_Song_Rating.framework */,
-				B59F99505CF4B180ECAECE6A /* Pods_Song_RatingTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -195,11 +175,11 @@
 		DB106C3922C53D4B00502D7C = {
 			isa = PBXGroup;
 			children = (
+				DB398D132CB51F7F00E722A1 /* SDK */,
 				DB106C4422C53D4B00502D7C /* Song Rating */,
 				DB106C5722C53D4C00502D7C /* Song RatingTests */,
 				DB9D9B572363FC6B008C53C3 /* Song Rating Helper */,
 				DB106C4322C53D4B00502D7C /* Products */,
-				46D6891CD4F2EAD4E5A9A137 /* Pods */,
 				7E6699F3E558528B857B7A62 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -363,11 +343,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DB106C5D22C53D4C00502D7C /* Build configuration list for PBXNativeTarget "Song Rating" */;
 			buildPhases = (
-				4CEB50D4B9B141209A09339D /* [CP] Check Pods Manifest.lock */,
 				DB106C3E22C53D4B00502D7C /* Sources */,
 				DB106C3F22C53D4B00502D7C /* Frameworks */,
 				DB106C4022C53D4B00502D7C /* Resources */,
-				B9D1366C1C48BE28820D5B87 /* [CP] Embed Pods Frameworks */,
 				DB9D9B662363FCBB008C53C3 /* CopyFiles */,
 			);
 			buildRules = (
@@ -383,7 +361,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DB106C6022C53D4C00502D7C /* Build configuration list for PBXNativeTarget "Song RatingTests" */;
 			buildPhases = (
-				5DC60D5BE7738E690309EAAF /* [CP] Check Pods Manifest.lock */,
 				DB106C5022C53D4C00502D7C /* Sources */,
 				DB106C5122C53D4C00502D7C /* Frameworks */,
 				DB106C5222C53D4C00502D7C /* Resources */,
@@ -421,8 +398,9 @@
 		DB106C3A22C53D4B00502D7C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1600;
 				ORGANIZATIONNAME = "Cirno MainasuK";
 				TargetAttributes = {
 					DB106C4122C53D4B00502D7C = {
@@ -493,70 +471,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		4CEB50D4B9B141209A09339D /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Song Rating-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5DC60D5BE7738E690309EAAF /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Song RatingTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B9D1366C1C48BE28820D5B87 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Song Rating/Pods-Song Rating-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Song Rating/Pods-Song Rating-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Song Rating/Pods-Song Rating-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DB106C3E22C53D4B00502D7C /* Sources */ = {
@@ -684,9 +598,11 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -747,9 +663,11 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -770,7 +688,6 @@
 		};
 		DB106C5E22C53D4C00502D7C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 607F74272AF7FF7D00E2879E /* Pods-Song Rating.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -779,6 +696,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 17;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating/Info.plist";
@@ -786,6 +704,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.4.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -798,7 +717,6 @@
 		};
 		DB106C5F22C53D4C00502D7C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B451B28FF2FB910317B4EF7 /* Pods-Song Rating.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -807,6 +725,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 17;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating/Info.plist";
@@ -814,6 +733,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.4.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -825,12 +745,11 @@
 		};
 		DB106C6122C53D4C00502D7C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6B0E3B3CE6260A0C7B82DB6C /* Pods-Song RatingTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				INFOPLIST_FILE = "Song RatingTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -838,6 +757,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-RatingTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -847,12 +767,11 @@
 		};
 		DB106C6222C53D4C00502D7C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB3C7008577650EFDD93EC17 /* Pods-Song RatingTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				INFOPLIST_FILE = "Song RatingTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -860,6 +779,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-RatingTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -875,6 +795,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating Helper/Info.plist";
@@ -882,6 +803,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating-Helper";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -898,6 +820,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = A8K92XFF77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Song Rating Helper/Info.plist";
@@ -905,6 +828,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mainasuk.Song-Rating-Helper";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -953,6 +877,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DB398D142CB522CA00E722A1 /* SDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDK;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DB106C3A22C53D4B00502D7C /* Project object */;
 }
