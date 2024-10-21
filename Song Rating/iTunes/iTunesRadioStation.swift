@@ -26,6 +26,8 @@ extension Notification.Name {
 
 final class iTunesRadioStation {
 
+    let logger = Logger(subsystem: "iTunesRadioStation", category: "Service")
+
     // MARK: - Singleton
     static let shared = iTunesRadioStation()
 
@@ -171,6 +173,9 @@ extension iTunesRadioStation {
             return
         }
 
+        // save the record for later rating
+        let targetTrack = iTunes?.currentTrack?.copy()
+
         // Note: latestPlayInfo could not set when App just launch without recieved playInfoChanged notification
         let name = latestPlayInfo?.name ?? iTunes?.currentTrack?.name ?? "nil"
         os_log("%{public}s[%{public}ld], %{public}s: set timer for 2.0s and set rating for %{public}s %{public}ld…", ((#file as NSString).lastPathComponent), #line, #function, name, rating)
@@ -178,14 +183,12 @@ extension iTunesRadioStation {
         // FIXME: delay may cause set rating to *next* song just playing
         debounceSetRatingTimer = Timer(timeInterval: 2.0, repeats: false, block: { [weak self] timer in
             guard let `self` = self else { return }
-            let track = self.iTunes?.currentTrack
-// Note: This check *should* works only when in iTunes (12.9.5.5) to fix its BUG. But it's not works. (TODO: remove it)
-//            if track?.ratingKind == .computed && rating == 0 {
-//                os_log("%{public}s[%{public}ld], %{public}s: discard set rating due to it's alreay computed rating", ((#file as NSString).lastPathComponent), #line, #function)
-//                return
-//            }
+            // here we use the saved record
+            // so the delay will not rate the next track if song just finish (a.k.a rate in last 2s)
+            let track = targetTrack ?? self.iTunes?.currentTrack
+
             track?.setRating?(rating)
-            os_log("%{public}s[%{public}ld], %{public}s: … set %{public}s rating %{public}ld", ((#file as NSString).lastPathComponent), #line, #function, track?.name ?? "nil", rating)
+            logger.log(level: .debug, "\((#file as NSString).lastPathComponent, privacy: .public)[\(#line, privacy: .public)], \(#function, privacy: .public): set rating for \(track?.name ?? "<nil>"): \(rating)")
         })
         debounceSetRatingTimer.flatMap {
             RunLoop.current.add($0, forMode: .default)

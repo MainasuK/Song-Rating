@@ -9,7 +9,7 @@
 import Cocoa
 import os
 
-protocol TrackingAreaResponderDelegate: class {
+protocol TrackingAreaResponderDelegate: AnyObject {
     func mouseEntered(with event: NSEvent)
     func mouseExited(with event: NSEvent)
 }
@@ -28,7 +28,7 @@ final class TrackingAreaResponder: NSView {
 
 }
 
-protocol PopoverProxyDelegate: class {
+protocol PopoverProxyDelegate: AnyObject {
     func popoverDidClose(_ notification: Notification)
     func popoverShouldDetach(_ popover: NSPopover) -> Bool
     func popoverDidDetach(_ popover: NSPopover)
