@@ -44,29 +44,38 @@ final class PreferencesViewController: NSViewController {
         popover.contentViewController = HalfStarInfoViewController()
         return popover
     }()
-    /// Explanation in the label font, then each command on its own line in a monospaced
-    /// font so it can be read and copied as-is.
+    /// Explanation, then each command on its own line in a monospaced font so it can be
+    /// read and copied as-is, then a caveat about newer systems.
     static let halfStarHint: NSAttributedString = {
+        let body: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+            .foregroundColor: NSColor.labelColor,
+        ]
+        let note: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+            .foregroundColor: NSColor.secondaryLabelColor,
+        ]
+        let command: [NSAttributedString.Key: Any] = [
+            .font: NSFont.monospacedSystemFont(ofSize: NSFont.smallSystemFontSize, weight: .regular),
+            .foregroundColor: NSColor.labelColor,
+        ]
+        
         let hint = NSMutableAttributedString(
             string: "Music shows half stars only after running one of these in Terminal:\n",
-            attributes: [
-                .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
-                .foregroundColor: NSColor.labelColor,
-            ]
+            attributes: body
         )
-        let commands = [
+        for line in [
             "defaults write com.apple.Music allow-half-stars -bool TRUE",
             "defaults write com.apple.Music allow-half-stars -bool FALSE",
-        ]
-        for command in commands {
-            hint.append(NSAttributedString(
-                string: command + "\n",
-                attributes: [
-                    .font: NSFont.monospacedSystemFont(ofSize: NSFont.smallSystemFontSize, weight: .regular),
-                    .foregroundColor: NSColor.labelColor,
-                ]
-            ))
+        ] {
+            hint.append(NSAttributedString(string: line + "\n", attributes: command))
         }
+        // Music keeps storing half stars on recent systems, but its rating column only
+        // draws whole stars, so the value is saved without being visible there.
+        hint.append(NSAttributedString(
+            string: "\nNote: half stars are still saved, but recent macOS versions may not display them.",
+            attributes: note
+        ))
         return hint
     }()
     lazy var songRatingDownTextField: NSTextField = {
