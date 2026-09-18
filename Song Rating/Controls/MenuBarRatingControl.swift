@@ -181,9 +181,13 @@ final class MenuBarRatingControl {
         // screen space rather than from the event).
         //
         // A global monitor is required rather than a local one: the app is not active
-        // while the menu bar is being clicked, so local monitors never fire.
+        // while the menu bar is being clicked, so local monitors never fire. Because a
+        // global monitor sees presses anywhere in the system, the press must be checked
+        // against the status item's frame — otherwise clicking anywhere on screen (the
+        // desktop, another app, far from the menu bar) would be sampled as a rating and
+        // clear it to zero.
         dragMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown]) { [weak self] event in
-            guard let self, !self.isStop else { return }
+            guard let self, !self.isStop, self.isPressInsideStatusItem(event) else { return }
             self.beginRatingDrag()
         }
 
@@ -300,6 +304,25 @@ extension MenuBarRatingControl {
 
 // MARK: - Drag to rate
 extension MenuBarRatingControl {
+    
+    /// Whether a press landed on the status item, so drag tracking only follows presses
+    /// that belong to this control.
+    ///
+    /// A global monitor reports presses anywhere in the system, so without this check a
+    /// click on the desktop or in another app would be sampled against the status item
+    /// and clear the rating to zero.
+    private func isPressInsideStatusItem(_ event: NSEvent) -> Bool {
+        guard let button = statusItem.button, let window = button.window else { return false }
+        // The window origin is in screen coordinates with a bottom-left origin, while a
+        // mouse event carries a top-left origin; convert the window frame instead of
+        // comparing the raw coordinates.
+        let frame = window.frame
+        guard frame.width > 0, frame.height > 0 else { return false }
+        
+        let mouse = NSEvent.mouseLocation
+        guard mouse.x.isFinite, mouse.y.isFinite else { return false }
+        return frame.contains(mouse)
+    }
     
     /// Start following the cursor so the rating updates while the mouse is held down.
     ///

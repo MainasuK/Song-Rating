@@ -380,9 +380,22 @@ final class HalfStarInfoViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // NSPopover sizes itself from `preferredContentSize`; without it the popover
-        // collapses to a narrow default and squeezes the text. Let Auto Layout compute
-        // the height for the width we want.
+        // collapses to a narrow default and squeezes the text.
+        //
+        // `fittingSize` must be read *after* the constraints are resolved: queried too
+        // early it reports a stale height and the last line gets clipped, which is what
+        // happened here — the popover reserved room for the note but the label was cut
+        // off before it. Lay out first, then measure.
+        view.layoutSubtreeIfNeeded()
         let fitting = view.fittingSize
+        preferredContentSize = NSSize(width: Self.contentWidth + 24, height: fitting.height)
+    }
+
+    override func viewDidLayout() {
+        super.viewDidLayout()
+        // Keep the popover in step if the text or width changes after first layout.
+        let fitting = view.fittingSize
+        guard fitting.height > 0, preferredContentSize.height != fitting.height else { return }
         preferredContentSize = NSSize(width: Self.contentWidth + 24, height: fitting.height)
     }
 
