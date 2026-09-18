@@ -95,17 +95,6 @@ extension RatingControl {
 
 extension RatingControl {
     
-    /// Horizontal geometry of the five stars inside `starsImage`.
-    ///
-    /// Star `i` occupies `starsMinX[i] ..< starsMaxX[i]` in image coordinates.
-    private var starsMinX: [CGFloat] {
-        (0..<5).map { i in spacing * CGFloat(1 + i) + starSize.width * CGFloat(i) }
-    }
-    
-    private var starsMaxX: [CGFloat] {
-        starsMinX.map { $0 + starSize.width }
-    }
-    
     /// Legacy Big Sur status item container width applied on macOS 11 … 26.
     ///
     /// The two input paths historically compensated with different constants (`10` for
@@ -114,6 +103,48 @@ extension RatingControl {
     private enum LegacyContainerInset {
         static let gesture: CGFloat = 10
         static let event: CGFloat = 20
+    }
+    
+    /// How the host OS lays out a status item button.
+    ///
+    /// This is the single place where OS-dependent geometry lives. It is an injectable
+    /// value rather than an inline `#available` check so every variant stays testable on
+    /// any machine: the macOS 11…26 layouts cannot otherwise be exercised on a 27 host.
+    enum Layout {
+        /// macOS 10.14 … 10.15: the image sits in the button with only its own margin.
+        case preBigSur
+        /// macOS 11 … 26: Big Sur added a container inset ahead of the image.
+        case bigSur(inset: CGFloat)
+        /// macOS 27+: the inset is gone and the image is centred in the button.
+        case modern
+        
+        /// The layout of the OS the app is currently running on.
+        static var current: Layout {
+            if #available(macOS 27.0, *) {
+                return .modern
+            } else if #available(macOS 11.0, *) {
+                // `gesture` and `event` differ; the caller passes the one it wants.
+                return .bigSur(inset: LegacyContainerInset.gesture)
+            } else {
+                return .preBigSur
+            }
+        }
+        
+        /// Offset from the button's leading edge to the image's leading edge.
+        ///
+        /// - Parameter legacyInset: Big Sur container width for the path being used
+        ///   (`LegacyContainerInset.gesture` or `.event`); ignored by other layouts.
+        func imageOriginX(buttonWidth: CGFloat, imageWidth: CGFloat, legacyInset: CGFloat = 0) -> CGFloat {
+            let centred = 0.5 * (buttonWidth - imageWidth)
+            switch self {
+            case .preBigSur:
+                return centred                                        //  leading margin (default 4)
+            case .bigSur:
+                return legacyInset + centred                          //  Big Sur container + leading margin
+            case .modern:
+                return centred
+            }
+        }
     }
     
     /// Cursor position in the host button's coordinate space.
@@ -163,27 +194,48 @@ extension RatingControl {
     ///   `currentLocation(in:)` for the coordinate-space problem that made every click
     ///   resolve to the same star and prevented rating above three stars.
     private func starRating(at point: CGPoint, in sender: NSButton, behavior: Behavior, legacyInset: CGFloat) -> Int? {
-        let width = sender.bounds.size.width
-        let imageWidth = starsImage.size.width
-        guard width > 0, imageWidth > 0 else { return nil }
+        Self.starRating(at: point,
+                        buttonWidth: sender.bounds.size.width,
+                        imageWidth: starsImage.size.width,
+                        starSize: starSize,
+                        spacing: spacing,
+                        behavior: behavior,
+                        layout: .current,
+                        legacyInset: legacyInset)
+    }
+    
+    /// Pure geometry: resolve a point in a button's coordinate space into a star rating.
+    ///
+    /// Kept free of AppKit state and of `#available` so every layout variant can be
+    /// asserted from tests on any host OS.
+    ///
+    /// - Parameters:
+    ///   - point: location in the button's coordinate space.
+    ///   - buttonWidth: width of the host button.
+    ///   - imageWidth: width of the drawn stars image.
+    ///   - starSize: size of a single star.
+    ///   - spacing: gap between two stars.
+    ///   - behavior: how a position within a star maps to full/half stars.
+    ///   - layout: OS layout to interpret the coordinates with.
+    ///   - legacyInset: Big Sur container width, used by `.bigSur` only.
+    /// - Returns: rating in `0...10` (half-star units), or `nil` if unresolved.
+    static func starRating(at point: CGPoint,
+                           buttonWidth: CGFloat,
+                           imageWidth: CGFloat,
+                           starSize: NSSize,
+                           spacing: CGFloat,
+                           behavior: Behavior,
+                           layout: Layout,
+                           legacyInset: CGFloat = 0) -> Int? {
+        guard buttonWidth > 0, imageWidth > 0 else { return nil }
         
-        // trailing margin | image | leading margin
-        let systemLeftMargin: CGFloat = {
-            if #available(macOS 27.0, *) {
-                // The image is centered inside the button, so its origin follows the
-                // measured button width. Deriving it keeps the hit area aligned with the
-                // drawn stars instead of assuming a fixed container inset.
-                return 0.5 * (width - imageWidth)
-            } else if #available(macOS 11.0, *) {
-                return legacyInset + 0.5 * (width - imageWidth)         //  Big Sur magic container width + leading margin
-            } else {
-                return 0.5 * (width - imageWidth)                       //  leading margin (default 4)
-            }
-        }()
+        let systemLeftMargin = layout.imageOriginX(buttonWidth: buttonWidth,
+                                                   imageWidth: imageWidth,
+                                                   legacyInset: legacyInset)
         let positionX = point.x - systemLeftMargin                      // x in range: -leading margin ~ image.size.with
         
-        let minX = starsMinX
-        let maxX = starsMaxX
+        let minX = (0..<5).map { i in spacing * CGFloat(1 + i) + starSize.width * CGFloat(i) }
+        let maxX = minX.map { $0 + starSize.width }
         
         if positionX < minX[0] {
             return 0

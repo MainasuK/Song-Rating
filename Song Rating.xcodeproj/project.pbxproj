@@ -16,6 +16,7 @@
 		DB106C4A22C53D4C00502D7C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4922C53D4C00502D7C /* Assets.xcassets */; };
 		DB106C4D22C53D4C00502D7C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB106C4B22C53D4C00502D7C /* Main.storyboard */; };
 		DB106C5922C53D4C00502D7C /* Song_RatingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C5822C53D4C00502D7C /* Song_RatingTests.swift */; };
+		AA11BB22CC33DD44EE55FF01 /* RatingControlGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF02 /* RatingControlGeometryTests.swift */; };
 		DB106C6922C65E8E00502D7C /* iTunesRadioStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6822C65E8E00502D7C /* iTunesRadioStation.swift */; };
 		DB106C6B22C661F900502D7C /* PlayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106C6A22C661F900502D7C /* PlayInfo.swift */; };
 		DB106CA422CA3C7300502D7C /* Star.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB106CA322CA3C7300502D7C /* Star.swift */; };
@@ -91,6 +92,7 @@
 		DB106C4E22C53D4C00502D7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB106C5422C53D4C00502D7C /* Song RatingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Song RatingTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB106C5822C53D4C00502D7C /* Song_RatingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song_RatingTests.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF02 /* RatingControlGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingControlGeometryTests.swift; sourceTree = "<group>"; };
 		DB106C5A22C53D4C00502D7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB106C6322C53DAE00502D7C /* iTunes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iTunes.swift; sourceTree = "<group>"; };
 		DB106C6722C5433900502D7C /* Song Rating.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Song Rating.entitlements"; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 			isa = PBXGroup;
 			children = (
 				DB106C5822C53D4C00502D7C /* Song_RatingTests.swift */,
+				AA11BB22CC33DD44EE55FF02 /* RatingControlGeometryTests.swift */,
 				DB89CA0122E37947003981F5 /* ScriptBridgeTests.swift */,
 				DB89C9F422E3176C003981F5 /* iTunesLibraryTests.swift */,
 				DB106C5A22C53D4C00502D7C /* Info.plist */,
@@ -519,6 +522,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB106C5922C53D4C00502D7C /* Song_RatingTests.swift in Sources */,
+				AA11BB22CC33DD44EE55FF01 /* RatingControlGeometryTests.swift in Sources */,
 				DB89C9F522E3176C003981F5 /* iTunesLibraryTests.swift in Sources */,
 				DB89CA0222E37947003981F5 /* ScriptBridgeTests.swift in Sources */,
 			);
