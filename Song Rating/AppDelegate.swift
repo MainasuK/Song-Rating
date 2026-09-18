@@ -145,8 +145,9 @@ extension AppDelegate {
             } else {
                 try service.unregister()
             }
-            os_log("%{public}s[%{public}ld], %{public}s: set launchAtLogin to %{public}s",
-                   ((#file as NSString).lastPathComponent), #line, #function, shouldLaunchAtLogin.description)
+            os_log("%{public}s[%{public}ld], %{public}s: set launchAtLogin to %{public}s (status %{public}ld)",
+                   ((#file as NSString).lastPathComponent), #line, #function,
+                   shouldLaunchAtLogin.description, service.status.rawValue)
         } catch {
             // A failure here is usually "already registered" / "not registered", which is
             // the desired end state anyway; log it rather than crashing the app.
