@@ -21,20 +21,28 @@ final class PreferencesViewController: NSViewController {
     lazy var halfStarTextField: NSTextField = {
         return NSTextField(labelWithString: "Half star: ")
     }()
-    /// Explains that Music needs a Terminal command before it will show half stars.
+    /// Circular ⓘ button that opens a popover with the Terminal commands.
     ///
     /// Music has no UI for this: the hidden `allow-half-stars` preference has to be set
     /// through its defaults domain. The app cannot do it for the user — it is sandboxed,
     /// and the sandbox silently redirects writes to another app's defaults domain into
     /// this app's own container — so the commands are shown for the user to run.
-    lazy var halfStarHintTextField: NSTextField = {
-        let textField = NSTextField(labelWithAttributedString: Self.halfStarHint)
-        textField.isSelectable = true          // so a command can be copied
-        textField.lineBreakMode = .byWordWrapping
-        textField.maximumNumberOfLines = 4
-        // Wide enough that neither command wraps; measured at 401pt.
-        textField.preferredMaxLayoutWidth = 440
-        return textField
+    lazy var halfStarInfoButton: NSButton = {
+        let button = NSButton()
+        button.bezelStyle = .inline
+        button.isBordered = false
+        button.image = NSImage(systemSymbolName: "info.circle", accessibilityDescription: "About half stars")
+        button.imagePosition = .imageOnly
+        button.contentTintColor = .secondaryLabelColor
+        button.toolTip = "About half stars in Music"
+        button.setContentHuggingPriority(.required, for: .horizontal)
+        return button
+    }()
+    lazy var halfStarInfoPopover: NSPopover = {
+        let popover = NSPopover()
+        popover.behavior = .transient
+        popover.contentViewController = HalfStarInfoViewController()
+        return popover
     }()
     /// Explanation in the label font, then each command on its own line in a monospaced
     /// font so it can be read and copied as-is.
@@ -43,7 +51,7 @@ final class PreferencesViewController: NSViewController {
             string: "Music shows half stars only after running one of these in Terminal:\n",
             attributes: [
                 .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
-                .foregroundColor: NSColor.secondaryLabelColor,
+                .foregroundColor: NSColor.labelColor,
             ]
         )
         let commands = [
@@ -107,6 +115,14 @@ final class PreferencesViewController: NSViewController {
         let button = NSButton(checkboxWithTitle: "Enable", target: nil, action: nil)
         return button
     }()
+    /// The checkbox with the info button next to it.
+    lazy var halfStarRow: NSStackView = {
+        let stackView = NSStackView(views: [halfStarCheckboxButton, halfStarInfoButton])
+        stackView.orientation = .horizontal
+        stackView.spacing = 6
+        stackView.alignment = .centerY
+        return stackView
+    }()
     let songRatingDownShortcutView: MASShortcutView = {
         let shortcutView = MASShortcutView()
         shortcutView.associatedUserDefaultsKey = ShortcutKey.songRatingDown.rawValue
@@ -161,8 +177,7 @@ final class PreferencesViewController: NSViewController {
         
         let gridView = NSGridView(views: [
             [startupTextField, launchAtLoginCheckboxButton],
-            [halfStarTextField, halfStarCheckboxButton],
-            [NSGridCell.emptyContentView, halfStarHintTextField],
+            [halfStarTextField, halfStarRow],
             [NSBox.separatorLine],
             [songRatingDownTextField, songRatingDownShortcutView],
             [songRatingUpTextField, songRatingUpShortcutView],
@@ -250,6 +265,14 @@ extension PreferencesViewController {
     @objc private func halfStarCheckboxButtonChanged(_ sender: NSButton) {
         UserDefaults.standard.allowHalfStar = sender.state == .on
     }
+    
+    @objc private func halfStarInfoButtonPressed(_ sender: NSButton) {
+        guard !halfStarInfoPopover.isShown else {
+            halfStarInfoPopover.performClose(sender)
+            return
+        }
+        halfStarInfoPopover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxX)
+    }
 
 }
 
@@ -287,6 +310,8 @@ extension PreferencesViewController {
         
         halfStarCheckboxButton.target = self
         halfStarCheckboxButton.action = #selector(PreferencesViewController.halfStarCheckboxButtonChanged(_:))
+        halfStarInfoButton.target = self
+        halfStarInfoButton.action = #selector(PreferencesViewController.halfStarInfoButtonPressed(_:))
         halfStarObservation = UserDefaults.standard.observe(\.allowHalfStar, options: [.initial, .new]) { [weak self] defaults, launchAtLogin in
             self?.halfStarCheckboxButton.state = defaults.allowHalfStar ? .on : .off
         }
@@ -310,6 +335,46 @@ extension PreferencesViewController {
         case songRating2
         case songRating1
         case songRating0
+    }
+
+}
+
+/// Popover contents for the half-star info button: why Music needs the command, and
+/// the commands themselves, shown in a monospaced font so they can be copied.
+final class HalfStarInfoViewController: NSViewController {
+
+    /// Width the commands are measured against; the longer one needs ~401pt.
+    private static let contentWidth: CGFloat = 440
+
+    lazy var textField: NSTextField = {
+        let textField = NSTextField(labelWithAttributedString: PreferencesViewController.halfStarHint)
+        textField.isSelectable = true          // so a command can be copied
+        textField.lineBreakMode = .byWordWrapping
+        textField.maximumNumberOfLines = 0     // no limit inside the popover
+        textField.preferredMaxLayoutWidth = Self.contentWidth
+        return textField
+    }()
+
+    override func loadView() {
+        let container = NSView()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(textField)
+        NSLayoutConstraint.activate([
+            textField.topAnchor.constraint(equalTo: container.topAnchor, constant: 12),
+            textField.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 12),
+            textField.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12),
+            textField.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -12),
+        ])
+        self.view = container
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // NSPopover sizes itself from `preferredContentSize`; without it the popover
+        // collapses to a narrow default and squeezes the text. Let Auto Layout compute
+        // the height for the width we want.
+        let fitting = view.fittingSize
+        preferredContentSize = NSSize(width: Self.contentWidth + 24, height: fitting.height)
     }
 
 }
