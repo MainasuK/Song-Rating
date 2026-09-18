@@ -225,6 +225,15 @@ extension MenuBarRatingControl {
         statusItem.button?.setButtonType(!isStop ? .momentaryChange : .onOff)
     }
 
+    /// Present the status item menu, anchored under the button.
+    ///
+    /// Used for both buttons while idle so a left click and a right click give the same
+    /// feedback.
+    private func showMenu(from button: NSButton) {
+        let position = NSPoint(x: 0, y: button.bounds.height + 8)
+        menuBarMenu.popUp(positioning: nil, at: position, in: button)
+    }
+
 }
 
 extension MenuBarRatingControl {
@@ -237,8 +246,7 @@ extension MenuBarRatingControl {
 
         switch event.type {
         case .leftMouseUp where isStop:
-            let position = NSPoint(x: 0, y: sender.bounds.height + 8)
-            menuBarMenu.popUp(positioning: nil, at: position, in: sender)
+            showMenu(from: sender)
         case .rightMouseUp where isStop:
             let position = sender.convert(event.locationInWindow, to: nil)
             menuBarMenu.popUp(positioning: nil, at: position, in: sender)
@@ -257,6 +265,15 @@ extension MenuBarRatingControl {
         
         switch sender.state {
         case .ended:
+            // While nothing is playing the control shows the idle dot and has no rating
+            // to set, so a left click should open the menu — the same thing a right
+            // click does. This has to be handled here rather than in `action(_:)`:
+            // the recognizer consumes the click before the button's action fires, so
+            // the `.leftMouseUp where isStop` branch there is never reached.
+            guard !isStop else {
+                showMenu(from: button)
+                return
+            }
             ratingControl.action(from: button, by: sender, behavior: .full)
         default:
             break
