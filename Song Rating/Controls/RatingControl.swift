@@ -118,22 +118,37 @@ extension RatingControl {
     
     /// Cursor position in the host button's coordinate space.
     ///
-    /// On macOS 27 the status item window is wider than the button and its coordinate
-    /// conversion no longer matches the screen, so `NSEvent.locationInWindow` (and the
-    /// gesture recognizer's `location(in:)`, which is derived from it) report a point
-    /// offset by roughly 40pt — a click on the 5th star was reported as the 3rd star,
-    /// and every click on the button resolved to nearly the same rating. That is why it
-    /// was impossible to assign more than three stars.
+    /// macOS 27 changed how a status item routes events: the button's subview
+    /// hit-testing and the event coordinates no longer reflect where the user actually
+    /// clicked. A click anywhere resolved to the same point (roughly the button centre),
+    /// so every click produced nearly the same rating and the 4th/5th stars could never
+    /// be reached. This is an AppKit behaviour change on 27, not a layout regression;
+    /// the geometry itself is still correct.
     ///
-    /// Convert the true cursor position from screen space instead. This is only needed
-    /// on macOS 27+; earlier releases are left on the original path so their behaviour
-    /// is unchanged.
+    /// The reliable workaround (per the Stats #3456 report and the WWDC26 AppKit
+    /// guidance) is to stop trusting the event's own coordinates and instead read the
+    /// cursor from screen space, mapping the button's on-screen rect onto its bounds.
+    /// This also absorbs any difference between the status item window width and the
+    /// button width.
+    ///
+    /// Only needed on macOS 27+; earlier releases keep the original path so their
+    /// behaviour is unchanged.
     private func currentLocation(in sender: NSButton) -> CGPoint? {
         guard #available(macOS 27.0, *), let window = sender.window else {
             return nil
         }
-        let inWindow = window.convertPoint(fromScreen: NSEvent.mouseLocation)
-        return sender.convert(inWindow, from: nil)
+        
+        let screenRect = window.convertToScreen(sender.convert(sender.bounds, to: nil))
+        guard screenRect.width > 0, screenRect.height > 0 else { return nil }
+        
+        let mouse = NSEvent.mouseLocation
+        guard mouse.x.isFinite, mouse.y.isFinite else { return nil }
+        
+        // Map the cursor's screen position back into the button's bounds.
+        let scaleX = sender.bounds.width / screenRect.width
+        let scaleY = sender.bounds.height / screenRect.height
+        return CGPoint(x: (mouse.x - screenRect.minX) * scaleX,
+                       y: (mouse.y - screenRect.minY) * scaleY)
     }
     
     /// Resolve a point in the host button's coordinate space into a star rating.
@@ -198,10 +213,29 @@ extension RatingControl {
         // Prefer the true cursor position; the recognizer's own location is unreliable
         // on macOS 27. See `currentLocation(in:)`.
         let position = currentLocation(in: sender) ?? gestureRecognizer.location(in: sender)
-        guard let starRating = starRating(at: position,
+        action(from: sender, at: position, behavior: behavior, legacyInset: LegacyContainerInset.gesture)
+    }
+    
+    /// Apply the rating for wherever the cursor currently is.
+    ///
+    /// Used while dragging: macOS 27 does not deliver drag events to the status item
+    /// button, so the position is sampled from the cursor instead.
+    func action(from sender: NSButton, atCursorWith behavior: Behavior) {
+        guard let position = currentLocation(in: sender) else { return }
+        action(from: sender, at: position, behavior: behavior, legacyInset: LegacyContainerInset.gesture)
+    }
+    
+    /// Apply a point in the host button's coordinate space as a new rating.
+    ///
+    /// - Parameters:
+    ///   - point: location in the host button's coordinate space.
+    ///   - behavior: how a position within a star maps to full/half stars.
+    ///   - legacyInset: Big Sur container width compensated on macOS 11 … 26.
+    private func action(from sender: NSButton, at point: CGPoint, behavior: Behavior, legacyInset: CGFloat) {
+        guard let starRating = starRating(at: point,
                                           in: sender,
                                           behavior: behavior,
-                                          legacyInset: LegacyContainerInset.gesture) else {
+                                          legacyInset: legacyInset) else {
             return
         }
         
@@ -228,23 +262,9 @@ extension RatingControl {
         // `currentLocation(in:)`, so prefer the true cursor position on macOS 27+.
         let position = currentLocation(in: sender) ?? sender.convert(event.locationInWindow, from: nil)
         
-        // starRating: 0 ~ 10
-        guard let starRating = starRating(at: position,
-                                          in: sender,
-                                          behavior: .full,
-                                          legacyInset: LegacyContainerInset.event) else {
-            return
-        }
-        
-        guard delegate?.ratingControl(self, shouldUpdateRating: starRating * 10) ?? false else {
-            return
-        }
-        
         switch event.type {
         case .leftMouseUp, .leftMouseDragged:
-            let newRating = starRating * 10
-            update(rating: newRating)
-            delegate?.ratingControl(self, userDidUpdateRating: newRating)
+            action(from: sender, at: position, behavior: .full, legacyInset: LegacyContainerInset.event)
 
         default:
             break

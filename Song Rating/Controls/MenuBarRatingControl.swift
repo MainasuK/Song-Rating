@@ -76,6 +76,18 @@ final class MenuBarRatingControl {
         let gestureRecognizer = NSPanGestureRecognizer()
         return gestureRecognizer
     }()
+    
+    /// Event monitor that drives drag-to-rate; see `init()`.
+    private var dragMonitor: Any?
+    /// Polls the cursor while the rating is being dragged; see `beginRatingDrag()`.
+    private var ratingDragTimer: Timer?
+    
+    deinit {
+        endRatingDrag()
+        if let dragMonitor {
+            NSEvent.removeMonitor(dragMonitor)
+        }
+    }
 
     private(set) lazy var menuBarMenu: NSMenu = {
         let menu = NSMenu()
@@ -159,6 +171,21 @@ final class MenuBarRatingControl {
         panGestureRecognizer.action = #selector(MenuBarRatingControl.panGestureRecognizerHandler(_:))
         panGestureRecognizer.target = self
         button.addGestureRecognizer(panGestureRecognizer)
+
+        // Drag-to-rate. On macOS 27 the status item button no longer reports where the
+        // user clicked: `NSPanGestureRecognizer` never leaves `.possible`, the button's
+        // `leftMouseDragged` action never fires, and the event coordinates collapse to
+        // the button's centre. A global monitor still sees that the press happened, so
+        // start sampling the cursor from there and let `beginRatingDrag()` follow it
+        // (see `RatingControl.currentLocation(in:)` for why the position is read from
+        // screen space rather than from the event).
+        //
+        // A global monitor is required rather than a local one: the app is not active
+        // while the menu bar is being clicked, so local monitors never fire.
+        dragMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown]) { [weak self] event in
+            guard let self, !self.isStop else { return }
+            self.beginRatingDrag()
+        }
 
         let trackingArea = NSTrackingArea(rect: button.bounds, options: [.activeAlways, .mouseEnteredAndExited, .mouseMoved], owner: trackingAreaResponser, userInfo: nil)
         button.addTrackingArea(trackingArea)
@@ -267,6 +294,51 @@ extension MenuBarRatingControl {
         default:
             break
         }
+    }
+    
+}
+
+// MARK: - Drag to rate
+extension MenuBarRatingControl {
+    
+    /// Start following the cursor so the rating updates while the mouse is held down.
+    ///
+    /// The timer stops itself once the left button is released. It deliberately does
+    /// not rely on `leftMouseUp`: the status item emits a spurious same-instant
+    /// `leftMouseDown`/`leftMouseUp` pair partway through a drag, which would abort
+    /// tracking after a single sample.
+    private func beginRatingDrag() {
+        updateRatingFromCursor()
+        
+        ratingDragTimer?.invalidate()
+        // A short interval keeps the drag responsive without competing with the
+        // 2s rating debounce that already throttles writes to Music.
+        let timer = Timer(timeInterval: 0.05, repeats: true) { [weak self] timer in
+            guard let self else {
+                timer.invalidate()
+                return
+            }
+            guard NSEvent.pressedMouseButtons & 0x1 != 0 else {
+                self.endRatingDrag()
+                return
+            }
+            self.updateRatingFromCursor()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        ratingDragTimer = timer
+    }
+    
+    /// Stop following the cursor.
+    private func endRatingDrag() {
+        ratingDragTimer?.invalidate()
+        ratingDragTimer = nil
+    }
+    
+    /// Resolve the current cursor position to a rating and apply it.
+    private func updateRatingFromCursor() {
+        guard !isStop, let button = statusItem.button else { return }
+        ratingControl.action(from: button,
+                             atCursorWith: UserDefaults.standard.allowHalfStar ? .both : .full)
     }
     
 }
