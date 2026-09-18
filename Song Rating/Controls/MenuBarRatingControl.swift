@@ -81,6 +81,10 @@ final class MenuBarRatingControl {
     private var dragMonitor: Any?
     /// Polls the cursor while the rating is being dragged; see `beginRatingDrag()`.
     private var ratingDragTimer: Timer?
+    /// When the status item menu last closed, to swallow the dismissing click.
+    private var menuClosedAt = Date.distantPast
+    /// How long after closing the menu a new trigger is ignored.
+    private static let menuReopenDelay: TimeInterval = 0.25
     
     deinit {
         endRatingDrag()
@@ -229,9 +233,19 @@ extension MenuBarRatingControl {
     ///
     /// Used for both buttons while idle so a left click and a right click give the same
     /// feedback.
+    ///
+    /// `popUp` runs a modal loop and returns once the menu closes. The click that
+    /// dismisses the menu is then delivered to the status item button as well, which
+    /// would immediately reopen it — the menu appeared to flicker and come back. Ignore
+    /// triggers that arrive immediately after a close.
     private func showMenu(from button: NSButton) {
+        guard Date().timeIntervalSince(menuClosedAt) > Self.menuReopenDelay else {
+            return
+        }
+        
         let position = NSPoint(x: 0, y: button.bounds.height + 8)
         menuBarMenu.popUp(positioning: nil, at: position, in: button)
+        menuClosedAt = Date()
     }
 
 }
@@ -248,8 +262,7 @@ extension MenuBarRatingControl {
         case .leftMouseUp where isStop:
             showMenu(from: sender)
         case .rightMouseUp where isStop:
-            let position = sender.convert(event.locationInWindow, to: nil)
-            menuBarMenu.popUp(positioning: nil, at: position, in: sender)
+            showMenu(from: sender)
 
         case .rightMouseUp:
             WindowManager.shared.triggerPopover()
