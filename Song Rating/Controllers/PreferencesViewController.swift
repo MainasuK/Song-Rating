@@ -21,6 +21,46 @@ final class PreferencesViewController: NSViewController {
     lazy var halfStarTextField: NSTextField = {
         return NSTextField(labelWithString: "Half star: ")
     }()
+    /// Explains that Music needs a Terminal command before it will show half stars.
+    ///
+    /// Music has no UI for this: the hidden `allow-half-stars` preference has to be set
+    /// through its defaults domain. The app cannot do it for the user — it is sandboxed,
+    /// and the sandbox silently redirects writes to another app's defaults domain into
+    /// this app's own container — so the commands are shown for the user to run.
+    lazy var halfStarHintTextField: NSTextField = {
+        let textField = NSTextField(labelWithAttributedString: Self.halfStarHint)
+        textField.isSelectable = true          // so a command can be copied
+        textField.lineBreakMode = .byWordWrapping
+        textField.maximumNumberOfLines = 4
+        // Wide enough that neither command wraps; measured at 401pt.
+        textField.preferredMaxLayoutWidth = 440
+        return textField
+    }()
+    /// Explanation in the label font, then each command on its own line in a monospaced
+    /// font so it can be read and copied as-is.
+    static let halfStarHint: NSAttributedString = {
+        let hint = NSMutableAttributedString(
+            string: "Music shows half stars only after running one of these in Terminal:\n",
+            attributes: [
+                .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+                .foregroundColor: NSColor.secondaryLabelColor,
+            ]
+        )
+        let commands = [
+            "defaults write com.apple.Music allow-half-stars -bool TRUE",
+            "defaults write com.apple.Music allow-half-stars -bool FALSE",
+        ]
+        for command in commands {
+            hint.append(NSAttributedString(
+                string: command + "\n",
+                attributes: [
+                    .font: NSFont.monospacedSystemFont(ofSize: NSFont.smallSystemFontSize, weight: .regular),
+                    .foregroundColor: NSColor.labelColor,
+                ]
+            ))
+        }
+        return hint
+    }()
     lazy var songRatingDownTextField: NSTextField = {
         return NSTextField(labelWithString: "Song rating down: ")
     }()
@@ -122,6 +162,7 @@ final class PreferencesViewController: NSViewController {
         let gridView = NSGridView(views: [
             [startupTextField, launchAtLoginCheckboxButton],
             [halfStarTextField, halfStarCheckboxButton],
+            [NSGridCell.emptyContentView, halfStarHintTextField],
             [NSBox.separatorLine],
             [songRatingDownTextField, songRatingDownShortcutView],
             [songRatingUpTextField, songRatingUpShortcutView],
