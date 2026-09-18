@@ -9,7 +9,7 @@
 import Cocoa
 import os
 
-protocol RatingControlDelegate: class {
+protocol RatingControlDelegate: AnyObject {
     func ratingControl(_ ratingControl: RatingControl, shouldUpdateRating rating: Int) -> Bool
     func ratingControl(_ ratingControl: RatingControl, userDidUpdateRating rating: Int)
 }

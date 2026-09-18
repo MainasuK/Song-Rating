@@ -21,7 +21,13 @@ extension String {
                 arr.append(value)
             }
         }
-        return String(cString: UnsafePointer<CChar>(arr))
+        // `String(cString:)` requires the buffer to stay alive for the call. Wrapping it
+        // in `withUnsafeBufferPointer` keeps the array's storage valid until the closure
+        // returns; `UnsafePointer(arr)` on its own is a dangling pointer.
+        return arr.withUnsafeBufferPointer { buffer in
+            guard let base = buffer.baseAddress else { return "" }
+            return String(cString: base)
+        }
     }
     /*
      * Convert String to Tupple Fixed size

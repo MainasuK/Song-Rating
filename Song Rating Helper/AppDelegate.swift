@@ -41,7 +41,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let newPath = NSString.path(withComponents: components)
         
         os_log("%{public}s[%{public}ld], %{public}s: launch %{public}s", ((#file as NSString).lastPathComponent), #line, #function, newPath)
-        NSWorkspace.shared.launchApplication(newPath)
+        let configuration = NSWorkspace.OpenConfiguration()
+        configuration.activates = false
+        NSWorkspace.shared.openApplication(at: URL(fileURLWithPath: newPath),
+                                           configuration: configuration) { _, error in
+            if let error {
+                os_log("%{public}s[%{public}ld], %{public}s: launch failed: %{public}s",
+                       ((#file as NSString).lastPathComponent), #line, #function, error.localizedDescription)
+            }
+        }
     }
 
 }

@@ -135,8 +135,25 @@ extension AppDelegate {
         let isRunning = runningApps.contains(where: { $0.bundleIdentifier == launcherAppId })
         
         let shouldLaunchAtLogin = UserDefaults.standard.launchAtLogin
-        SMLoginItemSetEnabled(launcherAppId as CFString, shouldLaunchAtLogin)
-        os_log("%{public}s[%{public}ld], %{public}s: set launchAtLogin to %{public}s", ((#file as NSString).lastPathComponent), #line, #function, shouldLaunchAtLogin.description)
+        do {
+            // `SMAppService` replaced `SMLoginItemSetEnabled` in macOS 13, which is below
+            // this app's deployment target, so no fallback is needed. The helper already
+            // ships in Contents/Library/LoginItems, which is where the service looks.
+            let service = SMAppService.loginItem(identifier: launcherAppId)
+            if shouldLaunchAtLogin {
+                try service.register()
+            } else {
+                try service.unregister()
+            }
+            os_log("%{public}s[%{public}ld], %{public}s: set launchAtLogin to %{public}s",
+                   ((#file as NSString).lastPathComponent), #line, #function, shouldLaunchAtLogin.description)
+        } catch {
+            // A failure here is usually "already registered" / "not registered", which is
+            // the desired end state anyway; log it rather than crashing the app.
+            os_log("%{public}s[%{public}ld], %{public}s: launchAtLogin %{public}s failed: %{public}s",
+                   ((#file as NSString).lastPathComponent), #line, #function,
+                   shouldLaunchAtLogin ? "register" : "unregister", error.localizedDescription)
+        }
 
         if isRunning {
             DistributedNotificationCenter.default().post(name: .killLauncher, object: Bundle.main.bundleIdentifier)

@@ -9,7 +9,7 @@
 import Cocoa
 import os
 
-protocol PlayerPanelViewControllerDelegate: class {
+protocol PlayerPanelViewControllerDelegate: AnyObject {
     func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, menuButtonPressed button: NSButton)
     func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, listButtonPressed button: NSButton)
     func playerPanelViewController(_ playerPanelViewController: PlayerPanelViewController, backwardButtonPressed button: NSButton)
