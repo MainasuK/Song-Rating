@@ -9,7 +9,7 @@
 import Cocoa
 import os
 
-protocol TrackingAreaResponderDelegate: class {
+protocol TrackingAreaResponderDelegate: AnyObject {
     func mouseEntered(with event: NSEvent)
     func mouseExited(with event: NSEvent)
 }
@@ -28,7 +28,7 @@ final class TrackingAreaResponder: NSView {
 
 }
 
-protocol PopoverProxyDelegate: class {
+protocol PopoverProxyDelegate: AnyObject {
     func popoverDidClose(_ notification: Notification)
     func popoverShouldDetach(_ popover: NSPopover) -> Bool
     func popoverDidDetach(_ popover: NSPopover)
@@ -76,6 +76,22 @@ final class MenuBarRatingControl {
         let gestureRecognizer = NSPanGestureRecognizer()
         return gestureRecognizer
     }()
+    
+    /// Event monitor that drives drag-to-rate; see `init()`.
+    private var dragMonitor: Any?
+    /// Polls the cursor while the rating is being dragged; see `beginRatingDrag()`.
+    private var ratingDragTimer: Timer?
+    /// When the status item menu last closed, to swallow the dismissing click.
+    private var menuClosedAt = Date.distantPast
+    /// How long after closing the menu a new trigger is ignored.
+    private static let menuReopenDelay: TimeInterval = 0.25
+    
+    deinit {
+        endRatingDrag()
+        if let dragMonitor {
+            NSEvent.removeMonitor(dragMonitor)
+        }
+    }
 
     private(set) lazy var menuBarMenu: NSMenu = {
         let menu = NSMenu()
@@ -160,6 +176,25 @@ final class MenuBarRatingControl {
         panGestureRecognizer.target = self
         button.addGestureRecognizer(panGestureRecognizer)
 
+        // Drag-to-rate. On macOS 27 the status item button no longer reports where the
+        // user clicked: `NSPanGestureRecognizer` never leaves `.possible`, the button's
+        // `leftMouseDragged` action never fires, and the event coordinates collapse to
+        // the button's centre. A global monitor still sees that the press happened, so
+        // start sampling the cursor from there and let `beginRatingDrag()` follow it
+        // (see `RatingControl.currentLocation(in:)` for why the position is read from
+        // screen space rather than from the event).
+        //
+        // A global monitor is required rather than a local one: the app is not active
+        // while the menu bar is being clicked, so local monitors never fire. Because a
+        // global monitor sees presses anywhere in the system, the press must be checked
+        // against the status item's frame — otherwise clicking anywhere on screen (the
+        // desktop, another app, far from the menu bar) would be sampled as a rating and
+        // clear it to zero.
+        dragMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown]) { [weak self] event in
+            guard let self, !self.isStop, self.isPressInsideStatusItem(event) else { return }
+            self.beginRatingDrag()
+        }
+
         let trackingArea = NSTrackingArea(rect: button.bounds, options: [.activeAlways, .mouseEnteredAndExited, .mouseMoved], owner: trackingAreaResponser, userInfo: nil)
         button.addTrackingArea(trackingArea)
 
@@ -194,6 +229,25 @@ extension MenuBarRatingControl {
         statusItem.button?.setButtonType(!isStop ? .momentaryChange : .onOff)
     }
 
+    /// Present the status item menu, anchored under the button.
+    ///
+    /// Used for both buttons while idle so a left click and a right click give the same
+    /// feedback.
+    ///
+    /// `popUp` runs a modal loop and returns once the menu closes. The click that
+    /// dismisses the menu is then delivered to the status item button as well, which
+    /// would immediately reopen it — the menu appeared to flicker and come back. Ignore
+    /// triggers that arrive immediately after a close.
+    private func showMenu(from button: NSButton) {
+        guard Date().timeIntervalSince(menuClosedAt) > Self.menuReopenDelay else {
+            return
+        }
+        
+        let position = NSPoint(x: 0, y: button.bounds.height + 8)
+        menuBarMenu.popUp(positioning: nil, at: position, in: button)
+        menuClosedAt = Date()
+    }
+
 }
 
 extension MenuBarRatingControl {
@@ -206,11 +260,9 @@ extension MenuBarRatingControl {
 
         switch event.type {
         case .leftMouseUp where isStop:
-            let position = NSPoint(x: 0, y: sender.bounds.height + 8)
-            menuBarMenu.popUp(positioning: nil, at: position, in: sender)
+            showMenu(from: sender)
         case .rightMouseUp where isStop:
-            let position = sender.convert(event.locationInWindow, to: nil)
-            menuBarMenu.popUp(positioning: nil, at: position, in: sender)
+            showMenu(from: sender)
 
         case .rightMouseUp:
             WindowManager.shared.triggerPopover()
@@ -226,6 +278,15 @@ extension MenuBarRatingControl {
         
         switch sender.state {
         case .ended:
+            // While nothing is playing the control shows the idle dot and has no rating
+            // to set, so a left click should open the menu — the same thing a right
+            // click does. This has to be handled here rather than in `action(_:)`:
+            // the recognizer consumes the click before the button's action fires, so
+            // the `.leftMouseUp where isStop` branch there is never reached.
+            guard !isStop else {
+                showMenu(from: button)
+                return
+            }
             ratingControl.action(from: button, by: sender, behavior: .full)
         default:
             break
@@ -267,6 +328,70 @@ extension MenuBarRatingControl {
         default:
             break
         }
+    }
+    
+}
+
+// MARK: - Drag to rate
+extension MenuBarRatingControl {
+    
+    /// Whether a press landed on the status item, so drag tracking only follows presses
+    /// that belong to this control.
+    ///
+    /// A global monitor reports presses anywhere in the system, so without this check a
+    /// click on the desktop or in another app would be sampled against the status item
+    /// and clear the rating to zero.
+    private func isPressInsideStatusItem(_ event: NSEvent) -> Bool {
+        guard let button = statusItem.button, let window = button.window else { return false }
+        // The window origin is in screen coordinates with a bottom-left origin, while a
+        // mouse event carries a top-left origin; convert the window frame instead of
+        // comparing the raw coordinates.
+        let frame = window.frame
+        guard frame.width > 0, frame.height > 0 else { return false }
+        
+        let mouse = NSEvent.mouseLocation
+        guard mouse.x.isFinite, mouse.y.isFinite else { return false }
+        return frame.contains(mouse)
+    }
+    
+    /// Start following the cursor so the rating updates while the mouse is held down.
+    ///
+    /// The timer stops itself once the left button is released. It deliberately does
+    /// not rely on `leftMouseUp`: the status item emits a spurious same-instant
+    /// `leftMouseDown`/`leftMouseUp` pair partway through a drag, which would abort
+    /// tracking after a single sample.
+    private func beginRatingDrag() {
+        updateRatingFromCursor()
+        
+        ratingDragTimer?.invalidate()
+        // A short interval keeps the drag responsive without competing with the
+        // 2s rating debounce that already throttles writes to Music.
+        let timer = Timer(timeInterval: 0.05, repeats: true) { [weak self] timer in
+            guard let self else {
+                timer.invalidate()
+                return
+            }
+            guard NSEvent.pressedMouseButtons & 0x1 != 0 else {
+                self.endRatingDrag()
+                return
+            }
+            self.updateRatingFromCursor()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        ratingDragTimer = timer
+    }
+    
+    /// Stop following the cursor.
+    private func endRatingDrag() {
+        ratingDragTimer?.invalidate()
+        ratingDragTimer = nil
+    }
+    
+    /// Resolve the current cursor position to a rating and apply it.
+    private func updateRatingFromCursor() {
+        guard !isStop, let button = statusItem.button else { return }
+        ratingControl.action(from: button,
+                             atCursorWith: UserDefaults.standard.allowHalfStar ? .both : .full)
     }
     
 }

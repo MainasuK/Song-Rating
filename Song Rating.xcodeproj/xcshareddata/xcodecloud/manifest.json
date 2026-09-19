@@ -1,0 +1,9 @@
+{
+  "id" : "c4892260-ceec-43ec-a397-5b481d626b4b",
+  "targets" : [
+    {
+      "id" : "4220f978-eb36-4cc8-94e9-bb1a9c268064",
+      "name" : "Song Rating"
+    }
+  ]
+}

@@ -23,3 +23,6 @@ The popover will jump to new scren scene when it get focused. It will stand in t
 ### Why Song Rating not show star rating when iTunes/Music playing?
 Please check the Security & Privacy settings and check the checkbox of Song Rating.
 ![Automation](./Press/Automation.png)
+
+## License
+Song Rating is released under the [MIT License](./LICENSE).

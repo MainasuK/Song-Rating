@@ -21,3 +21,13 @@ extension iTunesApplication {
     }
     
 }
+
+extension iTunesTrack {
+    public func copy() -> iTunesTrack? {
+        guard let copy = self.get() as? iTunesTrack else {
+            assertionFailure()
+            return nil
+        }
+        return copy
+    }
+}

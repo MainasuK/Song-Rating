@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "masshortcut",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MainasuK/MASShortcut.git",
+      "state" : {
+        "revision" : "6f2603c6b6cc18f64a799e5d2c9d3bbc467c413a",
+        "version" : "2.4.1"
+      }
+    }
+  ],
+  "version" : 2
+}

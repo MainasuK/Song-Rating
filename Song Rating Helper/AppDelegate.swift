@@ -30,18 +30,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.terminate), name: .killLauncher, object: mainAppIdentifier)
         
-        let path = Bundle.main.bundlePath as NSString
-        var components = path.pathComponents
-        components.removeLast()
-        components.removeLast()
-        components.removeLast()
-        components.append("MacOS")
-        components.append("Song Rating")
+        // Walk up from Contents/Library/LoginItems/Song Rating Helper.app to the
+        // containing app bundle. `openApplication(at:)` takes an *application* URL, not
+        // the executable inside it: passing Contents/MacOS/Song Rating made LaunchServices
+        // treat it as a document to open, so the user saw
+        // "not allowed to open the document" and nothing launched.
+        let mainAppURL = Bundle.main.bundleURL
+            .deletingLastPathComponent()    // LoginItems
+            .deletingLastPathComponent()    // Library
+            .deletingLastPathComponent()    // Contents
+            .deletingLastPathComponent()    // Song Rating.app
         
-        let newPath = NSString.path(withComponents: components)
-        
-        os_log("%{public}s[%{public}ld], %{public}s: launch %{public}s", ((#file as NSString).lastPathComponent), #line, #function, newPath)
-        NSWorkspace.shared.launchApplication(newPath)
+        os_log("%{public}s[%{public}ld], %{public}s: launch %{public}s", ((#file as NSString).lastPathComponent), #line, #function, mainAppURL.path)
+        let configuration = NSWorkspace.OpenConfiguration()
+        configuration.activates = false
+        NSWorkspace.shared.openApplication(at: mainAppURL,
+                                           configuration: configuration) { _, error in
+            if let error {
+                os_log("%{public}s[%{public}ld], %{public}s: launch failed: %{public}s",
+                       ((#file as NSString).lastPathComponent), #line, #function, error.localizedDescription)
+            }
+        }
     }
 
 }

@@ -9,7 +9,7 @@
 import Cocoa
 import os
 
-protocol RatingControlDelegate: class {
+protocol RatingControlDelegate: AnyObject {
     func ratingControl(_ ratingControl: RatingControl, shouldUpdateRating rating: Int) -> Bool
     func ratingControl(_ ratingControl: RatingControl, userDidUpdateRating rating: Int)
 }
@@ -95,54 +95,207 @@ extension RatingControl {
 
 extension RatingControl {
     
-    func action(from sender: NSButton, by gestureRecognizer: NSGestureRecognizer, behavior: Behavior) {
-        let width = sender.bounds.size.width
-        let imageWidth = starsImage.size.width
-        guard width > 0, imageWidth > 0 else { return }
+    /// Legacy Big Sur status item container width applied on macOS 11 … 26.
+    ///
+    /// The two input paths historically compensated with different constants (`10` for
+    /// gesture recognizers, `20` for mouse events). That difference is preserved verbatim
+    /// so behaviour on macOS 26 and earlier is unchanged.
+    private enum LegacyContainerInset {
+        static let gesture: CGFloat = 10
+        static let event: CGFloat = 20
+    }
+    
+    /// How the host OS lays out a status item button.
+    ///
+    /// This is the single place where OS-dependent geometry lives. It is an injectable
+    /// value rather than an inline `#available` check so every variant stays testable on
+    /// any machine: the macOS 11…26 layouts cannot otherwise be exercised on a 27 host.
+    enum Layout {
+        /// macOS 10.14 … 10.15: the image sits in the button with only its own margin.
+        case preBigSur
+        /// macOS 11 … 26: Big Sur added a container inset ahead of the image.
+        case bigSur(inset: CGFloat)
+        /// macOS 27+: the inset is gone and the image is centred in the button.
+        case modern
         
-        // assert image center aligment without resize and leading & tariling margin added
-        //  leading margin | image | trailing margin
-        let position = gestureRecognizer.location(in: nil)
-        
-        let systemLeftMargin: CGFloat = {
-            if #available(macOS 11.0, *) {
-                return 10 + 0.5 * (width - imageWidth)                  //  Big Sur magic container width + leading margin
+        /// The layout of the OS the app is currently running on.
+        static var current: Layout {
+            if #available(macOS 27.0, *) {
+                return .modern
+            } else if #available(macOS 11.0, *) {
+                // `gesture` and `event` differ; the caller passes the one it wants.
+                return .bigSur(inset: LegacyContainerInset.gesture)
             } else {
-                return 0.5 * (width - imageWidth)                       //  leading margin (default 4)
+                return .preBigSur
             }
-        }()
-        let positionX = position.x - systemLeftMargin                   // x in range: -leading margin ~ image.size.with
+        }
         
-        var rating: Int?
-        let array = Array(0..<5)
-        let starsMinX = array.map { i -> CGFloat in
-            return spacing * CGFloat(1 + i) + starSize.width * CGFloat(i)
-        }
-        let starsMaxX = starsMinX.map { $0 + starSize.width }
-
-        if positionX < starsMinX[0] {
-            rating = 0
-        } else if positionX > starsMaxX[4] {
-            rating = 10
-        } else {
-            for i in array where positionX > starsMinX[i] && positionX < starsMaxX[i] {
-                switch behavior {
-                case .full:
-                    rating = 2 * (i + 1)
-                case .half:
-                    rating = 2 * (i + 1) - 1
-                case .both:
-                    let centerX = 0.5 * (starsMinX[i] + starsMaxX[i])
-                    rating = positionX > centerX ? (2 * (i + 1)) : (2 * (i + 1) - 1)
-                }
+        /// Offset from the button's leading edge to the image's leading edge.
+        ///
+        /// - Parameter legacyInset: Big Sur container width for the path being used
+        ///   (`LegacyContainerInset.gesture` or `.event`); ignored by other layouts.
+        func imageOriginX(buttonWidth: CGFloat, imageWidth: CGFloat, legacyInset: CGFloat = 0) -> CGFloat {
+            let centred = 0.5 * (buttonWidth - imageWidth)
+            switch self {
+            case .preBigSur:
+                return centred                                        //  leading margin (default 4)
+            case .bigSur:
+                return legacyInset + centred                          //  Big Sur container + leading margin
+            case .modern:
+                return centred
             }
         }
-
-        // starRating: 0 ~ 10
-        guard let starRating = rating, delegate?.ratingControl(self, shouldUpdateRating: starRating * 10) ?? false else {
+    }
+    
+    /// Cursor position in the host button's coordinate space.
+    ///
+    /// macOS 27 changed how a status item routes events: the button's subview
+    /// hit-testing and the event coordinates no longer reflect where the user actually
+    /// clicked. A click anywhere resolved to the same point (roughly the button centre),
+    /// so every click produced nearly the same rating and the 4th/5th stars could never
+    /// be reached. This is an AppKit behaviour change on 27, not a layout regression;
+    /// the geometry itself is still correct.
+    ///
+    /// The reliable workaround (per the Stats #3456 report and the WWDC26 AppKit
+    /// guidance) is to stop trusting the event's own coordinates and instead read the
+    /// cursor from screen space, mapping the button's on-screen rect onto its bounds.
+    /// This also absorbs any difference between the status item window width and the
+    /// button width.
+    ///
+    /// Only needed on macOS 27+; earlier releases keep the original path so their
+    /// behaviour is unchanged.
+    private func currentLocation(in sender: NSButton) -> CGPoint? {
+        guard #available(macOS 27.0, *), let window = sender.window else {
+            return nil
+        }
+        
+        let screenRect = window.convertToScreen(sender.convert(sender.bounds, to: nil))
+        guard screenRect.width > 0, screenRect.height > 0 else { return nil }
+        
+        let mouse = NSEvent.mouseLocation
+        guard mouse.x.isFinite, mouse.y.isFinite else { return nil }
+        
+        // Map the cursor's screen position back into the button's bounds.
+        let scaleX = sender.bounds.width / screenRect.width
+        let scaleY = sender.bounds.height / screenRect.height
+        return CGPoint(x: (mouse.x - screenRect.minX) * scaleX,
+                       y: (mouse.y - screenRect.minY) * scaleY)
+    }
+    
+    /// Resolve a point in the host button's coordinate space into a star rating.
+    ///
+    /// - Parameters:
+    ///   - point: location in the host button's coordinate space.
+    ///   - legacyInset: Big Sur container width compensated on macOS 11 … 26.
+    /// - Returns: rating in `0...10` (units of a half star), or `nil` when the point
+    ///   does not resolve to a star.
+    ///
+    /// - Note: macOS 27 changed the status item window geometry. See
+    ///   `currentLocation(in:)` for the coordinate-space problem that made every click
+    ///   resolve to the same star and prevented rating above three stars.
+    private func starRating(at point: CGPoint, in sender: NSButton, behavior: Behavior, legacyInset: CGFloat) -> Int? {
+        Self.starRating(at: point,
+                        buttonWidth: sender.bounds.size.width,
+                        imageWidth: starsImage.size.width,
+                        starSize: starSize,
+                        spacing: spacing,
+                        behavior: behavior,
+                        layout: .current,
+                        legacyInset: legacyInset)
+    }
+    
+    /// Pure geometry: resolve a point in a button's coordinate space into a star rating.
+    ///
+    /// Kept free of AppKit state and of `#available` so every layout variant can be
+    /// asserted from tests on any host OS.
+    ///
+    /// - Parameters:
+    ///   - point: location in the button's coordinate space.
+    ///   - buttonWidth: width of the host button.
+    ///   - imageWidth: width of the drawn stars image.
+    ///   - starSize: size of a single star.
+    ///   - spacing: gap between two stars.
+    ///   - behavior: how a position within a star maps to full/half stars.
+    ///   - layout: OS layout to interpret the coordinates with.
+    ///   - legacyInset: Big Sur container width, used by `.bigSur` only.
+    /// - Returns: rating in `0...10` (half-star units), or `nil` if unresolved.
+    static func starRating(at point: CGPoint,
+                           buttonWidth: CGFloat,
+                           imageWidth: CGFloat,
+                           starSize: NSSize,
+                           spacing: CGFloat,
+                           behavior: Behavior,
+                           layout: Layout,
+                           legacyInset: CGFloat = 0) -> Int? {
+        guard buttonWidth > 0, imageWidth > 0 else { return nil }
+        
+        let systemLeftMargin = layout.imageOriginX(buttonWidth: buttonWidth,
+                                                   imageWidth: imageWidth,
+                                                   legacyInset: legacyInset)
+        let positionX = point.x - systemLeftMargin                      // x in range: -leading margin ~ image.size.with
+        
+        let minX = (0..<5).map { i in spacing * CGFloat(1 + i) + starSize.width * CGFloat(i) }
+        let maxX = minX.map { $0 + starSize.width }
+        
+        if positionX < minX[0] {
+            return 0
+        }
+        if positionX > maxX[4] {
+            return 10
+        }
+        
+        // Inclusive upper bound so a point landing exactly on a star edge still resolves
+        // instead of leaving `rating` nil.
+        for i in 0..<5 where positionX >= minX[i] && positionX <= maxX[i] {
+            switch behavior {
+            case .full:
+                return 2 * (i + 1)
+            case .half:
+                return 2 * (i + 1) - 1
+            case .both:
+                let centerX = 0.5 * (minX[i] + maxX[i])
+                return positionX > centerX ? (2 * (i + 1)) : (2 * (i + 1) - 1)
+            }
+        }
+        
+        return nil
+    }
+    
+    func action(from sender: NSButton, by gestureRecognizer: NSGestureRecognizer, behavior: Behavior) {
+        // Prefer the true cursor position; the recognizer's own location is unreliable
+        // on macOS 27. See `currentLocation(in:)`.
+        let position = currentLocation(in: sender) ?? gestureRecognizer.location(in: sender)
+        action(from: sender, at: position, behavior: behavior, legacyInset: LegacyContainerInset.gesture)
+    }
+    
+    /// Apply the rating for wherever the cursor currently is.
+    ///
+    /// Used while dragging: macOS 27 does not deliver drag events to the status item
+    /// button, so the position is sampled from the cursor instead.
+    func action(from sender: NSButton, atCursorWith behavior: Behavior) {
+        guard let position = currentLocation(in: sender) else { return }
+        action(from: sender, at: position, behavior: behavior, legacyInset: LegacyContainerInset.gesture)
+    }
+    
+    /// Apply a point in the host button's coordinate space as a new rating.
+    ///
+    /// - Parameters:
+    ///   - point: location in the host button's coordinate space.
+    ///   - behavior: how a position within a star maps to full/half stars.
+    ///   - legacyInset: Big Sur container width compensated on macOS 11 … 26.
+    private func action(from sender: NSButton, at point: CGPoint, behavior: Behavior, legacyInset: CGFloat) {
+        guard let starRating = starRating(at: point,
+                                          in: sender,
+                                          behavior: behavior,
+                                          legacyInset: legacyInset) else {
             return
         }
-
+        
+        // starRating: 0 ~ 10
+        guard delegate?.ratingControl(self, shouldUpdateRating: starRating * 10) ?? false else {
+            return
+        }
+        
         let newRating = starRating * 10
         update(rating: newRating)
         delegate?.ratingControl(self, userDidUpdateRating: newRating)
@@ -157,49 +310,13 @@ extension RatingControl {
     
     // handle .leftMouseUp, .leftMouseDragged event on host button
     func action(from sender: NSButton, with event: NSEvent) {
-        let width = sender.bounds.size.width
-        let imageWidth = starsImage.size.width
-        guard width > 0, imageWidth > 0 else { return }
-        
-        // assert image center aligment without resize and leading & tariling margin added
-        let position = sender.convert(event.locationInWindow, to: nil)  //  leading margin | image | trailing margin
-        let systemLeftMargin: CGFloat = {
-            if #available(macOS 11.0, *) {
-                return 20 + 0.5 * (width - imageWidth)                  //  big sur magic container width + leading margin
-            } else {
-                return 0.5 * (width - imageWidth)                       //  leading margin (default 4)
-            }
-        }()
-        let positionX = position.x - systemLeftMargin                   // x in range: -leading margin ~ image.size.with
-        
-        var rating: Int?
-        let array = Array(0..<5)
-        let starsMinX = array.map { i -> CGFloat in
-            return spacing * CGFloat(1 + i) + starSize.width * CGFloat(i)
-        }
-        let starsMaxX = starsMinX.map { $0 + starSize.width }
-        
-        if positionX < starsMinX[0] {
-            rating = 0
-        } else if positionX > starsMaxX[4] {
-            rating = 5
-        } else {
-            for i in array where positionX > starsMinX[i] && positionX < starsMaxX[i] {
-                rating = i + 1
-            }
-        }
-        
-        // starRating: 0 ~ 5
-        guard let starRating = rating,
-        delegate?.ratingControl(self, shouldUpdateRating: starRating * 20) ?? false else {
-            return
-        }
+        // `event.locationInWindow` shares the unreliable conversion described in
+        // `currentLocation(in:)`, so prefer the true cursor position on macOS 27+.
+        let position = currentLocation(in: sender) ?? sender.convert(event.locationInWindow, from: nil)
         
         switch event.type {
         case .leftMouseUp, .leftMouseDragged:
-            let newRating = starRating * 20
-            update(rating: newRating)
-            delegate?.ratingControl(self, userDidUpdateRating: newRating)
+            action(from: sender, at: position, behavior: .full, legacyInset: LegacyContainerInset.event)
 
         default:
             break

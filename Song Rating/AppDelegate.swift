@@ -79,15 +79,15 @@ extension AppDelegate {
     func setupUserDefaults() {
         // register shortcut
         do {
-            let ratingDownShortcut = MASShortcut(keyCode: kVK_ANSI_Comma, modifierFlags: .option)
-            let ratingUpShortcut = MASShortcut(keyCode: kVK_ANSI_Period, modifierFlags: .option)
-            let showOrClosePopoverShortcut = MASShortcut(keyCode: kVK_ANSI_Slash, modifierFlags: .option)
-            let songRating5Shortcut = MASShortcut(keyCode: kVK_ANSI_5, modifierFlags: .control)
-            let songRating4Shortcut = MASShortcut(keyCode: kVK_ANSI_4, modifierFlags: .control)
-            let songRating3Shortcut = MASShortcut(keyCode: kVK_ANSI_3, modifierFlags: .control)
-            let songRating2Shortcut = MASShortcut(keyCode: kVK_ANSI_2, modifierFlags: .control)
-            let songRating1Shortcut = MASShortcut(keyCode: kVK_ANSI_1, modifierFlags: .control)
-            let songRating0Shortcut = MASShortcut(keyCode: kVK_ANSI_Grave, modifierFlags: .control)
+            let ratingDownShortcut = MASShortcut(keyCode: kVK_ANSI_Comma, modifierFlags: [.option, .control])
+            let ratingUpShortcut = MASShortcut(keyCode: kVK_ANSI_Period, modifierFlags: [.option, .control])
+            let showOrClosePopoverShortcut = MASShortcut(keyCode: kVK_ANSI_Slash, modifierFlags: [.option, .control])
+            let songRating5Shortcut = MASShortcut(keyCode: kVK_ANSI_5, modifierFlags: [.option, .control])
+            let songRating4Shortcut = MASShortcut(keyCode: kVK_ANSI_4, modifierFlags: [.option, .control])
+            let songRating3Shortcut = MASShortcut(keyCode: kVK_ANSI_3, modifierFlags: [.option, .control])
+            let songRating2Shortcut = MASShortcut(keyCode: kVK_ANSI_2, modifierFlags: [.option, .control])
+            let songRating1Shortcut = MASShortcut(keyCode: kVK_ANSI_1, modifierFlags: [.option, .control])
+            let songRating0Shortcut = MASShortcut(keyCode: kVK_ANSI_Grave, modifierFlags: [.option, .control])
 
             let ratingDownShortcutData = try NSKeyedArchiver.archivedData(withRootObject: ratingDownShortcut as Any, requiringSecureCoding: false)
             let ratingUpShortcutData = try NSKeyedArchiver.archivedData(withRootObject: ratingUpShortcut as Any, requiringSecureCoding: false)
@@ -135,8 +135,26 @@ extension AppDelegate {
         let isRunning = runningApps.contains(where: { $0.bundleIdentifier == launcherAppId })
         
         let shouldLaunchAtLogin = UserDefaults.standard.launchAtLogin
-        SMLoginItemSetEnabled(launcherAppId as CFString, shouldLaunchAtLogin)
-        os_log("%{public}s[%{public}ld], %{public}s: set launchAtLogin to %{public}s", ((#file as NSString).lastPathComponent), #line, #function, shouldLaunchAtLogin.description)
+        do {
+            // `SMAppService` replaced `SMLoginItemSetEnabled` in macOS 13, which is below
+            // this app's deployment target, so no fallback is needed. The helper already
+            // ships in Contents/Library/LoginItems, which is where the service looks.
+            let service = SMAppService.loginItem(identifier: launcherAppId)
+            if shouldLaunchAtLogin {
+                try service.register()
+            } else {
+                try service.unregister()
+            }
+            os_log("%{public}s[%{public}ld], %{public}s: set launchAtLogin to %{public}s (status %{public}ld)",
+                   ((#file as NSString).lastPathComponent), #line, #function,
+                   shouldLaunchAtLogin.description, service.status.rawValue)
+        } catch {
+            // A failure here is usually "already registered" / "not registered", which is
+            // the desired end state anyway; log it rather than crashing the app.
+            os_log("%{public}s[%{public}ld], %{public}s: launchAtLogin %{public}s failed: %{public}s",
+                   ((#file as NSString).lastPathComponent), #line, #function,
+                   shouldLaunchAtLogin ? "register" : "unregister", error.localizedDescription)
+        }
 
         if isRunning {
             DistributedNotificationCenter.default().post(name: .killLauncher, object: Bundle.main.bundleIdentifier)
